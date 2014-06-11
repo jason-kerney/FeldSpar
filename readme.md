@@ -32,7 +32,7 @@ Goals
 
 ```fsharp
 module BasicTests =
-    let testAdditionOfTwoNumbers = 
+    let ``Adding 6 and 4 equals 10`` = 
         Test((fun env ->
                 let x = 6
                 let y = 4
@@ -40,7 +40,7 @@ module BasicTests =
                 (x + y) expectsToBe 10 "Addition failed 6 + 4 <> %d but did equal %d"
             ))
               
-    let multipleChecks =
+    let ``A test with multiple checks to deterime a good result`` =
         Test((fun env ->
                 let x = 6
                 let y = 4
