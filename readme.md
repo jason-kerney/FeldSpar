@@ -44,7 +44,7 @@ module BasicTests =
 
 ### How to _(currently)_ run all tests
 
-```fharp
+```fsharp
 module Program =
     type internal Marker = interface end
     let private assembly = typeof<Marker>.Assembly
