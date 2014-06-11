@@ -98,7 +98,7 @@ module BuildingOfTestsTests =
                                     {
                                         let! testRanCorrectly =(
                                             [test] 
-                                                |> runTests 
+                                                |> FeldSpar.Console.Helpers.Data.runTests 
                                                 |> reduceToFailures
                                                 |> Seq.isEmpty 
                                                 |> isTrue (ExpectationFailure("test Failed to have correct Name")))
