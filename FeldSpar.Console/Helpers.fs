@@ -7,7 +7,11 @@ module Data =
     let assembly = typeof<Marker>.Assembly
 
     let runTest template = 
-            let _, test = template |> createTestFromTemplate ignore
+            let desc = 
+                match template with
+                | Test({Description = d; UnitTest = _}) ->d
+
+            let _, test = template |> createTestFromTemplate ignore desc
             test()
 
     let runAsTests templates = 

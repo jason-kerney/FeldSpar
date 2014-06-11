@@ -5,7 +5,7 @@ open FeldSpar.Framework.Verification
 open FeldSpar.Console.Helpers.Data
 
 module FilteringTests = 
-    let testFilterByFailures = 
+    let ``filterByFailures should remove any non failing tests summaries from a collection of result summaries`` = 
         Test({
                 Description = "filterByFailures should remove any non failing tests summaries from a collection of result summaries";
                 UnitTest = (fun env ->

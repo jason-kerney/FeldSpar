@@ -93,8 +93,8 @@ module Program =
 
 > Feld Spar tackles this by having only 2 states of a test. Success or Failure. Failures allow you to have a reason for failure, which will be `Ignored` for an ignored test.
 
-### Favor Convention Over Configuration
-> .Net attributes are configuration and not immediately obvious when your program execution depends on them. If you find a method that conforms to the test signature but lacks the attribute was the attribute removed?
+### Favor Intention
+> .Net attributes are not immediately obvious when your program execution depends on them. If you find a method that conforms to the test signature but lacks the attribute was the attribute removed?
 
 > I wanted a test framework that made a test method as obviously indented to be a test.
 

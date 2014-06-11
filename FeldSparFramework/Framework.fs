@@ -21,6 +21,7 @@ type ExecutionSummary =
 
 type TestEnvironment =
     {
+        Name:string;
         CanonicalizedName : string;
         RootPath : string;
         Token : Guid

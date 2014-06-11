@@ -3,7 +3,7 @@ Test[1] is ((filterByFailures should remove any non failing tests summaries from
 Test[2] is ((Find All Tests through Reflection))
 Test[3] is ((Test that a failing test shows as a failure))
 Test[4] is ((A test that succeeds))
-Test[5] is ((Testing that CanoicalizationOfStrings Work))
+Test[5] is ((Testing that CanoicalizationOfStrings Works))
 Test[6] is ((The environment of a test should canonicalize the description correctly into the name))
 Test[7] is ((An exception thrown in a test should report exception failure))
 Test[8] is ((A test to check verification))

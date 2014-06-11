@@ -8,7 +8,7 @@ open FeldSpar.Framework.Engine
 open FeldSpar.Framework.Verification
 
 module BuildingOfTestsTests =
-    let testFindTests = 
+    let ``Find All Tests through Reflection`` = 
         Test({
                 Description = "Find All Tests through Reflection";
                 UnitTest = (fun env ->
@@ -34,18 +34,19 @@ module BuildingOfTestsTests =
                                     }
                            )
             })
-    let testFailure = 
+    let ``Test that a failing test shows as a failure`` = 
         Test({
                 Description = "Test that a failing test shows as a failure"
                 UnitTest = (fun env ->
                                 let failDescription = "A Test That will fail"
-                                let failingTest = Test({
-                                                            Description = failDescription;
-                                                            UnitTest = (fun env -> failResult "Expected Failure")
-                                                        })
+                                let ``A Test That will fail`` = 
+                                    Test({
+                                            Description = failDescription;
+                                            UnitTest = (fun env -> failResult "Expected Failure")
+                                        })
 
                                 let resultSummary = 
-                                    let _, test = failingTest |> createTestFromTemplate ignore
+                                    let _, test = ``A Test That will fail`` |> createTestFromTemplate ignore failDescription
                                     test()
 
                                 verify
@@ -57,15 +58,15 @@ module BuildingOfTestsTests =
                             )
             })
 
-    let testSuccess = 
+    let ``A test that succeeds`` = 
         Test({
                 Description = "A test that succeeds";
                 UnitTest = (fun env -> Success )
             })
 
-    let testCanonicalizeString = 
+    let ``Testing that CanoicalizationOfStrings Works`` = 
         Test({
-                Description = "Testing that CanoicalizationOfStrings Work";
+                Description = "Testing that CanoicalizationOfStrings Works";
                 UnitTest = (fun env ->
                                 let stringUnderTest = "a@\t\t\tc\r\nd`~ 1234567890!@#$%^&*()=+[{]}\\|;:'\",<.>/?+-_"
                                 let expected = "acd_1234567890.-_"
@@ -78,14 +79,14 @@ module BuildingOfTestsTests =
                             )
             })
 
-    let testEnvironmentHasCanonicalizedName =
+    let ``The environment of a test should canonicalize the description correctly into the name`` =
         Test({
                 Description = "The environment of a test should canonicalize the description correctly into the name";
                 UnitTest = (fun env ->
                                 let testDescription = "Ca@n0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~"
                                 let expected = (Formatters.Basic.CanonicalizeString testDescription)
 
-                                let test = 
+                                let ``Can0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~`` = 
                                     Test({
                                             Description = testDescription;
                                             UnitTest = (fun env ->
@@ -97,7 +98,7 @@ module BuildingOfTestsTests =
                                 verify
                                     {
                                         let! testRanCorrectly =(
-                                            [test] 
+                                            [``Can0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~``] 
                                                 |> runAsTests 
                                                 |> reduceToFailures
                                                 |> Seq.isEmpty 
@@ -108,7 +109,7 @@ module BuildingOfTestsTests =
                             )
             })
 
-    let testExeptionTestReturnsExptionFailure =
+    let ``An exception thrown in a test should report exception failure`` =
         Test({
                 Description = "An exception thrown in a test should report exception failure"
                 UnitTest = (fun env ->
@@ -119,7 +120,7 @@ module BuildingOfTestsTests =
                                             UnitTest = (fun env -> raise ex)
                                         })
 
-                                let _, case = throwingTest |> createTestFromTemplate ignore
+                                let _, case = throwingTest |> createTestFromTemplate ignore "A test that throws an exception"
 
                                 let summary = case()
                                 let result = summary.TestResults

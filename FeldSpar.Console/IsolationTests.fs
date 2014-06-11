@@ -15,14 +15,14 @@ module IsolationTests =
             with get () =
                 x
 
-    let testTestIsolation =
+    let ``Verify that tests run in isolation`` =
         Test({
                 Description = "Verify that tests run in isolation"
                 UnitTest = (fun env ->
                                 let changer = ChangeAble()
                                 let mainExpected = changer.X
                                 
-                                let test1 = 
+                                let ``First test to test isolation`` = 
                                     Test({
                                             Description = "First test to test isolation";
                                             UnitTest = (fun env ->
@@ -35,7 +35,7 @@ module IsolationTests =
                                                         )
                                         })
 
-                                let test2 = 
+                                let ``Second test to test isolation`` = 
                                     Test({
                                             Description = "Second test to test isolation";
                                             UnitTest = (fun env ->
@@ -48,7 +48,7 @@ module IsolationTests =
                                                         )
                                          })
 
-                                let results = [test1; test2] |> runAsTests
+                                let results = [``First test to test isolation``; ``Second test to test isolation``] |> runAsTests
                                 let isolatedResults = results |> reduceToFailures |> Seq.isEmpty
 
                                 let mainActual = changer.X

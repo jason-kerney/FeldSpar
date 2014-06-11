@@ -40,7 +40,7 @@ module Runner =
 
         sandbox.Execute input action
 
-    let private createEnvironment (template: TestTemplate) = 
+    let private createEnvironment name = 
         let rec getSourcePath path = 
             let p = System.IO.DirectoryInfo(path)
 
@@ -53,13 +53,14 @@ module Runner =
         let path = System.Environment.CurrentDirectory |> getSourcePath
             
         { 
-            CanonicalizedName = template.Description |> Formatters.Basic.CanonicalizeString;
+            Name = name;
+            CanonicalizedName = name |> Formatters.Basic.CanonicalizeString;
             RootPath = path
             Token = Guid.NewGuid ()
         }
 
     let private fileFoundReport (env:TestEnvironment) report (template:TestTemplate) =
-        Found({Description = template.Description; Token = env.Token}) |> report 
+        Found({Description = env.Name; Token = env.Token}) |> report 
 
     let private fileRunningReport (env:TestEnvironment) report (template:TestTemplate) =
         Running({Description = template.Description; Token = env.Token}) |> report 
@@ -67,8 +68,8 @@ module Runner =
     let private fileFinishedReport (env:TestEnvironment) report (template:TestTemplate) (result:TestResult) =
         Finished({Description = template.Description; Token = env.Token}, result) |> report 
 
-    let createTestFromTemplate (report : ExecutionStatus -> unit ) (Test(template)) =
-        let env = template |> createEnvironment
+    let createTestFromTemplate (report : ExecutionStatus -> unit ) description (Test(template)) =
+        let env = description |> createEnvironment
 
         template |> fileFoundReport env report
 
@@ -113,13 +114,13 @@ module Runner =
     let findTestsAndReport report (assembly:Assembly) = 
         (assembly.GetExportedTypes())
             |> List.ofSeq
-            |> List.map (fun t -> t.GetMethods(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static))
+            |> List.map (fun t -> t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static))
             |> List.toSeq
             |> Array.concat
-            |> List.ofArray
-            |> List.filter(fun m -> m.ReturnType = typeof<Test>)
-            |> List.map(fun m -> m.Invoke(null, Array.empty) :?> Test)
-            |> List.map(fun test -> test |> createTestFromTemplate report)
+            |> Array.filter (fun p -> p.PropertyType = typeof<Test>)
+            |> Array.map(fun p -> (p.Name,p.GetValue(null) :?> Test))
+            |> Array.map(fun (name, test) -> test |> createTestFromTemplate report name)
+            |> Array.toList
 
     let runTestsAndReport report (assembly:Assembly) = 
         assembly |> findTestsAndReport report |> List.map(fun (_, test) -> test())

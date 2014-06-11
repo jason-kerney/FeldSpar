@@ -12,7 +12,7 @@ module StandardsVerificationTests =
             Dojo:string*Color
         }
     
-    let basicVerificationTest = 
+    let ``A test to check verification`` = 
         Test({
                 Description = "A test to check verification";
                 UnitTest = (fun env ->
