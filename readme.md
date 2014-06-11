@@ -55,9 +55,8 @@ module Program =
         
         let failedTests = results
                             |> reduceToFailures 
-                            |> List.ofSeq
 
-        printfn "Displaying Results (%d Failed of %d)" (failedTests |> List.length) (results |> List.length)
+        printfn "Displaying Results (%d Failed of %d)" (failedTests |> Seq.length) (results |> Seq.length)
 ```
 
 ### Feld Spar?
