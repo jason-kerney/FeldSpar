@@ -17,11 +17,13 @@ Goals
 * _(in progress)_ Enable use of Approval Libraries in a functional manner
 * Allow use of Approval Use Reporter Attribute or some equivalent
 
-### 4. Integrate with visual studio
+### 4. Implement Theory Based Testing
 
-### 5. Provide out of editor and console runner
+### 5. Integrate with visual studio
 
-### 6. Generate Documentation
+### 6. Provide out of editor and console runner
+
+### 3. Generate Documentation
 * Add XML Comments
 * _(done)_ Add Read Me
 
