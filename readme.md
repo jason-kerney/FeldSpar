@@ -43,6 +43,7 @@ module BasicTests =
 ```
 
 ### How to _(currently)_ run all tests
+
 ```fharp
 module Program =
     type internal Marker = interface end
