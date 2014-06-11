@@ -7,7 +7,7 @@ open System.Reflection
 
 type ExecutionToken =
     {
-        Description: string;
+        Name: string;
         Token: Guid;
     }
 
@@ -59,52 +59,52 @@ module Runner =
             Token = Guid.NewGuid ()
         }
 
-    let private fileFoundReport (env:TestEnvironment) report (template:TestTemplate) =
-        Found({Description = env.Name; Token = env.Token}) |> report 
+    let private fileFoundReport (env:TestEnvironment) report =
+        Found({Name = env.Name; Token = env.Token}) |> report 
 
-    let private fileRunningReport (env:TestEnvironment) report (template:TestTemplate) =
-        Running({Description = template.Description; Token = env.Token}) |> report 
+    let private fileRunningReport (env:TestEnvironment) report =
+        Running({Name = env.Name; Token = env.Token}) |> report 
 
-    let private fileFinishedReport (env:TestEnvironment) report (template:TestTemplate) (result:TestResult) =
-        Finished({Description = template.Description; Token = env.Token}, result) |> report 
+    let private fileFinishedReport (env:TestEnvironment) report (result:TestResult) =
+        Finished({Name = env.Name; Token = env.Token}, result) |> report 
 
-    let createTestFromTemplate (report : ExecutionStatus -> unit ) description (Test(template)) =
-        let env = description |> createEnvironment
+    let createTestFromTemplate (report : ExecutionStatus -> unit ) name (Test(template)) =
+        let env = name |> createEnvironment
 
-        template |> fileFoundReport env report
+        fileFoundReport env report
 
         let testCase = (fun() -> 
                             let testingCode = (fun () ->
                                                     try
                                                         let result = 
                                                             {
-                                                                TestDescription = template.Description;
+                                                                TestDescription = env.Name;
                                                                 TestCanonicalizedName = env.CanonicalizedName;
-                                                                TestResults = template.UnitTest env;
+                                                                TestResults = template env;
                                                             }
 
-                                                        result.TestResults |> fileFinishedReport env report template
+                                                        result.TestResults |> fileFinishedReport env report
 
                                                         result
                                                     with
                                                     | e -> 
                                                         let result = 
                                                             {
-                                                                TestDescription = template.Description;
+                                                                TestDescription = env.Name;
                                                                 TestCanonicalizedName = env.CanonicalizedName;
                                                                 TestResults = Failure(ExceptionFailure(e));
                                                             }
 
-                                                        result.TestResults |> fileFinishedReport env report template
+                                                        result.TestResults |> fileFinishedReport env report
                                                         
                                                         result
                                                 )
 
-                            template |> fileRunningReport env report
+                            fileRunningReport env report
                             testingCode |> executeInNewDomain ()
                         )
                         
-        (template.Description, testCase)
+        (name, testCase)
         
 
     let reportResults results = Basic.reportResults results

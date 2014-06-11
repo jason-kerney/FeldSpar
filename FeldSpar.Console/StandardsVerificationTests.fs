@@ -13,22 +13,19 @@ module StandardsVerificationTests =
         }
     
     let ``A test to check verification`` = 
-        Test({
-                Description = "A test to check verification";
-                UnitTest = (fun env ->
-                                let itemUnderTest = 
-                                    sprintf "%A%s"
-                                        ({
-                                            Name = "Steven";
-                                            Age = 38;
-                                            Dojo = ("Too Cool For School", TooCool)
-                                        }) System.Environment.NewLine
+        Test((fun env ->
+                let itemUnderTest = 
+                    sprintf "%A%s"
+                        ({
+                            Name = "Steven";
+                            Age = 38;
+                            Dojo = ("Too Cool For School", TooCool)
+                        }) System.Environment.NewLine
 
-                                verify
-                                    {
-                                        let! standardsAreGood = itemUnderTest |> checkStandardsAgainstStringAndReportsWith<BeyondCompareReporter> env
-                                        return Success
-                                    }
-                            )
-            })
+                verify
+                    {
+                        let! standardsAreGood = itemUnderTest |> checkStandardsAgainstStringAndReportsWith<BeyondCompareReporter> env
+                        return Success
+                    }
+            ))
 

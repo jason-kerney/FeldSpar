@@ -34,7 +34,7 @@ type TestTemplate =
     }
 
 type Test =
-    | Test of TestTemplate
+    | Test of (TestEnvironment -> TestResult)
 
 (*
 type TheoryCaseTemplate<'a> =

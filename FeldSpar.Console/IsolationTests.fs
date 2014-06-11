@@ -16,48 +16,39 @@ module IsolationTests =
                 x
 
     let ``Verify that tests run in isolation`` =
-        Test({
-                Description = "Verify that tests run in isolation"
-                UnitTest = (fun env ->
-                                let changer = ChangeAble()
-                                let mainExpected = changer.X
+        Test((fun env ->
+                let changer = ChangeAble()
+                let mainExpected = changer.X
                                 
-                                let ``First test to test isolation`` = 
-                                    Test({
-                                            Description = "First test to test isolation";
-                                            UnitTest = (fun env ->
-                                                            let expected = 1;
-                                                            do changer.Increment ()
+                let ``First test to test isolation`` = 
+                    Test((fun env ->
+                            let expected = 1;
+                            do changer.Increment ()
 
-                                                            let actual = changer.X
+                            let actual = changer.X
 
-                                                            actual |> expectsToBe expected "changer did not increment correctly expected %d but got %d"
-                                                        )
-                                        })
+                            actual |> expectsToBe expected "changer did not increment correctly expected %d but got %d"
+                        ))
 
-                                let ``Second test to test isolation`` = 
-                                    Test({
-                                            Description = "Second test to test isolation";
-                                            UnitTest = (fun env ->
-                                                            let expected = 1;
-                                                            do changer.Increment ()
+                let ``Second test to test isolation`` = 
+                    Test((fun env ->
+                            let expected = 1;
+                            do changer.Increment ()
 
-                                                            let actual = changer.X
+                            let actual = changer.X
 
-                                                            actual |> expectsToBe expected "changer did not increment correctly expected %d but got %d"
-                                                        )
-                                         })
+                            actual |> expectsToBe expected "changer did not increment correctly expected %d but got %d"
+                        ))
 
-                                let results = [``First test to test isolation``; ``Second test to test isolation``] |> runAsTests
-                                let isolatedResults = results |> reduceToFailures |> Seq.isEmpty
+                let results = [("First test to test isolation", ``First test to test isolation``); ("Second test to test isolation", ``Second test to test isolation``)] |> runAsTests
+                let isolatedResults = results |> reduceToFailures |> Seq.isEmpty
 
-                                let mainActual = changer.X
+                let mainActual = changer.X
 
-                                verify
-                                    {
-                                        let! testsWhereIsolatedFromEachother = isolatedResults |> isTrue (GeneralFailure("tests failed to manipulate the changer correctly or in isolation"))
-                                        let! testsWhereIsolatedFromMain = mainActual |> expectsToBe mainExpected "tests did not run in isolation. changer.X was expected to be %d but instead was %d"
-                                        return Success
-                                    }
-                            )
-            })
+                verify
+                    {
+                        let! testsWhereIsolatedFromEachother = isolatedResults |> isTrue (GeneralFailure("tests failed to manipulate the changer correctly or in isolation"))
+                        let! testsWhereIsolatedFromMain = mainActual |> expectsToBe mainExpected "tests did not run in isolation. changer.X was expected to be %d but instead was %d"
+                        return Success
+                    }
+            ))

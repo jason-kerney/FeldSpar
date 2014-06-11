@@ -6,34 +6,31 @@ open FeldSpar.Console.Helpers.Data
 
 module FilteringTests = 
     let ``filterByFailures should remove any non failing tests summaries from a collection of result summaries`` = 
-        Test({
-                Description = "filterByFailures should remove any non failing tests summaries from a collection of result summaries";
-                UnitTest = (fun env ->
-                                let hasOnlySuccesses, hasOnlyFailures, hasMixedResults = filteringSetUp
+        Test((fun env ->
+                let hasOnlySuccesses, hasOnlyFailures, hasMixedResults = filteringSetUp
 
-                                let testResults = [hasOnlySuccesses; hasOnlyFailures; hasMixedResults;]
+                let testResults = [hasOnlySuccesses; hasOnlyFailures; hasMixedResults;]
 
-                                let successFul = 
-                                        testResults 
-                                        |> Seq.filter (fun r ->  r.TestResults = Success) 
-                                        |> Seq.map (fun r -> r.TestDescription) 
-                                        |> Seq.sort
-                                        |> Seq.toList
+                let successFul = 
+                        testResults 
+                        |> Seq.filter (fun r ->  r.TestResults = Success) 
+                        |> Seq.map (fun r -> r.TestDescription) 
+                        |> Seq.sort
+                        |> Seq.toList
 
-                                let filterResult = testResults |> reduceToFailures |> Seq.toList
+                let filterResult = testResults |> reduceToFailures |> Seq.toList
 
-                                let filteredAndPassing = 
-                                        filterResult 
-                                        |> Seq.filter (fun r -> r.TestResults = Success)
-                                        |> Seq.map (fun r -> r.TestDescription)
-                                        |> Seq.sort
-                                        |> Seq.toList
+                let filteredAndPassing = 
+                        filterResult 
+                        |> Seq.filter (fun r -> r.TestResults = Success)
+                        |> Seq.map (fun r -> r.TestDescription)
+                        |> Seq.sort
+                        |> Seq.toList
 
-                                verify
-                                    {
-                                        let! correctNumberOfFailures = (filterResult |> List.length) |> expectsToBe 2 "Incorrect number of test results after filtering expected %d but got %d"
-                                        let! noSuccessFound = (filteredAndPassing |> List.length) |> expectsToBe 0 "Incorrect number of passing tests found. Expected %d after filtering but got %d"
-                                        return Success
-                                    }
-                            )
-            })
+                verify
+                    {
+                        let! correctNumberOfFailures = (filterResult |> List.length) |> expectsToBe 2 "Incorrect number of test results after filtering expected %d but got %d"
+                        let! noSuccessFound = (filteredAndPassing |> List.length) |> expectsToBe 0 "Incorrect number of passing tests found. Expected %d after filtering but got %d"
+                        return Success
+                    }
+            ))

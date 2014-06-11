@@ -6,16 +6,12 @@ module Data =
     type internal Marker = interface end
     let assembly = typeof<Marker>.Assembly
 
-    let runTest template = 
-            let desc = 
-                match template with
-                | Test({Description = d; UnitTest = _}) ->d
-
-            let _, test = template |> createTestFromTemplate ignore desc
+    let runTest description template = 
+            let _, test = template |> createTestFromTemplate ignore description
             test()
 
     let runAsTests templates = 
-        templates |> Seq.map (fun template -> template |> runTest)
+        templates |> Seq.map (fun (description, template) -> template |> runTest description)
 
     let filteringSetUp = 
         let hasOnlySuccesses =
