@@ -33,33 +33,27 @@ Goals
 ```fsharp
 module BasicTests =
     let testAdditionOfTwoNumbers = 
-        Test({
-                Description = "A test of the addition operator"
-                UnitTest = (fun env ->
-                                let x = 6
-                                let y = 4
+        Test((fun env ->
+                let x = 6
+                let y = 4
 
-                                (x + y) expectsToBe 10 "Addition failed 6 + 4 <> %d but did equal %d"
-                            )
-              })
+                (x + y) expectsToBe 10 "Addition failed 6 + 4 <> %d but did equal %d"
+            ))
               
     let multipleChecks =
-        Test({
-                Description = "Test a multiple conditions"
-                UnitTest = (fun env ->
-                                let x = 6
-                                let y = 4
-                                let z = x + y
-                                
-                                verify
-                                    {
-                                        let! goodX = x expectsToBe 6 "x failed expected %d but got %d"
-                                        let! goodY = y expectsToBe 4 "y failed expected %d but got %d"
-                                        let! goodZ = z expectsToBe 10 "(x + y) failed expected %d but got %d"
-                                        return Success
-                                    }
-                            )
-            })
+        Test((fun env ->
+                let x = 6
+                let y = 4
+                let z = x + y
+                
+                verify
+                    {
+                        let! goodX = x expectsToBe 6 "x failed expected %d but got %d"
+                        let! goodY = y expectsToBe 4 "y failed expected %d but got %d"
+                        let! goodZ = z expectsToBe 10 "(x + y) failed expected %d but got %d"
+                        return Success
+                    }
+            ))
 ```
 
 ### How to _(currently)_ run all tests
