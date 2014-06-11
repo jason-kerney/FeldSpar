@@ -10,7 +10,7 @@ module Data =
             let _, test = template |> createTestFromTemplate ignore
             test()
 
-    let runTests templates = 
+    let runAsTests templates = 
         templates |> Seq.map (fun template -> template |> runTest)
 
     let filteringSetUp = 

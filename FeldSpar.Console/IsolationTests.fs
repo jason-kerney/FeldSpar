@@ -48,7 +48,7 @@ module IsolationTests =
                                                         )
                                          })
 
-                                let results = [test1; test2] |> FeldSpar.Console.Helpers.Data.runTests
+                                let results = [test1; test2] |> runAsTests
                                 let isolatedResults = results |> reduceToFailures |> Seq.isEmpty
 
                                 let mainActual = changer.X
