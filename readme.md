@@ -2,11 +2,8 @@
 =========
 > An opinionated test framework designed to be functional from the ground up.
 
-Goals
------------
-
 -----------------
-
+ 
 ##Example
 ### How to write a unit test
 
@@ -36,6 +33,7 @@ module BasicTests =
             ))
 ```
 
+##Goals
 ### 1. Be as purely functional as possible
 ### 2. Enforce Test Isolation
 
