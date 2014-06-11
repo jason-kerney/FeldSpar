@@ -33,6 +33,23 @@ module BasicTests =
             ))
 ```
 
+### How to _(currently)_ run all tests
+
+```fsharp
+module Program =
+    type internal Marker = interface end
+    let private assembly = typeof<Marker>.Assembly
+
+    [<EntryPoint>]
+    let public main argv = 
+        let results = assembly |> runTests
+        
+        let failedTests = results
+                            |> reduceToFailures 
+
+        printfn "Displaying Results (%d Failed of %d)" (failedTests |> Seq.length) (results |> Seq.length)
+```
+
 ##Goals
 ### 1. Be as purely functional as possible
 ### 2. Enforce Test Isolation
@@ -54,22 +71,6 @@ module BasicTests =
 * Add XML Comments
 * _(done)_ Add Read Me
 
-### How to _(currently)_ run all tests
-
-```fsharp
-module Program =
-    type internal Marker = interface end
-    let private assembly = typeof<Marker>.Assembly
-
-    [<EntryPoint>]
-    let public main argv = 
-        let results = assembly |> runTests
-        
-        let failedTests = results
-                            |> reduceToFailures 
-
-        printfn "Displaying Results (%d Failed of %d)" (failedTests |> Seq.length) (results |> Seq.length)
-```
 ## Design Considerations
 ### **NO** Exception Driven Workflows
 > OO based test frameworks use `Assert` to designate a failure. This works because it generates an exception which forces an early exit without `if` `then` `else` or `case` statements.
