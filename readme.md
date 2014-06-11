@@ -7,26 +7,6 @@ Goals
 
 -----------------
 
-### 1. Be as purely functional as possible
-### 2. Enforce Test Isolation
-
-* _(done)_ Tests run in isolated memory space
-* _(maybe)_ Test execution order is indeterminate
-
-### 3. Enable Gold Standard Testing as a Framework Feature
-* _(in progress)_ Enable use of Approval Libraries in a functional manner
-* Allow use of Approval Use Reporter Attribute or some equivalent
-
-### 4. Implement Theory Based Testing
-
-### 5. Integrate with visual studio
-
-### 6. Provide out of editor and console runner
-
-### 3. Generate Documentation
-* Add XML Comments
-* _(done)_ Add Read Me
-
 ##Example
 ### How to write a unit test
 
@@ -55,6 +35,26 @@ module BasicTests =
                     }
             ))
 ```
+
+### 1. Be as purely functional as possible
+### 2. Enforce Test Isolation
+
+* _(done)_ Tests run in isolated memory space
+* _(maybe)_ Test execution order is indeterminate
+
+### 3. Enable Gold Standard Testing as a Framework Feature
+* _(in progress)_ Enable use of Approval Libraries in a functional manner
+* Allow use of Approval Use Reporter Attribute or some equivalent
+
+### 4. Implement Theory Based Testing
+
+### 5. Integrate with visual studio
+
+### 6. Provide out of editor and console runner
+
+### 3. Generate Documentation
+* Add XML Comments
+* _(done)_ Add Read Me
 
 ### How to _(currently)_ run all tests
 
