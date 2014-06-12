@@ -7,7 +7,7 @@ module Data =
     let assembly = typeof<Marker>.Assembly
 
     let runTest description template = 
-            let _, test = template |> createTestFromTemplate ignore description
+            let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description
             test()
 
     let runAsTests templates = 

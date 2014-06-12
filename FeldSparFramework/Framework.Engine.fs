@@ -8,7 +8,6 @@ open System.Reflection
 type ExecutionToken =
     {
         Name: string;
-        Token: Guid;
     }
 
 type ExecutionStatus =
@@ -28,6 +27,8 @@ module Runner =
         override this.InitializeLifetimeService () =
             null
 
+    let private emptyGlobal : GlobalTestEnvironment = { Reporters = [] }
+
     let private executeInNewDomain (input : 'a) (action : 'a -> 'b) =
         let appDomain = AppDomain.CreateDomain("AppDomainHelper.ExecuteInNewAppDomain") 
 
@@ -40,7 +41,7 @@ module Runner =
 
         sandbox.Execute input action
 
-    let private createEnvironment name = 
+    let private createEnvironment (env : GlobalTestEnvironment) name = 
         let rec getSourcePath path = 
             let p = System.IO.DirectoryInfo(path)
 
@@ -55,21 +56,21 @@ module Runner =
         { 
             Name = name;
             CanonicalizedName = name |> Formatters.Basic.CanonicalizeString;
-            RootPath = path
-            Token = Guid.NewGuid ()
+            RootPath = path;
+            Reporters = env.Reporters;
         }
 
     let private fileFoundReport (env:TestEnvironment) report =
-        Found({Name = env.Name; Token = env.Token}) |> report 
+        Found({Name = env.Name; }) |> report 
 
     let private fileRunningReport (env:TestEnvironment) report =
-        Running({Name = env.Name; Token = env.Token}) |> report 
+        Running({Name = env.Name; }) |> report 
 
     let private fileFinishedReport (env:TestEnvironment) report (result:TestResult) =
-        Finished({Name = env.Name; Token = env.Token}, result) |> report 
+        Finished({Name = env.Name; }, result) |> report 
 
-    let createTestFromTemplate (report : ExecutionStatus -> unit ) name (Test(template)) =
-        let env = name |> createEnvironment
+    let createTestFromTemplate (globalEnv : GlobalTestEnvironment) (report : ExecutionStatus -> unit ) name (Test(template)) =
+        let env = name |> createEnvironment globalEnv
 
         fileFoundReport env report
 
@@ -111,7 +112,7 @@ module Runner =
 
     let private runTestCode (_, test: unit -> ExecutionSummary) = test()
 
-    let findTestsAndReport report (assembly:Assembly) = 
+    let findTestsAndReport (environment : GlobalTestEnvironment) report (assembly:Assembly) = 
         (assembly.GetExportedTypes())
             |> List.ofSeq
             |> List.map (fun t -> t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static))
@@ -119,12 +120,15 @@ module Runner =
             |> Array.concat
             |> Array.filter (fun p -> p.PropertyType = typeof<Test>)
             |> Array.map(fun p -> (p.Name,p.GetValue(null) :?> Test))
-            |> Array.map(fun (name, test) -> test |> createTestFromTemplate report name)
+            |> Array.map(fun (name, test) -> test |> createTestFromTemplate environment report name)
             |> Array.toList
 
     let runTestsAndReport report (assembly:Assembly) = 
-        assembly |> findTestsAndReport report |> List.map(fun (_, test) -> test())
+        assembly |> findTestsAndReport emptyGlobal report |> List.map(fun (_, test) -> test())
 
-    let findTests (assembly:Assembly) =  assembly |> findTestsAndReport ignore
+    let findTests (assembly:Assembly) =  assembly |> findTestsAndReport emptyGlobal ignore
 
     let runTests (assembly:Assembly) = assembly |> runTestsAndReport ignore
+
+    let runTestsWith (env : GlobalTestEnvironment) (assembly : Assembly) =
+        assembly |> findTestsAndReport env ignore |> List.map(fun (_, test) -> test())

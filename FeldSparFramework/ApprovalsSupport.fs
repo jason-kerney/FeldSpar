@@ -9,6 +9,7 @@ open FeldSpar.Framework
 *)
 module ApprovalsSupport = 
     open ApprovalTests.Core
+    open ApprovalTests.Reporters
     open System.IO
 
     let thanksUrl = "https://github.com/approvals/ApprovalTests.Net/"
@@ -55,8 +56,20 @@ module ApprovalsSupport =
             member this.Name with get () = env.CanonicalizedName
         }
 
-    let getReporter<'a when 'a:> IApprovalFailureReporter> () =
+    let getReporter_old<'a when 'a:> IApprovalFailureReporter> () =
         System.Activator.CreateInstance<'a>() :> IApprovalFailureReporter
+
+    let getReporter (env : TestEnvironment)= 
+        match env.Reporters with
+        | [] -> QuietReporter() :> IApprovalFailureReporter
+        | _ -> ApprovalTests.Reporters.MultiReporter(env.Reporters) :> IApprovalFailureReporter
+
+    let addReporter<'a when 'a :> IApprovalFailureReporter> (env:TestEnvironment) =
+        let reporter = System.Activator.CreateInstance<'a>() :> IApprovalFailureReporter
+
+        { env with
+            Reporters = reporter :: env.Reporters
+        }
 
     let getStringFileApprover env result =
         ApprovalTests.Approvers.FileApprover(getStringFileWriter result, getNamer env) :> IApprovalApprover

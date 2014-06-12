@@ -1,5 +1,6 @@
 ﻿namespace FeldSpar.Framework
 open System
+open ApprovalTests.Core
 
 type FailureType =
     | GeneralFailure of string
@@ -19,18 +20,17 @@ type ExecutionSummary =
         TestResults : TestResult
     }
 
+type GlobalTestEnvironment =
+    {
+        Reporters : IApprovalFailureReporter List;
+    }
+
 type TestEnvironment =
     {
         Name:string;
         CanonicalizedName : string;
         RootPath : string;
-        Token : Guid
-    }
-
-type TestTemplate =
-    {
-        Description : string;
-        UnitTest : TestEnvironment -> TestResult;
+        Reporters : IApprovalFailureReporter List;
     }
 
 type Test =

@@ -24,9 +24,11 @@ module BuildingOfTestsTests =
                 let testTemplatesb = testTemplatesa |> Seq.toList
                 let testTemplates = testTemplatesb |> join
 
+                let nenv = FeldSpar.Framework.Verification.ApprovalsSupport.addReporter<ApprovalTests.Reporters.BeyondCompareReporter> env
+
                 verify
                     {
-                        let! testsMeetStandards = checkStandardsAgainstStringAndReportsWith<ApprovalTests.Reporters.BeyondCompareReporter> env testTemplates
+                        let! testsMeetStandards = testTemplates |> checkAgainstStringStandard nenv 
                         return Success
                     }
             ))
@@ -36,8 +38,10 @@ module BuildingOfTestsTests =
                 let ``A Test That will fail`` = 
                     Test((fun env -> failResult "Expected Failure"))
 
+                let env : GlobalTestEnvironment = { Reporters = []}
+
                 let resultSummary = 
-                    let _, test = ``A Test That will fail`` |> createTestFromTemplate ignore failDescription
+                    let _, test = ``A Test That will fail`` |> createTestFromTemplate env ignore failDescription
                     test()
 
                 verify
@@ -91,7 +95,7 @@ module BuildingOfTestsTests =
                 let ex = IndexOutOfRangeException("The exception was out of range")
                 let ``A test that throws an exception`` =  Test((fun env -> raise ex))
 
-                let _, case = ``A test that throws an exception`` |> createTestFromTemplate ignore "A test that throws an exception"
+                let _, case = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore "A test that throws an exception"
 
                 let summary = case()
                 let result = summary.TestResults
@@ -104,9 +108,11 @@ module BuildingOfTestsTests =
 
                 let cleaned = resultString.Substring(0, goodLength) + " ..."
 
+                let nev = FeldSpar.Framework.Verification.ApprovalsSupport.addReporter<ApprovalTests.Reporters.BeyondCompareReporter> env
+                
                 verify
                     {
-                        let! meetsStandard = (cleaned) |> checkStandardsAgainstStringAndReportsWith<ApprovalTests.Reporters.BeyondCompareReporter> env
+                        let! meetsStandard = (cleaned) |> checkAgainstStringStandard env
                         return Success
                     }
             ))

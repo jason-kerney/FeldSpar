@@ -40,25 +40,27 @@ module Checks =
             | _ -> ()
 
             Failure(StandardNotMet)
+    
+    let private checkAgainstStandard env (approver:IApprovalApprover) =
+        let repoter = getReporter env
+        checkStandardsAndReport env repoter approver
 
-    let private checkStandards<'a when 'a :> IApprovalFailureReporter> env (approver:IApprovalApprover) =
-        let reporter = getReporter<'a> () 
+    let checkAgainstStringStandard env result =
+        let approver = getStringFileApprover env result
+        checkAgainstStandard env approver
+
+    let checkAgainstStandardObjectAsString env result =
+        checkAgainstStringStandard env (sprintf "%A" result)
+
+    let checkAgainstStandardBinary  env extentionWithoutDot results =
+        let reporter = getReporter env
+        let approver = getBinaryFileApprover env extentionWithoutDot results
         checkStandardsAndReport env reporter approver
 
-    let checkStandardsAgainstStringAndReportsWith<'a when 'a :> IApprovalFailureReporter> env result =
-        let approver = getStringFileApprover env result
-        checkStandards<'a> env approver
-
-    let checkStandardsAgainstObjectAsStringAndReportWith<'a when 'a :> IApprovalFailureReporter> env result =
-        checkStandardsAgainstStringAndReportsWith env (sprintf "%A" result)
-
-    let checkStandardsAgainstBinaryAndReportsWith<'a when 'a :> IApprovalFailureReporter> env extentionWithoutDot results =
-        let approver = getBinaryFileApprover env extentionWithoutDot results
-        checkStandards<'a> env approver
-
-    let checkStandardsAgainstStreamAndReportsWith<'a when 'a :> IApprovalFailureReporter> env extentionWithoutDot results =
+    let checkAgainstStandardStream env extentionWithoutDot results =
+        let reporter = getReporter env
         let approver = getStreamFileApprover env extentionWithoutDot results
-        checkStandards<'a> env approver
+        checkStandardsAndReport env reporter approver
 
     (* Does not work not sure why
     let checkStandardsAgainstString env result =
