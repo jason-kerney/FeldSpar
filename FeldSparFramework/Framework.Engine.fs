@@ -69,6 +69,9 @@ module Runner =
     let private fileFinishedReport (env:TestEnvironment) report (result:TestResult) =
         Finished({Name = env.Name; }, result) |> report 
 
+    let getGlobalTestEnvironment reporters : GlobalTestEnvironment = 
+        { Reporters = reporters }
+
     let createTestFromTemplate (globalEnv : GlobalTestEnvironment) (report : ExecutionStatus -> unit ) name (Test(template)) =
         let env = name |> createEnvironment globalEnv
 
@@ -125,6 +128,9 @@ module Runner =
 
     let runTestsAndReport report (assembly:Assembly) = 
         assembly |> findTestsAndReport emptyGlobal report |> List.map(fun (_, test) -> test())
+
+    let runTestsAndReportWith environment report (assembly:Assembly) = 
+        assembly |> findTestsAndReport environment report |> List.map(fun (_, test) -> test())
 
     let findTests (assembly:Assembly) =  assembly |> findTestsAndReport emptyGlobal ignore
 
