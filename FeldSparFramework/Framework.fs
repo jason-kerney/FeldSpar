@@ -20,7 +20,7 @@ type ExecutionSummary =
         TestResults : TestResult
     }
 
-type GlobalTestEnvironment =
+type AssemblyConfiguration =
     {
         Reporters : IApprovalFailureReporter List;
     }

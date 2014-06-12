@@ -27,7 +27,7 @@ module Runner =
         override this.InitializeLifetimeService () =
             null
 
-    let private emptyGlobal : GlobalTestEnvironment = { Reporters = [] }
+    let private emptyGlobal : AssemblyConfiguration = { Reporters = [] }
 
     let private executeInNewDomain (input : 'a) (action : 'a -> 'b) =
         let appDomain = AppDomain.CreateDomain("AppDomainHelper.ExecuteInNewAppDomain") 
@@ -41,7 +41,7 @@ module Runner =
 
         sandbox.Execute input action
 
-    let private createEnvironment (env : GlobalTestEnvironment) name = 
+    let private createEnvironment (env : AssemblyConfiguration) name = 
         let rec getSourcePath path = 
             let p = System.IO.DirectoryInfo(path)
 
@@ -69,10 +69,10 @@ module Runner =
     let private fileFinishedReport (env:TestEnvironment) report (result:TestResult) =
         Finished({Name = env.Name; }, result) |> report 
 
-    let getGlobalTestEnvironment reporters : GlobalTestEnvironment = 
+    let getGlobalTestEnvironment reporters : AssemblyConfiguration = 
         { Reporters = reporters }
 
-    let createTestFromTemplate (globalEnv : GlobalTestEnvironment) (report : ExecutionStatus -> unit ) name (Test(template)) =
+    let createTestFromTemplate (globalEnv : AssemblyConfiguration) (report : ExecutionStatus -> unit ) name (Test(template)) =
         let env = name |> createEnvironment globalEnv
 
         fileFoundReport env report
@@ -115,7 +115,7 @@ module Runner =
 
     let private runTestCode (_, test: unit -> ExecutionSummary) = test()
 
-    let findTestsAndReport (environment : GlobalTestEnvironment) report (assembly:Assembly) = 
+    let findTestsAndReport (environment : AssemblyConfiguration) report (assembly:Assembly) = 
         (assembly.GetExportedTypes())
             |> List.ofSeq
             |> List.map (fun t -> t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static))
@@ -136,5 +136,5 @@ module Runner =
 
     let runTests (assembly:Assembly) = assembly |> runTestsAndReport ignore
 
-    let runTestsWith (env : GlobalTestEnvironment) (assembly : Assembly) =
+    let runTestsWith (env : AssemblyConfiguration) (assembly : Assembly) =
         assembly |> findTestsAndReport env ignore |> List.map(fun (_, test) -> test())

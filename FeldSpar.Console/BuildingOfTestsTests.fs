@@ -38,7 +38,7 @@ module BuildingOfTestsTests =
                 let ``A Test That will fail`` = 
                     Test((fun env -> failResult "Expected Failure"))
 
-                let env : GlobalTestEnvironment = { Reporters = []}
+                let env : GlobalConfiguration = { Reporters = []}
 
                 let resultSummary = 
                     let _, test = ``A Test That will fail`` |> createTestFromTemplate env ignore failDescription
