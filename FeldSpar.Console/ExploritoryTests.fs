@@ -5,5 +5,6 @@ open FeldSpar.Framework.Verification
 open System
 
 module ExploritoryTests =
-    ()
+    let ``This is an ignored test`` =
+        ITest(fun env -> Success)
 

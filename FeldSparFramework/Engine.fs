@@ -115,10 +115,12 @@ module Runner =
 
     let private runTestCode (_, test: unit -> ExecutionSummary) = test()
 
+    let private findStaticProperties (t:Type) = t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static)
+
     let findConfiguration (assembly:Assembly) = 
         let configs = assembly.GetExportedTypes()
                      |> List.ofSeq
-                     |> List.map(fun t -> t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static))
+                     |> List.map findStaticProperties
                      |> List.toSeq
                      |> Array.concat
                      |> Array.filter(fun p -> p.PropertyType = typeof<Configuration>)
@@ -132,12 +134,12 @@ module Runner =
         else
             None
 
-    let filterProperties<'a> (propInfo: PropertyInfo) = propInfo.PropertyType = typeof<'a>
+    let filterPropertiesByType<'a> (propInfo: PropertyInfo) = propInfo.PropertyType = typeof<'a>
 
-    let private findTestProperties (filter : PropertyInfo -> 'a) (assembly:Assembly) = 
+    let private findTestProperties (filter : PropertyInfo -> bool) (assembly:Assembly) = 
         (assembly.GetExportedTypes())
             |> List.ofSeq
-            |> List.map (fun t -> t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static))
+            |> List.map findStaticProperties
             |> List.toSeq
             |> Array.concat
             |> Array.filter filter
@@ -147,20 +149,24 @@ module Runner =
             |> Array.map(fun (name, test) -> test |> createTestFromTemplate environment report name)
             |> Array.toList
 
-    let private getTestsWith (map:PropertyInfo -> (string * Test)) (environment : AssemblyConfiguration) report (assembly:Assembly) = 
+    let getPropetyValuesOfType<'a> assembly = 
         assembly 
-            |> findTestProperties filterProperties<Test>
-            |> Array.map(fun p -> (p.Name,p.GetValue(null) :?> Test))
+            |> findTestProperties filterPropertiesByType<'a>
+            |> Array.map(fun p -> (p.Name,p.GetValue(null) :?> 'a))
+
+    let private getTestsWith (map:PropertyInfo -> (string * Test)) (environment : AssemblyConfiguration) report (assembly:Assembly) = 
+        let tests = 
+            assembly 
+                |> getPropetyValuesOfType<Test>
+
+        let ignores =
+            assembly 
+                |> getPropetyValuesOfType<IgnoredTest>
+                |> Array.map (fun (description, ITest(test)) -> description, Test(fun env -> ignoreWith "Compile Ignored"))
+
+        [|tests;ignores|]
+            |> Array.concat
             |> buildTestPlan environment report
-
-    let private getBadConfigTestsWith report (assembly:Assembly) = 
-        let props = assembly |> findTestProperties filterProperties<Test>
-
-        let tests =
-            props
-                |> Array.map(fun p -> (p.Name,Test(fun env -> ignoreWith "Assembly Can only have one Configuration")))
-
-        tests |> buildTestPlan emptyGlobal report
 
     let private determinEnvironmentAndMapping (assembly: Assembly) =
         let config = assembly |> findConfiguration

@@ -11,7 +11,10 @@ open FeldSpar.Console.Tests.StandardsVerificationTests
 open ApprovalTests;
 
 module Program =
-    let ``Setup Global Reports`` = Config(fun () -> { Reporters = [fun () -> Reporters.BeyondCompareReporter() :> Core.IApprovalFailureReporter] })
+    let ``Setup Global Reports`` = Config(fun () -> { Reporters = [
+                                                                    fun () -> Reporters.BeyondCompareReporter() :> Core.IApprovalFailureReporter;
+                                                                    fun () -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;
+                                                                  ] })
 
     [<EntryPoint>]
     let public main argv = 

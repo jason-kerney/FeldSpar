@@ -22,11 +22,9 @@ module StandardsVerificationTests =
                             Dojo = ("Too Cool For School", TooCool)
                         }) System.Environment.NewLine
 
-                let nev = FeldSpar.Framework.Verification.ApprovalsSupport.addReporter<ApprovalTests.Reporters.ClipboardReporter> env
-
                 verify
                     {
-                        let! standardsAreGood = itemUnderTest |> checkAgainstStringStandard nev
+                        let! standardsAreGood = itemUnderTest |> checkAgainstStringStandard env
                         return Success
                     }
             ))

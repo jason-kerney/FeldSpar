@@ -24,11 +24,9 @@ module BuildingOfTestsTests =
                 let testTemplatesb = testTemplatesa |> Seq.toList
                 let testTemplates = testTemplatesb |> join
 
-                let nenv = FeldSpar.Framework.Verification.ApprovalsSupport.addReporter<ApprovalTests.Reporters.BeyondCompareReporter> env
-
                 verify
                     {
-                        let! testsMeetStandards = testTemplates |> checkAgainstStringStandard nenv 
+                        let! testsMeetStandards = testTemplates |> checkAgainstStringStandard env 
                         return Success
                     }
             ))
@@ -99,8 +97,6 @@ module BuildingOfTestsTests =
 
                 let summary = case()
                 let result = summary.TestResults
-
-                let env = env |> Verification.ApprovalsSupport.addReporter<ApprovalTests.Reporters.ClipboardReporter>
 
                 let regex = System.Text.RegularExpressions.Regex(@"(?<=at FeldSpar\.Console\.Tests\.BuildingOfTestsTests\.A test that throws an exception@).*\s+.*", Text.RegularExpressions.RegexOptions.Multiline)
 
