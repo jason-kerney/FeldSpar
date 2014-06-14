@@ -52,6 +52,7 @@ module Program =
                                                                 match result with
                                                                 | Success -> ConsoleColor.Green
                                                                 | Failure(ExceptionFailure(_)) -> ConsoleColor.Magenta
+                                                                | Failure(Ignored(_)) -> ConsoleColor.DarkRed
                                                                 | _ -> ConsoleColor.Red
                                                             do Console.ForegroundColor <- newColor
                                                             printfn "\t\tFinished: '%s'" token.Name
