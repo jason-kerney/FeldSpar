@@ -132,27 +132,29 @@ module Runner =
         else
             None
 
-    let private findTestProperties (assembly:Assembly) = 
+    let filterProperties<'a> (propInfo: PropertyInfo) = propInfo.PropertyType = typeof<'a>
+
+    let private findTestProperties (filter : PropertyInfo -> 'a) (assembly:Assembly) = 
         (assembly.GetExportedTypes())
             |> List.ofSeq
             |> List.map (fun t -> t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static))
             |> List.toSeq
             |> Array.concat
-            |> Array.filter (fun p -> p.PropertyType = typeof<Test>)
+            |> Array.filter filter
 
     let buildTestPlan (environment : AssemblyConfiguration) report (tests:(string * Test)[]) =
         tests
             |> Array.map(fun (name, test) -> test |> createTestFromTemplate environment report name)
             |> Array.toList
 
-    let private getTestsWith (environment : AssemblyConfiguration) report (assembly:Assembly) = 
+    let private getTestsWith (map:PropertyInfo -> (string * Test)) (environment : AssemblyConfiguration) report (assembly:Assembly) = 
         assembly 
-            |> findTestProperties
+            |> findTestProperties filterProperties<Test>
             |> Array.map(fun p -> (p.Name,p.GetValue(null) :?> Test))
             |> buildTestPlan environment report
 
     let private getBadConfigTestsWith report (assembly:Assembly) = 
-        let props = assembly |> findTestProperties
+        let props = assembly |> findTestProperties filterProperties<Test>
 
         let tests =
             props
@@ -160,15 +162,21 @@ module Runner =
 
         tests |> buildTestPlan emptyGlobal report
 
-    let findTestsAndReport (environment : AssemblyConfiguration) report (assembly:Assembly) = 
-        let config = assembly |> findConfiguration 
+    let private determinEnvironmentAndMapping (assembly: Assembly) =
+        let config = assembly |> findConfiguration
+
+        let goodMapper = (fun (p:PropertyInfo) -> (p.Name,p.GetValue(null) :?> Test))
+        let badMapper = (fun (p:PropertyInfo) -> (p.Name,Test(fun env -> ignoreWith "Assembly Can only have one Configuration")))
 
         match config with
         | Some(Config(getConfig)) -> 
-            let env = getConfig ()
-            assembly |> getTestsWith env report
-        | None ->
-            assembly |> getBadConfigTestsWith report
+            (getConfig(), goodMapper)
+        | None -> (emptyGlobal, badMapper)
+
+    let findTestsAndReport (environment : AssemblyConfiguration) report (assembly:Assembly) = 
+        let (env, mapper) = assembly|> determinEnvironmentAndMapping 
+
+        assembly |> getTestsWith mapper env report
 
     let runTestsAndReport report (assembly:Assembly) = 
         assembly |> findTestsAndReport emptyGlobal report |> List.map(fun (_, test) -> test())
