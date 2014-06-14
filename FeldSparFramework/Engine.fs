@@ -115,16 +115,60 @@ module Runner =
 
     let private runTestCode (_, test: unit -> ExecutionSummary) = test()
 
-    let findTestsAndReport (environment : AssemblyConfiguration) report (assembly:Assembly) = 
+    let findConfiguration (assembly:Assembly) = 
+        let configs = assembly.GetExportedTypes()
+                     |> List.ofSeq
+                     |> List.map(fun t -> t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static))
+                     |> List.toSeq
+                     |> Array.concat
+                     |> Array.filter(fun p -> p.PropertyType = typeof<Configuration>)
+
+        if configs.Length = 0
+        then Some(Config(fun () -> emptyGlobal))
+        elif configs.Length = 1
+        then
+            let config = configs.[0] |> (fun p -> p.GetValue (null) :?> Configuration)
+            Some(config)
+        else
+            None
+
+    let private findTestProperties (assembly:Assembly) = 
         (assembly.GetExportedTypes())
             |> List.ofSeq
             |> List.map (fun t -> t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static))
             |> List.toSeq
             |> Array.concat
             |> Array.filter (fun p -> p.PropertyType = typeof<Test>)
-            |> Array.map(fun p -> (p.Name,p.GetValue(null) :?> Test))
+
+    let buildTestPlan (environment : AssemblyConfiguration) report (tests:(string * Test)[]) =
+        tests
             |> Array.map(fun (name, test) -> test |> createTestFromTemplate environment report name)
             |> Array.toList
+
+    let private getTestsWith (environment : AssemblyConfiguration) report (assembly:Assembly) = 
+        assembly 
+            |> findTestProperties
+            |> Array.map(fun p -> (p.Name,p.GetValue(null) :?> Test))
+            |> buildTestPlan environment report
+
+    let private getBadConfigTestsWith report (assembly:Assembly) = 
+        let props = assembly |> findTestProperties
+
+        let tests =
+            props
+                |> Array.map(fun p -> (p.Name,Test(fun env -> ignoreWith "Assembly Can only have one Configuration")))
+
+        tests |> buildTestPlan emptyGlobal report
+
+    let findTestsAndReport (environment : AssemblyConfiguration) report (assembly:Assembly) = 
+        let config = assembly |> findConfiguration 
+
+        match config with
+        | Some(Config(getConfig)) -> 
+            let env = getConfig ()
+            assembly |> getTestsWith env report
+        | None ->
+            assembly |> getBadConfigTestsWith report
 
     let runTestsAndReport report (assembly:Assembly) = 
         assembly |> findTestsAndReport emptyGlobal report |> List.map(fun (_, test) -> test())

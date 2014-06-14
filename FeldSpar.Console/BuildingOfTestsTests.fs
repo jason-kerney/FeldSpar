@@ -38,7 +38,7 @@ module BuildingOfTestsTests =
                 let ``A Test That will fail`` = 
                     Test((fun env -> failResult "Expected Failure"))
 
-                let env : GlobalConfiguration = { Reporters = []}
+                let env : AssemblyConfiguration = { Reporters = []}
 
                 let resultSummary = 
                     let _, test = ``A Test That will fail`` |> createTestFromTemplate env ignore failDescription
@@ -100,6 +100,8 @@ module BuildingOfTestsTests =
                 let summary = case()
                 let result = summary.TestResults
 
+                let env = env |> Verification.ApprovalsSupport.addReporter<ApprovalTests.Reporters.ClipboardReporter>
+
                 let regex = System.Text.RegularExpressions.Regex(@"(?<=at FeldSpar\.Console\.Tests\.BuildingOfTestsTests\.A test that throws an exception@).*\s+.*", Text.RegularExpressions.RegexOptions.Multiline)
 
                 let resultString = result |> sprintf "%A"
@@ -108,8 +110,6 @@ module BuildingOfTestsTests =
 
                 let cleaned = resultString.Substring(0, goodLength) + " ..."
 
-                let nev = FeldSpar.Framework.Verification.ApprovalsSupport.addReporter<ApprovalTests.Reporters.BeyondCompareReporter> env
-                
                 verify
                     {
                         let! meetsStandard = (cleaned) |> checkAgainstStringStandard env

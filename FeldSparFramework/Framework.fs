@@ -22,7 +22,7 @@ type ExecutionSummary =
 
 type AssemblyConfiguration =
     {
-        Reporters : IApprovalFailureReporter List;
+        Reporters : (unit -> IApprovalFailureReporter) List;
     }
 
 type TestEnvironment =
@@ -30,11 +30,13 @@ type TestEnvironment =
         Name:string;
         CanonicalizedName : string;
         RootPath : string;
-        Reporters : IApprovalFailureReporter List;
+        Reporters : (unit -> IApprovalFailureReporter) List;
     }
 
-type Test =
-    | Test of (TestEnvironment -> TestResult)
+type Test = | Test of (TestEnvironment -> TestResult)
+type IgnoredTest = | ITest of (TestEnvironment -> TestResult)
+type Configuration = | Config of (unit -> AssemblyConfiguration)
+
 
 (*
 type TheoryCaseTemplate<'a> =

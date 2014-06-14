@@ -59,13 +59,21 @@ module ApprovalsSupport =
     let getReporter_old<'a when 'a:> IApprovalFailureReporter> () =
         System.Activator.CreateInstance<'a>() :> IApprovalFailureReporter
 
+    let private buildReporter (getReporters: (unit -> IApprovalFailureReporter) List) =
+        let reporters = getReporters |> List.map (fun getter -> getter())
+
+        if  reporters.IsEmpty
+        then QuietReporter() :> IApprovalFailureReporter
+        else
+            MultiReporter(reporters |> List.toSeq) :> IApprovalFailureReporter
+
     let getReporter (env : TestEnvironment)= 
         match env.Reporters with
         | [] -> QuietReporter() :> IApprovalFailureReporter
-        | _ -> ApprovalTests.Reporters.MultiReporter(env.Reporters) :> IApprovalFailureReporter
+        | reporters -> reporters |> buildReporter
 
     let addReporter<'a when 'a :> IApprovalFailureReporter> (env:TestEnvironment) =
-        let reporter = System.Activator.CreateInstance<'a>() :> IApprovalFailureReporter
+        let reporter = fun () -> System.Activator.CreateInstance<'a>() :> IApprovalFailureReporter
 
         { env with
             Reporters = reporter :: env.Reporters

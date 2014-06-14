@@ -8,8 +8,11 @@ open FeldSpar.Console.Tests.BuildingOfTestsTests
 open FeldSpar.Console.Tests.IsolationTests
 open FeldSpar.Console.Tests.FilteringTests
 open FeldSpar.Console.Tests.StandardsVerificationTests
+open ApprovalTests;
 
 module Program =
+    let ``Setup Global Reports`` = Config(fun () -> { Reporters = [fun () -> Reporters.BeyondCompareReporter() :> Core.IApprovalFailureReporter] })
+
     [<EntryPoint>]
     let public main argv = 
         printfn "Running Tests"
@@ -28,30 +31,29 @@ module Program =
                                         result + Environment.NewLine + sep + Environment.NewLine
                                 )
 
-        let env = getGlobalTestEnvironment [ApprovalTests.Reporters.BeyondCompareReporter()]
-        let tests = assembly |> runTestsAndReportWith env (fun(status) -> 
-                                                                match status with
-                                                                | Found(token) -> 
-                                                                    let color = Console.ForegroundColor
-                                                                    do Console.ForegroundColor <- ConsoleColor.Gray
-                                                                    printfn "\t\tFound: '%s'" token.Name
-                                                                    do Console.ForegroundColor <- color
-                                                                | Running(token) ->
-                                                                    let color = Console.ForegroundColor
-                                                                    do Console.ForegroundColor <- ConsoleColor.Blue
-                                                                    printfn "\t\tRunning: '%s'" token.Name
-                                                                    do Console.ForegroundColor <- color
-                                                                | Finished(token, result) -> 
-                                                                    let color = Console.ForegroundColor
-                                                                    let newColor = 
-                                                                        match result with
-                                                                        | Success -> ConsoleColor.Green
-                                                                        | Failure(ExceptionFailure(_)) -> ConsoleColor.Magenta
-                                                                        | _ -> ConsoleColor.Red
-                                                                    do Console.ForegroundColor <- newColor
-                                                                    printfn "\t\tFinished: '%s'" token.Name
-                                                                    do Console.ForegroundColor <- color
-                                                            )
+        let tests = assembly |> runTestsAndReport (fun(status) -> 
+                                                        match status with
+                                                        | Found(token) -> 
+                                                            let color = Console.ForegroundColor
+                                                            do Console.ForegroundColor <- ConsoleColor.Gray
+                                                            printfn "\t\tFound: '%s'" token.Name
+                                                            do Console.ForegroundColor <- color
+                                                        | Running(token) ->
+                                                            let color = Console.ForegroundColor
+                                                            do Console.ForegroundColor <- ConsoleColor.Blue
+                                                            printfn "\t\tRunning: '%s'" token.Name
+                                                            do Console.ForegroundColor <- color
+                                                        | Finished(token, result) -> 
+                                                            let color = Console.ForegroundColor
+                                                            let newColor = 
+                                                                match result with
+                                                                | Success -> ConsoleColor.Green
+                                                                | Failure(ExceptionFailure(_)) -> ConsoleColor.Magenta
+                                                                | _ -> ConsoleColor.Red
+                                                            do Console.ForegroundColor <- newColor
+                                                            printfn "\t\tFinished: '%s'" token.Name
+                                                            do Console.ForegroundColor <- color
+                                                    )
         let failedTests = tests
                             |> reduceToFailures 
                             |> List.ofSeq

@@ -53,9 +53,9 @@
     <Compile Include="TestResultUtilities.fs" />
     <Compile Include="TestSummaryUtilities.fs" />
     <Compile Include="ApprovalsSupport.fs" />
-    <Compile Include="Framework.Verification.fs" />
+    <Compile Include="Verification.fs" />
     <Compile Include="Formatters.fs" />
-    <Compile Include="Framework.Engine.fs" />
+    <Compile Include="Engine.fs" />
     <None Include="packages.config" />
     <None Include="app.config" />
   </ItemGroup>
