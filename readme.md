@@ -9,6 +9,9 @@
 
 ```fsharp
 module BasicTests =
+open FeldSpar.Framework
+open FeldSpar.Fraamwork.Verification
+
     let ``Adding 6 and 4 equals 10`` = 
         Test((fun env ->
                 let x = 6
@@ -31,12 +34,20 @@ module BasicTests =
                         return Success
                     }
             ))
+            
+    (*This is how you quickly ignore a test*)
+    let ``This test is not ready yet and therefore is ignored`` =
+        ITest(fun env -> Success)
 ```
 
 ### How to _(currently)_ run all tests
 
 ```fsharp
 module Program =
+open FeldSpar.Framework
+open FeldSpar.Framework.TestSummaryUtilities
+open FeldSpar.Framework.Engine
+
     type internal Marker = interface end
     let private assembly = typeof<Marker>.Assembly
 

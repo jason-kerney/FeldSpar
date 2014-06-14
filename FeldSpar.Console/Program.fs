@@ -3,6 +3,7 @@ open System
 open FeldSpar.Framework
 open FeldSpar.Framework.TestSummaryUtilities
 open FeldSpar.Framework.Engine
+
 open FeldSpar.Console.Helpers.Data
 open FeldSpar.Console.Tests.BuildingOfTestsTests
 open FeldSpar.Console.Tests.IsolationTests
