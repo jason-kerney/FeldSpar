@@ -32,14 +32,23 @@ module Runner =
     let private executeInNewDomain (input : 'a) (action : 'a -> 'b) =
         let appDomain = AppDomain.CreateDomain("AppDomainHelper.ExecuteInNewAppDomain") 
 
-        let exicutionType = typeof<Executioner<'a, 'b>>
-        let sandBoxName = exicutionType.Name
-        let sandBoxAssemblyName = exicutionType.Assembly.GetName () |> fun assembly -> assembly.FullName
-        let sandBoxTypeName = exicutionType.FullName
+        try
+            try
 
-        let sandbox = appDomain.CreateInstanceAndUnwrap(sandBoxAssemblyName, sandBoxTypeName) :?> Executioner<'a, 'b>
+                let exicutionType = typeof<Executioner<'a, 'b>>
+                let sandBoxName = exicutionType.Name
+                let sandBoxAssemblyName = exicutionType.Assembly.GetName () |> fun assembly -> assembly.FullName
+                let sandBoxTypeName = exicutionType.FullName
 
-        sandbox.Execute input action
+                let sandbox = appDomain.CreateInstanceAndUnwrap(sandBoxAssemblyName, sandBoxTypeName) :?> Executioner<'a, 'b>
+
+                sandbox.Execute input action
+            with 
+            | e when (e.Message.Contains("Unexpected assembly-qualifier in a typename.")) ->
+                raise (ArgumentException("Test member name may not contain a comma"))
+            | e -> raise e
+        finally
+            AppDomain.Unload(appDomain)
 
     let private createEnvironment (env : AssemblyConfiguration) name = 
         let rec getSourcePath path = 

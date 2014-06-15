@@ -17,6 +17,30 @@ module Program =
                                                                     fun () -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;
                                                                   ] })
 
+    let reportConsoleColorForResult status = 
+        match status with
+        | Found(token) -> 
+            let color = Console.ForegroundColor
+            do Console.ForegroundColor <- ConsoleColor.Gray
+            printfn "\t\tFound: '%s'" token.Name
+            do Console.ForegroundColor <- color
+        | Running(token) ->
+            let color = Console.ForegroundColor
+            do Console.ForegroundColor <- ConsoleColor.Blue
+            printfn "\t\tRunning: '%s'" token.Name
+            do Console.ForegroundColor <- color
+        | Finished(token, result) -> 
+            let color = Console.ForegroundColor
+            let newColor = 
+                match result with
+                | Success -> ConsoleColor.Green
+                | Failure(ExceptionFailure(_)) -> ConsoleColor.Magenta
+                | Failure(Ignored(_)) -> ConsoleColor.DarkRed
+                | _ -> ConsoleColor.Red
+            do Console.ForegroundColor <- newColor
+            printfn "\t\tFinished: '%s'" token.Name
+            do Console.ForegroundColor <- color
+
     [<EntryPoint>]
     let public main argv = 
         printfn "Running Tests"
@@ -35,30 +59,8 @@ module Program =
                                         result + Environment.NewLine + sep + Environment.NewLine
                                 )
 
-        let tests = assembly |> runTestsAndReport (fun(status) -> 
-                                                        match status with
-                                                        | Found(token) -> 
-                                                            let color = Console.ForegroundColor
-                                                            do Console.ForegroundColor <- ConsoleColor.Gray
-                                                            printfn "\t\tFound: '%s'" token.Name
-                                                            do Console.ForegroundColor <- color
-                                                        | Running(token) ->
-                                                            let color = Console.ForegroundColor
-                                                            do Console.ForegroundColor <- ConsoleColor.Blue
-                                                            printfn "\t\tRunning: '%s'" token.Name
-                                                            do Console.ForegroundColor <- color
-                                                        | Finished(token, result) -> 
-                                                            let color = Console.ForegroundColor
-                                                            let newColor = 
-                                                                match result with
-                                                                | Success -> ConsoleColor.Green
-                                                                | Failure(ExceptionFailure(_)) -> ConsoleColor.Magenta
-                                                                | Failure(Ignored(_)) -> ConsoleColor.DarkRed
-                                                                | _ -> ConsoleColor.Red
-                                                            do Console.ForegroundColor <- newColor
-                                                            printfn "\t\tFinished: '%s'" token.Name
-                                                            do Console.ForegroundColor <- color
-                                                    )
+        let tests = assembly |> runTestsAndReport reportConsoleColorForResult
+
         let failedTests = tests
                             |> reduceToFailures 
                             |> List.ofSeq

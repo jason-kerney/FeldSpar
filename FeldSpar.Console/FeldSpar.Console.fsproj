@@ -67,6 +67,10 @@
     <Content Include="An_exception_thrown_in_a_test_should_report_exception_failure.approved.txt" />
     <Content Include="A_test_to_check_verification.approved.txt" />
     <Content Include="Find_All_Tests_through_Reflection.approved.txt" />
+    <Content Include="testFindTests.approved.txt" />
+    <Content Include="testExeptionTestReturnsExptionFailure.approved.txt" />
+    <Content Include="Fizz_Buzzer_returns_the_correct_Fizz_Buzz_or_FizzBuzz_for_every_number_up_to_500.approved.txt" />
+    <Content Include="basicVerificationTest.approved.txt" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ApprovalTests">

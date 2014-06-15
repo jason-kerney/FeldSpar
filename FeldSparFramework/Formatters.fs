@@ -27,7 +27,9 @@ module Basic =
             else sprintf "%s%s" v Environment.NewLine
 
         let printResult result = 
-            sprintf "\t\t%A" result
+            match result with
+            | Success -> sprintf "\t\t%A" result
+            | Failure(t) -> sprintf "\t\t%A" t
 
         let resultsMessages = result.TestResults |> printResult 
 
