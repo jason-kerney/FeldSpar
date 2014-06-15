@@ -62,32 +62,6 @@ module Checks =
         let approver = getStreamFileApprover env extentionWithoutDot results
         checkStandardsAndReport env reporter approver
 
-    (* Does not work not sure why
-    let checkStandardsAgainstString env result =
-        let approver = getStringFileApprover env result
-        let reporter = getConfiguredReporter ()
-
-        checkStandardsAndReport env reporter approver
-
-    let checkStandardsAgainstObjectAsString env result =
-        let approver = getStringFileApprover env (sprintf "%A" result)
-        let reporter = getConfiguredReporter ()
-
-        checkStandardsAndReport env reporter approver
-
-    let checkStandardsAgainstBinary env extentionWithoutDot results =
-        let approver = getBinaryFileApprover env extentionWithoutDot results
-        let reporter = getConfiguredReporter ()
-
-        checkStandardsAndReport env reporter approver
-
-    let checkStandardsAgainstStream env extentionWithoutDot results =
-        let approver = getBinaryFileApprover env extentionWithoutDot results
-        let reporter = getConfiguredReporter ()
-
-        checkStandardsAndReport env reporter approver
-    //*)
-
     type Validation () =
         member this.Bind(m, f) = 
             match m with

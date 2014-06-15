@@ -9,7 +9,7 @@ open FeldSpar.Framework.Verification
 
 module BuildingOfTestsTests =
     let ``Find All Tests through Reflection`` = 
-        Test((fun env ->
+        ITest((fun env ->
                 let join : string list -> string = (fun (arry) -> 
                                                     let rec append (value: string list) (acc, cnt) =
                                                         match value with
