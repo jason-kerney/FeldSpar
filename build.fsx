@@ -52,7 +52,6 @@ Target "Default" (fun _ ->
 "Clean"
     ==> "BuildApp"
     ==> "BuildTest"
-    ==> "Test"
     ==> "Zip"
     ==> "Default"
 
