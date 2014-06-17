@@ -7,8 +7,6 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.Framework", "FeldS
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.Console", "FeldSpar.Console\FeldSpar.Console.fsproj", "{F5AC016A-D435-4A8E-A7B5-BE504E7E51A9}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.Tests", "FeldSpar.Tests\FeldSpar.Tests.fsproj", "{235241F1-BDA3-4F17-B45E-AF248DE5D00E}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildScript", "BuildScript", "{2633B59D-9B7E-4C43-AF6D-7728BAB53E64}"
 	ProjectSection(SolutionItems) = preProject
 		build.fsx = build.fsx
@@ -33,10 +31,6 @@ Global
 		{F5AC016A-D435-4A8E-A7B5-BE504E7E51A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5AC016A-D435-4A8E-A7B5-BE504E7E51A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5AC016A-D435-4A8E-A7B5-BE504E7E51A9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{235241F1-BDA3-4F17-B45E-AF248DE5D00E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{235241F1-BDA3-4F17-B45E-AF248DE5D00E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{235241F1-BDA3-4F17-B45E-AF248DE5D00E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{235241F1-BDA3-4F17-B45E-AF248DE5D00E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

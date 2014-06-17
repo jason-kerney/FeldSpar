@@ -29,6 +29,7 @@ Target "BuildTest" (fun _ ->
         |> Log "TestBuild-Output:"
 )
 
+(* Having problems with git conversion of end of line characters
 Target "Test" (fun _ ->
     FileSystemHelper.directoryInfo "./FeldSpar.Console/" |>
         FileSystemHelper.filesInDir |>
@@ -36,7 +37,7 @@ Target "Test" (fun _ ->
         Array.filter(fun fi -> fi.Contains("approved")) |>
         Copy testDir
     Shell.Exec (testDir + "FeldSpar.Console.exe", ?dir=Some(testDir)) |> ignore
-)
+)//*)
 
 Target "Zip" (fun _ ->
     !! (buildDir + "/**/*.*")
