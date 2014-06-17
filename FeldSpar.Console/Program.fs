@@ -17,29 +17,31 @@ module Program =
                                                                     fun () -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;
                                                                   ] })
 
+    let getConsoleColor status =
+        match status with
+        | Found(_) -> ConsoleColor.Gray
+        | Running(_) -> ConsoleColor.Blue
+        | Finished(_, result) ->
+            match result with
+            | Success -> ConsoleColor.Green
+            | Failure(ExceptionFailure(_)) -> ConsoleColor.Magenta
+            | Failure(Ignored(_)) -> ConsoleColor.DarkRed
+            | _ -> ConsoleColor.Red
+
     let reportConsoleColorForResult status = 
+        let oColor = Console.ForegroundColor
+        let nColor = getConsoleColor status
+        do Console.ForegroundColor <- nColor
+
         match status with
         | Found(token) -> 
-            let color = Console.ForegroundColor
-            do Console.ForegroundColor <- ConsoleColor.Gray
             printfn "\t\tFound: '%s'" token.Name
-            do Console.ForegroundColor <- color
         | Running(token) ->
-            let color = Console.ForegroundColor
-            do Console.ForegroundColor <- ConsoleColor.Blue
             printfn "\t\tRunning: '%s'" token.Name
-            do Console.ForegroundColor <- color
         | Finished(token, result) -> 
-            let color = Console.ForegroundColor
-            let newColor = 
-                match result with
-                | Success -> ConsoleColor.Green
-                | Failure(ExceptionFailure(_)) -> ConsoleColor.Magenta
-                | Failure(Ignored(_)) -> ConsoleColor.DarkRed
-                | _ -> ConsoleColor.Red
-            do Console.ForegroundColor <- newColor
             printfn "\t\tFinished: '%s'" token.Name
-            do Console.ForegroundColor <- color
+
+        do Console.ForegroundColor <- oColor
 
     [<EntryPoint>]
     let public main argv = 
@@ -49,7 +51,12 @@ module Program =
             sprintf "\t\t%A" result
 
         let printReports results =
+            let oColor = Console.ForegroundColor
+            Console.ForegroundColor <- System.ConsoleColor.Red
+            
             results |> Seq.iter (fun report -> printfn "%s" report)
+            
+            Console.ForegroundColor <- oColor
 
         let seperateResults (results: string seq) = 
             results |> Seq.map (
