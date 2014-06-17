@@ -29,7 +29,7 @@ module Runner =
 
     let private emptyGlobal : AssemblyConfiguration = { Reporters = [] }
 
-    let private executeInNewDomain (input : 'a) (action : 'a -> 'b) =
+    let private executeInNewDomain (input : 'a) (env : TestEnvironment) (action : 'a -> 'b) =
         let appDomain = AppDomain.CreateDomain("AppDomainHelper.ExecuteInNewAppDomain") 
 
         try
@@ -45,7 +45,7 @@ module Runner =
                 sandbox.Execute input action
             with 
             | e when (e.Message.Contains("Unexpected assembly-qualifier in a typename.")) ->
-                raise (ArgumentException("Test member name may not contain a comma"))
+                raise (ArgumentException(sprintf "``%s`` Failed to load. Test member name may not contain a comma" env.Name))
             | e -> raise e
         finally
             AppDomain.Unload(appDomain)
@@ -114,7 +114,7 @@ module Runner =
                                                 )
 
                             fileRunningReport env report
-                            testingCode |> executeInNewDomain ()
+                            testingCode |> executeInNewDomain () env
                         )
                         
         (name, testCase)
