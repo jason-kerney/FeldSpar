@@ -1,5 +1,5 @@
 // include Fake lib
-#r @"packages\FAKE.2.18.1\tools\FakeLib.dll"
+#r @"packages\FAKE\tools\FakeLib.dll"
 open Fake
 
 RestorePackages ()
