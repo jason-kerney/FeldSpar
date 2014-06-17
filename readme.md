@@ -66,7 +66,7 @@ open FeldSpar.Framework.Engine
 ### 2. Enforce Test Isolation
 
 * _(done)_ Tests run in isolated memory space
-* _(maybe)_ Test execution order is indeterminate
+* _(done)_ Test execution order is indeterminate
 
 ### 3. Enable Gold Standard Testing as a Framework Feature
 * _(in progress)_ Enable use of Approval Libraries in a functional manner
