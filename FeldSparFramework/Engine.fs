@@ -163,6 +163,27 @@ module Runner =
             |> findTestProperties filterPropertiesByType<'a>
             |> Array.map(fun p -> (p.Name,p.GetValue(null) :?> 'a))
 
+    let shuffle<'a> (list: 'a []) (getRandom: (int * int) -> int) =
+        let arr = list
+
+        let rec shuffle pt =
+            if pt >= arr.Length
+            then arr
+            else
+                let pt2 = getRandom (pt, arr.Length - 1)
+                let hold = arr.[pt]
+                arr.[pt] <- arr.[pt2]
+                arr.[pt2] <- hold
+                shuffle (pt + 1)
+
+        shuffle 0
+
+    let private shuffleTests (list:(string * Test) []) =
+        let rnd = System.Random()
+        let getNext = (fun (min, max) -> rnd.Next(min, max))
+
+        shuffle list getNext
+
     let private getTestsWith (map:PropertyInfo -> (string * Test)) (environment : AssemblyConfiguration) report (assembly:Assembly) = 
         let tests = 
             assembly 
@@ -175,6 +196,7 @@ module Runner =
 
         [|tests;ignores|]
             |> Array.concat
+            |> shuffleTests
             |> buildTestPlan environment report
 
     let private determinEnvironmentAndMapping (assembly: Assembly) =

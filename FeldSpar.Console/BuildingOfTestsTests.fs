@@ -15,12 +15,16 @@ module BuildingOfTestsTests =
                                                         match value with
                                                         | [] -> acc
                                                         | head::tail ->
-                                                            (sprintf "%sTest[%d] is (%s)%s" acc cnt head System.Environment.NewLine, cnt + 1) |> append tail
+                                                            let ns = cnt.ToString()
+                                                            let pad = arry.Length.ToString ()
+                                                            let pad = pad.Length
+                                                            let ns = ns.PadLeft(pad, '0')
+                                                            (sprintf "%sTest[%s] is (%s)%s" acc ns head System.Environment.NewLine, cnt + 1) |> append tail
 
                                                     ("", 0) |> append arry
                                                 )
 
-                let testTemplatesa = findTests (assembly) |> Seq.map(fun (description, _) -> "(" + description + ")")
+                let testTemplatesa = findTests (assembly) |> Seq.sortBy(fun (description, _) -> description) |> Seq.map(fun (description, _) -> "(" + description + ")")
                 let testTemplatesb = testTemplatesa |> Seq.toList
                 let testTemplates = testTemplatesb |> join
 

@@ -1,10 +1,29 @@
 ﻿namespace FeldSpar.Console.Tests
 open FeldSpar.Console.Helpers.Data
 open FeldSpar.Framework
+open FeldSpar.Framework.Engine
 open FeldSpar.Framework.Verification
+open FeldSpar.Framework.Verification.ApprovalsSupport
 open System
 
 module ExploritoryTests =
     let ``This is an ignored test`` =
         ITest(fun env -> Success)
+
+    let ``Test that shufle works correctly`` =
+        Test(fun env ->
+                let numbers = seq { for i in 1..100 do yield i } |> Seq.toArray
+
+                let indices = [| 80; 10; 94; 44; 64; 13; 27; 57; 50; 59; 30; 90; 72; 54; 30; 95; 27; 54; 98; 20;
+                                89; 25; 70; 89; 31; 63; 57; 79; 80; 98; 77; 54; 35; 47; 81; 68; 51; 69; 82; 44;
+                                83; 51; 82; 93; 76; 45; 90; 69; 54; 85; 78; 51; 67; 68; 72; 88; 75; 60; 71; 63;
+                                85; 80; 91; 80; 94; 95; 93; 82; 91; 89; 90; 88; 91; 96; 81; 91; 83; 92; 83; 80;
+                                92; 81; 92; 83; 90; 94; 86; 95; 96; 98; 90; 92; 93; 96; 96; 95; 97; 97; 98; 99 |]
+
+                let result = shuffle<int> numbers (fun (min, _) -> indices.[min]) |> Array.toList
+
+                let env = env |> addReporter<ApprovalTests.Reporters.ClipboardReporter>
+
+                result |> checkAgainstStandardObjectAsString env
+            )
 
