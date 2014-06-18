@@ -10,7 +10,7 @@ let testDir = "./test/"
 let deployDir = "./deploy/"
 
 // version info
-let version = "0.1"
+let version = "0.2.1"
 
 // Default target
 Target "Clean" (fun _ ->
