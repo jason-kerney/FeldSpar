@@ -22,17 +22,17 @@ module ExploritoryTests =
                     Template = 
                     {
                         UnitDescription = (fun (n,s) -> sprintf "test converts %d into \"%s\"" n s)
-                        UnitTest = (fun (n, expected) _ ->
-                                        let result = 
-                                            match n with
-                                            | v when v % 15 = 0 -> "FizzBuzz"
-                                            | v when v % 5 = 0 -> "Buzz"
-                                            | v when v % 3 = 0 -> "Fizz"
-                                            | v -> v.ToString()
+                        UnitTest = 
+                            (fun (n, expected) _ ->
+                                let result = 
+                                    match n with
+                                    | v when v % 15 = 0 -> "FizzBuzz"
+                                    | v when v % 5 = 0 -> "Buzz"
+                                    | v when v % 3 = 0 -> "Fizz"
+                                    | v -> v.ToString()
 
-
-                                        result |> expectsToBe expected "did not convert n correctly. Expected \"%s\" but got \"%s\""
-                                    )
+                                result |> expectsToBe expected "did not convert n correctly. Expected \"%s\" but got \"%s\""
+                            )
                     }
                   }) |> convertTheoryToTests)
 
