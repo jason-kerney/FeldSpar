@@ -199,19 +199,19 @@ module Runner =
             |> shuffleTests
             |> buildTestPlan environment report
 
-    let private determinEnvironmentAndMapping (assembly: Assembly) =
-        let config = assembly |> findConfiguration
+    let private getMapper config =
+        match config with
+        | Some(_) -> (config, (fun (p:PropertyInfo) -> (p.Name,p.GetValue(null) :?> Test)))
+        | None -> (config, (fun (p:PropertyInfo) -> (p.Name,Test(fun env -> ignoreWith "Assembly Can only have one Configuration"))))
 
-        let goodMapper = (fun (p:PropertyInfo) -> (p.Name,p.GetValue(null) :?> Test))
-        let badMapper = (fun (p:PropertyInfo) -> (p.Name,Test(fun env -> ignoreWith "Assembly Can only have one Configuration")))
-
+    let private determinEnvironmentAndMapping (config, mapper) =
         match config with
         | Some(Config(getConfig)) -> 
-            (getConfig(), goodMapper)
-        | None -> (emptyGlobal, badMapper)
+            (getConfig(), mapper)
+        | None -> (emptyGlobal, mapper)
 
     let findTestsAndReport (environment : AssemblyConfiguration) report (assembly:Assembly) = 
-        let (env, mapper) = assembly|> determinEnvironmentAndMapping 
+        let (env, mapper) = assembly |> findConfiguration |> getMapper |> determinEnvironmentAndMapping 
 
         assembly |> getTestsWith mapper env report
 

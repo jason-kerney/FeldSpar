@@ -14,7 +14,7 @@ open ApprovalTests;
 module Program =
     let ``Setup Global Reports`` = 
         Config(fun () -> { Reporters = [
-                                        fun () -> Reporters.BeyondCompareReporter() :> Core.IApprovalFailureReporter;
+                                        fun () -> Reporters.DiffReporter() :> Core.IApprovalFailureReporter;
                                         fun () -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;
                                         ] })
 
