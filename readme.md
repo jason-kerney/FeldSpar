@@ -10,10 +10,11 @@
 ```fsharp
 module BasicTests =
 open FeldSpar.Framework
-open FeldSpar.Fraamwork.Verification
+open FeldSpar.Framework.Verification
+open FeldSpar.Framework.Verification.ApprovalSupport
 
     let ``Adding 6 and 4 equals 10`` = 
-        Test((fun env ->
+        Test((fun _ ->
                 let x = 6
                 let y = 4
 
@@ -21,7 +22,7 @@ open FeldSpar.Fraamwork.Verification
             ))
               
     let ``A test with multiple checks to deterime a good result`` =
-        Test((fun env ->
+        Test((fun _ ->
                 let x = 6
                 let y = 4
                 let z = x + y
@@ -38,6 +39,32 @@ open FeldSpar.Fraamwork.Verification
     (*This is how you quickly ignore a test*)
     let ``This test is not ready yet and therefore is ignored`` =
         ITest(fun env -> Success)
+        
+    let ``Gold Standard Tests look like this for strings`` =
+        Test(fun env ->
+                let env = env |> addReporter<ApprovalTests.Reporters.DiffReporter>
+                
+                "My string under test" |> checkAgainstStringStandard env
+            )
+        
+    let ``This is a theory Test`` =
+        Theory(Tests({
+                            Data = [(1, "1");(2, "2");(3, "Fizz");(5,"Buzz");(6, "Fizz");(10,"Buzz");(15,"FizzBuzz")] |> List.toSeq
+                            Template = {
+                                            UnitDescription = (fun (n,s) -> sprintf "test converts %d into \"%s\"" n s)
+                                            UnitTest = (fun (n, expected) _ ->
+                                                            let result = 
+                                                                match n with
+                                                                | v when v % 15 = 0 -> "FizzBuzz"
+                                                                | v when v % 5 = 0 -> "Buzz"
+                                                                | v when v % 3 = 0 -> "Fizz"
+                                                                | v -> v.ToString()
+
+
+                                                            result |> expectsToBe expected "did not convert n correctly. Expected \"%s\" but got \"%s\""
+                                                        )
+                                        }
+                        }) |> convertTheoryToTests)
 ```
 
 ### How to _(currently)_ run all tests
