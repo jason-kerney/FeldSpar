@@ -8,6 +8,33 @@ open FeldSpar.Framework.Engine
 open FeldSpar.Framework.Verification
 
 module BuildingOfTestsTests =
+    let ``Can Create multiple Tests From one Theory Test`` =
+        Test(fun env ->
+                let theory = Theory({
+                                        Data = seq { for i in 1..4 do yield i};
+                                        Template = {
+                                                       UnitDescription = (fun n -> sprintf "testing %d" n);
+                                                       UnitTest = (fun n _ -> (n % 2) |> expectsToBe 0 "number was not even. n mod 2 = %d when it should have been n mod 2 = %d")
+                                                    }
+                                    })
+
+                let results = theory 
+                                |> convertTheoryToTests "testing theory" 
+                                |> Array.map (fun (description, Test(test)) -> (description, env |> test))
+                                |> Array.map (fun (description, result) ->
+                                                let resultString = 
+                                                    match result with
+                                                    | Success -> "Success"
+                                                    | Failure(failType) -> sprintf "%A" failType
+
+                                                sprintf "%s -> %s" description resultString
+                                              )
+
+                let result = String.Join(Environment.NewLine, results) + Environment.NewLine
+
+                result |> checkAgainstStringStandard env
+            )
+
     let ``Find All Tests through Reflection`` = 
         Test((fun env ->
                 let join : string list -> string = (fun (arry) -> 
@@ -102,7 +129,7 @@ module BuildingOfTestsTests =
                 let summary = case()
                 let result = summary.TestResults
 
-                let regex = System.Text.RegularExpressions.Regex(@"(?<=at FeldSpar\.Console\.Tests\.BuildingOfTestsTests\.A test that throws an exception@).*\s+.*", Text.RegularExpressions.RegexOptions.Multiline)
+                let regex = System.Text.RegularExpressions.Regex(@"(?<=at FeldSpar\.Console\.Tests\.BuildingOfTestsTests\.A test that throws an exception).*\s+.*", Text.RegularExpressions.RegexOptions.Multiline)
 
                 let resultString = result |> sprintf "%A"
                 let mtch = regex.Match(resultString)

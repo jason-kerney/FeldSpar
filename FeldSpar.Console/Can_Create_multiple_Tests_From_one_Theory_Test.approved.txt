@@ -1,0 +1,6 @@
+﻿testing theory.testing 1 -> ExpectationFailure
+  "number was not even. n mod 2 = 0 when it should have been n mod 2 = 1"
+testing theory.testing 2 -> Success
+testing theory.testing 3 -> ExpectationFailure
+  "number was not even. n mod 2 = 0 when it should have been n mod 2 = 1"
+testing theory.testing 4 -> Success

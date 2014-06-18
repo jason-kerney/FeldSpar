@@ -37,12 +37,10 @@ type Test = | Test of (TestEnvironment -> TestResult)
 type IgnoredTest = | ITest of (TestEnvironment -> TestResult)
 type Configuration = | Config of (unit -> AssemblyConfiguration)
 
-
-(*
 type TheoryCaseTemplate<'a> =
     {
         UnitDescription : 'a -> string;
-        UnitTest : TestEnvironment -> 'a -> TestResult list;
+        UnitTest : 'a -> TestEnvironment -> TestResult;
     }
     
 type TestTheoryTemplate<'a> =
@@ -53,9 +51,6 @@ type TestTheoryTemplate<'a> =
 
 type Theory<'a> =
     | Theory of TestTheoryTemplate<'a>
-
-//*)
-
 
 [<AutoOpen>]
 module Utilities =

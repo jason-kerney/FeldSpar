@@ -199,17 +199,27 @@ module Runner =
             |> shuffleTests
             |> buildTestPlan environment report
 
+    let convertTheoryToTests baseName (Theory({Data = data; Template = {UnitDescription = getUnitDescription; UnitTest = testTemplate}})) =
+        data
+            |> Seq.map(fun datum -> (datum, datum |> testTemplate))
+            |> Seq.map(fun (datum, testTemplate) -> (sprintf "%s.%s" baseName (getUnitDescription datum), Test(testTemplate)))
+            |> Seq.toArray
+
+    let private getTestsFromPropery (prop:PropertyInfo) =
+        match prop.PropertyType with
+            | t when t = typeof<Test> -> [|(prop.Name, prop.GetValue(null) :?> Test)|]
+            | t when t = typeof<IgnoredTest> -> [|(prop.Name, Test(fun _ -> ignoreWith "Compile Ignored"))|]
+            | _ -> raise (ArgumentException("Incorrect property found by engine"))
+            
+    let private getConfigurationError (prop:PropertyInfo) =
+        [|
+            ( prop.Name, Test(fun env -> ignoreWith "Assembly Can only have one Configuration") )
+         |]
+
     let private getMapper config =
         match config with
-        | Some(_) -> 
-            (config, (fun (prop:PropertyInfo) -> 
-                                    match prop.PropertyType with
-                                    | t when t = typeof<Test> -> [|(prop.Name, prop.GetValue(null) :?> Test)|]
-                                    | t when t = typeof<IgnoredTest> -> [|(prop.Name, Test(fun _ -> ignoreWith "Compile Ignored"))|]
-                                    | _ -> raise (ArgumentException("Incorrect property found by engine"))
-                      )
-            )
-        | None -> (config, (fun (p:PropertyInfo) -> [|(p.Name,Test(fun env -> ignoreWith "Assembly Can only have one Configuration"))|]))
+        | Some(_) -> (config, (fun (prop:PropertyInfo) -> getTestsFromPropery prop ))
+        | None -> (config, (fun (prop:PropertyInfo) -> getConfigurationError prop ))
 
     let private determinEnvironmentAndMapping (config, mapper) =
         match config with
