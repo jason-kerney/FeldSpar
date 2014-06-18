@@ -47,7 +47,6 @@ type TheoryCaseTemplate<'a> =
     
 type TestTheoryTemplate<'a> =
     {
-        Description : string;
         Data : seq<'a>;
         Template : TheoryCaseTemplate<'a>;
     }
