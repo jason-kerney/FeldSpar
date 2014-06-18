@@ -22,6 +22,7 @@ module ExploritoryTests =
                     }
             }) |> convertTheoryToTests
         )
+
     let ``This is a theory Test`` =
         Theory(
             Tests({
@@ -33,7 +34,7 @@ module ExploritoryTests =
                                 (6, "Fizz");
                                 (10,"Buzz");
                                 (15,"FizzBuzz")
-                            ] |> List.toSeq
+                    ] |> List.toSeq
                     Template = 
                     {
                         UnitDescription = (fun (n,s) -> sprintf "test converts %d into \"%s\"" n s)
@@ -49,7 +50,8 @@ module ExploritoryTests =
                                 result |> expectsToBe expected "did not convert n correctly. Expected \"%s\" but got \"%s\""
                             )
                     }
-                  }) |> convertTheoryToTests)
+            }) |> convertTheoryToTests
+        )
 
         
     let ``This is an ignored test`` =
