@@ -159,9 +159,7 @@ module Runner =
             |> Array.toList
 
     let getPropetyValuesOfType<'a> assembly = 
-        assembly 
-            |> findTestProperties filterPropertiesByType<'a>
-            |> Array.map(fun p -> (p.Name,p.GetValue(null) :?> 'a))
+        assembly |> findTestProperties filterPropertiesByType<'a>
 
     let shuffle<'a> (list: 'a []) (getRandom: (int * int) -> int) =
         let arr = list
@@ -185,14 +183,16 @@ module Runner =
         shuffle list getNext
 
     let private getTestsWith (map:PropertyInfo -> (string * Test)) (environment : AssemblyConfiguration) report (assembly:Assembly) = 
-        let tests = 
+        let testProps = 
             assembly 
                 |> getPropetyValuesOfType<Test>
 
-        let ignores =
+        let ignoresProps =
             assembly 
                 |> getPropetyValuesOfType<IgnoredTest>
-                |> Array.map (fun (description, ITest(test)) -> description, Test(fun env -> ignoreWith "Compile Ignored"))
+
+        let tests = testProps |> Array.map map
+        let ignores = ignoresProps |> Array.map map
 
         [|tests;ignores|]
             |> Array.concat
@@ -201,7 +201,15 @@ module Runner =
 
     let private getMapper config =
         match config with
-        | Some(_) -> (config, (fun (p:PropertyInfo) -> (p.Name,p.GetValue(null) :?> Test)))
+        | Some(_) -> 
+            (config, (fun (p:PropertyInfo) -> (p.Name,
+                                                match p.PropertyType with
+                                                | t when t = typeof<Test> -> p.GetValue(null) :?> Test
+                                                | t when t = typeof<IgnoredTest> -> Test(fun _ -> ignoreWith "Compile Ignored")
+                                                | _ -> raise (ArgumentException("Incorrect property found by engine"))
+                                               )
+                      )
+            )
         | None -> (config, (fun (p:PropertyInfo) -> (p.Name,Test(fun env -> ignoreWith "Assembly Can only have one Configuration"))))
 
     let private determinEnvironmentAndMapping (config, mapper) =
