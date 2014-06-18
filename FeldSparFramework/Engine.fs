@@ -182,7 +182,7 @@ module Runner =
 
         shuffle list getNext
 
-    let private getTestsWith (map:PropertyInfo -> (string * Test)) (environment : AssemblyConfiguration) report (assembly:Assembly) = 
+    let private getTestsWith (map:PropertyInfo -> (string * Test)[]) (environment : AssemblyConfiguration) report (assembly:Assembly) = 
         let testProps = 
             assembly 
                 |> getPropetyValuesOfType<Test>
@@ -191,8 +191,8 @@ module Runner =
             assembly 
                 |> getPropetyValuesOfType<IgnoredTest>
 
-        let tests = testProps |> Array.map map
-        let ignores = ignoresProps |> Array.map map
+        let tests = testProps |> Array.map map |> Array.concat
+        let ignores = ignoresProps |> Array.map map |> Array.concat
 
         [|tests;ignores|]
             |> Array.concat
@@ -202,15 +202,14 @@ module Runner =
     let private getMapper config =
         match config with
         | Some(_) -> 
-            (config, (fun (p:PropertyInfo) -> (p.Name,
-                                                match p.PropertyType with
-                                                | t when t = typeof<Test> -> p.GetValue(null) :?> Test
-                                                | t when t = typeof<IgnoredTest> -> Test(fun _ -> ignoreWith "Compile Ignored")
-                                                | _ -> raise (ArgumentException("Incorrect property found by engine"))
-                                               )
+            (config, (fun (p:PropertyInfo) -> 
+                                    match p.PropertyType with
+                                    | t when t = typeof<Test> -> [|(p.Name, p.GetValue(null) :?> Test)|]
+                                    | t when t = typeof<IgnoredTest> -> [|(p.Name, Test(fun _ -> ignoreWith "Compile Ignored"))|]
+                                    | _ -> raise (ArgumentException("Incorrect property found by engine"))
                       )
             )
-        | None -> (config, (fun (p:PropertyInfo) -> (p.Name,Test(fun env -> ignoreWith "Assembly Can only have one Configuration"))))
+        | None -> (config, (fun (p:PropertyInfo) -> [|(p.Name,Test(fun env -> ignoreWith "Assembly Can only have one Configuration"))|]))
 
     let private determinEnvironmentAndMapping (config, mapper) =
         match config with
