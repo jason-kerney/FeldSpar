@@ -7,6 +7,21 @@ open FeldSpar.Framework.Verification.ApprovalsSupport
 open System
 
 module ExploritoryTests =
+    let ``Here is a second theory test`` =
+        Theory(
+            Tests({
+                    Data = seq { 1.0..20.0 }
+                    Template = {
+                                UnitDescription = (fun n -> sprintf " %f * %f devided by %f equals %f" n n n n)
+                                UnitTest = (fun n _ ->
+                                                let v1 = n ** 2.0
+                                                let result = v1 / n
+
+                                                result |> expectsToBe n "(%f <> %f)"
+                                )
+                    }
+            }) |> convertTheoryToTests
+        )
     let ``This is a theory Test`` =
         Theory(
             Tests({

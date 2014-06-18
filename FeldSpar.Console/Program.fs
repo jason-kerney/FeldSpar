@@ -3,6 +3,7 @@ open System
 open FeldSpar.Framework
 open FeldSpar.Framework.TestSummaryUtilities
 open FeldSpar.Framework.Engine
+open FeldSpar.Framework.Verification.ApprovalsSupport;
 
 open FeldSpar.Console.Helpers.Data
 open FeldSpar.Console.Tests.BuildingOfTestsTests
@@ -14,7 +15,13 @@ open ApprovalTests;
 module Program =
     let ``Setup Global Reports`` = 
         Config(fun () -> { Reporters = [
-                                        fun () -> Reporters.DiffReporter() :> Core.IApprovalFailureReporter;
+                                        fun () -> 
+                                                try
+                                                    getReporter_old<Reporters.DiffReporter> ()
+                                                with
+                                                | _ -> getReporter_old<Reporters.NotepadLauncher> ()
+
+                                            
                                         fun () -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;
                                         ] })
 
