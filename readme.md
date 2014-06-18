@@ -49,7 +49,15 @@ open FeldSpar.Framework.Verification.ApprovalSupport
         
     let ``This is a theory Test`` =
         Theory(Tests({
-                            Data = [(1, "1");(2, "2");(3, "Fizz");(5,"Buzz");(6, "Fizz");(10,"Buzz");(15,"FizzBuzz")] |> List.toSeq
+                            Data = [
+                                        (1, "1");
+                                        (2, "2");
+                                        (3, "Fizz");
+                                        (5,"Buzz");
+                                        (6, "Fizz");
+                                        (10,"Buzz");
+                                        (15,"FizzBuzz")
+                                    ] |> List.toSeq
                             Template = {
                                             UnitDescription = (fun (n,s) -> sprintf "test converts %d into \"%s\"" n s)
                                             UnitTest = (fun (n, expected) _ ->
