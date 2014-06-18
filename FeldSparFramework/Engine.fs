@@ -202,10 +202,10 @@ module Runner =
     let private getMapper config =
         match config with
         | Some(_) -> 
-            (config, (fun (p:PropertyInfo) -> 
-                                    match p.PropertyType with
-                                    | t when t = typeof<Test> -> [|(p.Name, p.GetValue(null) :?> Test)|]
-                                    | t when t = typeof<IgnoredTest> -> [|(p.Name, Test(fun _ -> ignoreWith "Compile Ignored"))|]
+            (config, (fun (prop:PropertyInfo) -> 
+                                    match prop.PropertyType with
+                                    | t when t = typeof<Test> -> [|(prop.Name, prop.GetValue(null) :?> Test)|]
+                                    | t when t = typeof<IgnoredTest> -> [|(prop.Name, Test(fun _ -> ignoreWith "Compile Ignored"))|]
                                     | _ -> raise (ArgumentException("Incorrect property found by engine"))
                       )
             )
