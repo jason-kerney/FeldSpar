@@ -143,8 +143,6 @@ module Runner =
         else
             None
 
-    let filterPropertiesByType<'a> (propInfo: PropertyInfo) = propInfo.PropertyType = typeof<'a>
-
     let private findTestProperties (filter : PropertyInfo -> bool) (assembly:Assembly) = 
         (assembly.GetExportedTypes())
             |> List.ofSeq
@@ -157,9 +155,6 @@ module Runner =
         tests
             |> Array.map(fun (name, test) -> test |> createTestFromTemplate environment report name)
             |> Array.toList
-
-    let getPropetyValuesOfType<'a> assembly = 
-        assembly |> findTestProperties filterPropertiesByType<'a>
 
     let shuffle<'a> (list: 'a []) (getRandom: (int * int) -> int) =
         let arr = list
@@ -183,23 +178,24 @@ module Runner =
         shuffle list getNext
 
     let private getTestsWith (map:PropertyInfo -> (string * Test)[]) (environment : AssemblyConfiguration) report (assembly:Assembly) = 
-        let testProps = 
+        let filter (prop:PropertyInfo) = 
+            match prop.PropertyType with
+            | t when t = typeof<Test> -> true
+            | t when t = typeof<IgnoredTest> -> true
+            | t when t = typeof<TheoryMap> -> true
+            | _ -> false
+
+        let tests = 
             assembly 
-                |> getPropetyValuesOfType<Test>
-
-        let ignoresProps =
-            assembly 
-                |> getPropetyValuesOfType<IgnoredTest>
-
-        let tests = testProps |> Array.map map |> Array.concat
-        let ignores = ignoresProps |> Array.map map |> Array.concat
-
-        [|tests;ignores|]
+            |> findTestProperties filter
+            |> Array.map map
             |> Array.concat
+
+        tests
             |> shuffleTests
             |> buildTestPlan environment report
 
-    let convertTheoryToTests baseName (Theory({Data = data; Template = {UnitDescription = getUnitDescription; UnitTest = testTemplate}})) =
+    let convertTheoryToTests (Tests({Data = data; Template = {UnitDescription = getUnitDescription; UnitTest = testTemplate}})) baseName =
         data
             |> Seq.map(fun datum -> (datum, datum |> testTemplate))
             |> Seq.map(fun (datum, testTemplate) -> (sprintf "%s.%s" baseName (getUnitDescription datum), Test(testTemplate)))
@@ -209,6 +205,12 @@ module Runner =
         match prop.PropertyType with
             | t when t = typeof<Test> -> [|(prop.Name, prop.GetValue(null) :?> Test)|]
             | t when t = typeof<IgnoredTest> -> [|(prop.Name, Test(fun _ -> ignoreWith "Compile Ignored"))|]
+            | t when t = typeof<TheoryMap> -> 
+                let getTests = 
+                    match prop.GetValue(null) :?> TheoryMap with
+                    | Theory(v) -> v
+
+                prop.Name |> getTests
             | _ -> raise (ArgumentException("Incorrect property found by engine"))
             
     let private getConfigurationError (prop:PropertyInfo) =

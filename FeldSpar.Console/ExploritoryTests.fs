@@ -7,6 +7,26 @@ open FeldSpar.Framework.Verification.ApprovalsSupport
 open System
 
 module ExploritoryTests =
+    let ``This is a theory Test`` =
+        Theory(Tests({
+                            Data = [(1, "1");(2, "2");(3, "Fizz");(5,"Buzz");(6, "Fizz");(10,"Buzz");(15,"FizzBuzz")] |> List.toSeq
+                            Template = {
+                                            UnitDescription = (fun (n,s) -> sprintf "test converts %d into \"%s\"" n s)
+                                            UnitTest = (fun (n, expected) _ ->
+                                                            let result = 
+                                                                match n with
+                                                                | v when v % 15 = 0 -> "FizzBuzz"
+                                                                | v when v % 5 = 0 -> "Buzz"
+                                                                | v when v % 3 = 0 -> "Fizz"
+                                                                | v -> v.ToString()
+
+
+                                                            result |> expectsToBe expected "did not convert n correctly. Expected \"%s\" but got \"%s\""
+                                                        )
+                                        }
+                        }) |> convertTheoryToTests)
+
+        
     let ``This is an ignored test`` =
         ITest(fun env -> Success)
 
