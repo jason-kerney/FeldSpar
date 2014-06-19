@@ -14,6 +14,10 @@ module ApprovalsSupport =
 
     let thanksUrl = "https://github.com/approvals/ApprovalTests.Net/"
 
+    type FindReporterResult =
+        | FoundReporter of IApprovalFailureReporter
+        | Searching
+
     let private writeTo fullPath writer result =
         Directory.CreateDirectory (Path.GetDirectoryName (fullPath)) |> ignore
         do writer fullPath result
@@ -56,7 +60,7 @@ module ApprovalsSupport =
             member this.Name with get () = env.CanonicalizedName
         }
 
-    let getReporter_old<'a when 'a:> IApprovalFailureReporter> () =
+    let createReporter<'a when 'a:> IApprovalFailureReporter> () =
         System.Activator.CreateInstance<'a>() :> IApprovalFailureReporter
 
     let private buildReporter (getReporters: (unit -> IApprovalFailureReporter) List) =
@@ -88,7 +92,18 @@ module ApprovalsSupport =
     let getStreamFileApprover env extentionWithoutDot (result:Stream) =
         ApprovalTests.Approvers.FileApprover(getBinaryStreamWriter extentionWithoutDot result, getNamer env)
 
-    (* Not Working. Unsure why
-    let getConfiguredReporter () =
-        ApprovalTests.Approvals.GetReporter ()
-    //*)
+    let findFirstReporter<'a when 'a :> IApprovalFailureReporter> findReporterResult =
+        match findReporterResult with
+        | FoundReporter(_) -> findReporterResult
+        | _ ->
+            try
+                let reporter = createReporter<'a> ()
+                FoundReporter(reporter)
+            with
+            | _ ->
+                Searching
+
+    let unWrapReporter findReporterResult =
+        match findReporterResult with
+        | FoundReporter(reporter) -> reporter
+        | _ -> createReporter<ApprovalTests.Reporters.QuietReporter> ()

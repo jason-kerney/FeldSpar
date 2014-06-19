@@ -14,16 +14,19 @@ open ApprovalTests;
 
 module Program =
     let ``Setup Global Reports`` = 
-        Config(fun () -> { Reporters = [
-                                        fun () -> 
-                                                try
-                                                    getReporter_old<Reporters.DiffReporter> ()
-                                                with
-                                                | _ -> getReporter_old<Reporters.NotepadLauncher> ()
-
+        Config(fun () -> 
+        { 
+            Reporters = [
+                            fun () -> 
+                                    Searching
+                                        |> findFirstReporter<Reporters.DiffReporter>
+                                        |> findFirstReporter<Reporters.WinMergeReporter>
+                                        |> findFirstReporter<Reporters.NotepadLauncher>
+                                        |> unWrapReporter
                                             
-                                        fun () -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;
-                                        ] })
+                            fun () -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;
+                        ] 
+        })
 
     let getConsoleColor status =
         match status with
