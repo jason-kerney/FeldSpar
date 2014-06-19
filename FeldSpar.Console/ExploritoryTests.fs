@@ -7,16 +7,16 @@ open FeldSpar.Framework.Verification.ApprovalsSupport
 open System
 
 module ExploritoryTests =
-    let ``Division Theory`` = {
-        
-                                UnitDescription = (fun n -> sprintf " (%f * %f) / %f = %f" n n n n)
-                                UnitTest = (fun n _ ->
-                                                let v1 = n ** 2.0
-                                                let result = v1 / n
+    let ``Division Theory`` = 
+        {
+            UnitDescription = (fun n -> sprintf " (%f * %f) / %f = %f" n n n n)
+            UnitTest = (fun n _ ->
+                            let v1 = n ** 2.0
+                            let result = v1 / n
 
-                                                result |> expectsToBe n "(%f <> %f)"
-                                )
-    }
+                            result |> expectsToBe n "(%f <> %f)"
+            )
+        }
           
     let ``Whole Doubles from 1.0 to 20.0`` = seq { 1.0..20.0 }  
     
