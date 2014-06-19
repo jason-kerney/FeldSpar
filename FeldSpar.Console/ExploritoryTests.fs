@@ -7,50 +7,51 @@ open FeldSpar.Framework.Verification.ApprovalsSupport
 open System
 
 module ExploritoryTests =
-    let ``Here is a second theory test`` =
-        Theory(
-            Tests({
-                    Data = seq { 1.0..20.0 }
-                    Template = {
-                                UnitDescription = (fun n -> sprintf " (%f * %f) / %f = %f" n n n n)
-                                UnitTest = (fun n _ ->
-                                                let v1 = n ** 2.0
-                                                let result = v1 / n
+    let ``Division Theory`` =
+            Template({
+                        Data = seq { 1.0..20.0 }
+                        Base = {
+                                    UnitDescription = (fun n -> sprintf " (%f * %f) / %f = %f" n n n n)
+                                    UnitTest = (fun n _ ->
+                                                    let v1 = n ** 2.0
+                                                    let result = v1 / n
 
-                                                result |> expectsToBe n "(%f <> %f)"
-                                )
-                    }
-            }) |> convertTheoryToTests
-        )
+                                                    result |> expectsToBe n "(%f <> %f)"
+                                    )
+                        }
+            })
+    
+    let ``Here is a second theory test`` =
+        Theory(``Division Theory`` |> convertTheoryToTests)
 
     let ``This is a theory Test`` =
         Theory(
-            Tests({
-                    Data = [
-                                (1, "1");
-                                (2, "2");
-                                (3, "Fizz");
-                                (5,"Buzz");
-                                (6, "Fizz");
-                                (10,"Buzz");
-                                (15,"FizzBuzz")
-                    ] |> List.toSeq
-                    Template = 
-                    {
-                        UnitDescription = (fun (n,s) -> sprintf "test converts %d into \"%s\"" n s)
-                        UnitTest = 
-                            (fun (n, expected) _ ->
-                                let result = 
-                                    match n with
-                                    | v when v % 15 = 0 -> "FizzBuzz"
-                                    | v when v % 5 = 0 -> "Buzz"
-                                    | v when v % 3 = 0 -> "Fizz"
-                                    | v -> v.ToString()
+            Template({
+                        Data = [
+                                    (1, "1");
+                                    (2, "2");
+                                    (3, "Fizz");
+                                    (5,"Buzz");
+                                    (6, "Fizz");
+                                    (10,"Buzz");
+                                    (15,"FizzBuzz")
+                        ] |> List.toSeq
+                        Base = 
+                        {
+                            UnitDescription = (fun (n,s) -> sprintf "test converts %d into \"%s\"" n s)
+                            UnitTest = 
+                                (fun (n, expected) _ ->
+                                    let result = 
+                                        match n with
+                                        | v when v % 15 = 0 -> "FizzBuzz"
+                                        | v when v % 5 = 0 -> "Buzz"
+                                        | v when v % 3 = 0 -> "Fizz"
+                                        | v -> v.ToString()
 
-                                result |> expectsToBe expected "did not convert n correctly. Expected \"%s\" but got \"%s\""
-                            )
-                    }
-            }) |> convertTheoryToTests
+                                    result |> expectsToBe expected "did not convert n correctly. Expected \"%s\" but got \"%s\""
+                                )
+                        }
+                }) |> convertTheoryToTests
         )
 
         

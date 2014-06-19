@@ -10,9 +10,9 @@ open FeldSpar.Framework.Verification
 module BuildingOfTestsTests =
     let ``Can Create multiple Tests From one Theory Test`` =
         Test(fun env ->
-                let theory = Tests({
+                let theory = Template({
                                         Data = seq { for i in 1..4 do yield i};
-                                        Template = {
+                                        Base = {
                                                        UnitDescription = (fun n -> sprintf "testing %d" n);
                                                        UnitTest = (fun n _ -> (n % 2) |> expectsToBe 0 "number was not even. n mod 2 = %d when it should have been n mod 2 = %d")
                                                     }

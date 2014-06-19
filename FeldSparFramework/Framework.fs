@@ -48,11 +48,11 @@ type TheoryCaseTemplate<'a> =
 type TestTheoryTemplate<'a> =
     {
         Data : seq<'a>;
-        Template : TheoryCaseTemplate<'a>;
+        Base : TheoryCaseTemplate<'a>;
     }
 
 type Theory<'a> =
-    | Tests of TestTheoryTemplate<'a>
+    | Template of TestTheoryTemplate<'a>
 
 [<AutoOpen>]
 module Utilities =
