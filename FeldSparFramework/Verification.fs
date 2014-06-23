@@ -40,10 +40,10 @@ module Checks =
             | _ -> ()
 
             Failure(StandardNotMet)
-    
+
     let private checkAgainstStandard env (approver:IApprovalApprover) =
-        let repoter = getReporter env
-        checkStandardsAndReport env repoter approver
+        let reporter = getReporter env
+        checkStandardsAndReport env reporter approver
 
     let checkAgainstStringStandard env result =
         let approver = getStringFileApprover env result
@@ -61,6 +61,22 @@ module Checks =
         let reporter = getReporter env
         let approver = getStreamFileApprover env extentionWithoutDot results
         checkStandardsAndReport env reporter approver
+
+    let private checkAllAgainstStandardBy env (converter:'a -> string) (results:'a seq) =
+        let result =
+            results
+            |> Seq.map converter
+            |> joinWith Environment.NewLine
+
+        result |> checkAgainstStringStandard env
+
+    let private checkAllAgainstStandard env (results:'a seq) =
+        let result =
+            results
+            |> Seq.map (fun o -> o.ToString())
+            |> joinWith Environment.NewLine
+
+        result |> checkAgainstStringStandard env
 
     type Validation () =
         member this.Bind(m, f) = 

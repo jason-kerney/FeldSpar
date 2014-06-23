@@ -14,6 +14,9 @@ module ApprovalsSupport =
 
     let thanksUrl = "https://github.com/approvals/ApprovalTests.Net/"
 
+    let joinWith separator (strings : string seq) =
+        System.String.Join(separator, strings)
+
     let private writeTo fullPath writer result =
         Directory.CreateDirectory (Path.GetDirectoryName (fullPath)) |> ignore
         do writer fullPath result
@@ -55,9 +58,6 @@ module ApprovalsSupport =
             member this.SourcePath with get () = env.RootPath
             member this.Name with get () = env.CanonicalizedName
         }
-
-    let getReporter_old<'a when 'a:> IApprovalFailureReporter> () =
-        System.Activator.CreateInstance<'a>() :> IApprovalFailureReporter
 
     let private buildReporter (getReporters: (unit -> IApprovalFailureReporter) List) =
         let reporters = getReporters |> List.map (fun getter -> getter())
