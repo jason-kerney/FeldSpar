@@ -195,7 +195,7 @@ module Runner =
             |> shuffleTests
             |> buildTestPlan environment report
 
-    let convertTheoryToTests (Tests({Data = data; Template = {UnitDescription = getUnitDescription; UnitTest = testTemplate}})) baseName =
+    let convertTheoryToTests (Template({Data = data; Base = {UnitDescription = getUnitDescription; UnitTest = testTemplate}})) baseName =
         data
             |> Seq.map(fun datum -> (datum, datum |> testTemplate))
             |> Seq.map(fun (datum, testTemplate) -> (sprintf "%s.%s" baseName (getUnitDescription datum), Test(testTemplate)))

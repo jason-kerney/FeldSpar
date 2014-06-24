@@ -3,6 +3,7 @@ open System
 open FeldSpar.Framework
 open FeldSpar.Framework.TestSummaryUtilities
 open FeldSpar.Framework.Engine
+open FeldSpar.Framework.Verification.ApprovalsSupport;
 
 open FeldSpar.Console.Helpers.Data
 open FeldSpar.Console.Tests.BuildingOfTestsTests
@@ -13,10 +14,19 @@ open ApprovalTests;
 
 module Program =
     let ``Setup Global Reports`` = 
-        Config(fun () -> { Reporters = [
-                                        fun () -> Reporters.DiffReporter() :> Core.IApprovalFailureReporter;
-                                        fun () -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;
-                                        ] })
+        Config(fun () -> 
+        { 
+            Reporters = [
+                            fun () -> 
+                                    Searching
+                                        |> findFirstReporter<Reporters.DiffReporter>
+                                        |> findFirstReporter<Reporters.WinMergeReporter>
+                                        |> findFirstReporter<Reporters.NotepadLauncher>
+                                        |> unWrapReporter
+                                            
+                            fun () -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;
+                        ] 
+        })
 
     let getConsoleColor status =
         match status with
