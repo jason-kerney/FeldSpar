@@ -3,8 +3,7 @@ open FeldSpar.Framework
 open FeldSpar.Framework.Engine
 
 module Data =
-    type internal Marker = interface end
-    let assembly = typeof<Marker>.Assembly
+    let assembly = System.Reflection.Assembly.GetExecutingAssembly()
 
     let runTest description template = 
             let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description
