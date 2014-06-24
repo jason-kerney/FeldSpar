@@ -2,7 +2,7 @@
 Test[01] is ((A test to check verification))
 Test[02] is ((An exception thrown in a test should report exception failure))
 Test[03] is ((Can Create multiple Tests From one Theory Test))
-Test[04] is ((Combinitory Gold Standard Testing))
+Test[04] is ((Combinatory Gold Standard Testing))
 Test[05] is ((Find All Tests through Reflection))
 Test[06] is ((Fizz Buzzer return Buzz for 5))
 Test[07] is ((Fizz Buzzer returns 'Buzz' for all multiples of 5 up to 10))
