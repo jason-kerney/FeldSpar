@@ -30,6 +30,7 @@ type TestEnvironment =
         Name:string;
         CanonicalizedName : string;
         RootPath : string;
+        Assembly : System.Reflection.Assembly;
         Reporters : (unit -> IApprovalFailureReporter) List;
     }
 

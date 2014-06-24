@@ -6,7 +6,7 @@ module Data =
     let assembly = System.Reflection.Assembly.GetExecutingAssembly()
 
     let runTest description template = 
-            let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description
+            let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description assembly
             test()
 
     let runAsTests templates = 

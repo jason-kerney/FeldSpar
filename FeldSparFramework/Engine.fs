@@ -50,7 +50,7 @@ module Runner =
         finally
             AppDomain.Unload(appDomain)
 
-    let private createEnvironment (env : AssemblyConfiguration) name = 
+    let private createEnvironment (env : AssemblyConfiguration) assembly name = 
         let rec getSourcePath path = 
             let p = System.IO.DirectoryInfo(path)
 
@@ -66,6 +66,7 @@ module Runner =
             Name = name;
             CanonicalizedName = name |> Formatters.Basic.CanonicalizeString;
             RootPath = path;
+            Assembly = assembly;
             Reporters = env.Reporters;
         }
 
@@ -81,10 +82,10 @@ module Runner =
     let getGlobalTestEnvironment reporters : AssemblyConfiguration = 
         { Reporters = reporters }
 
-    let createTestFromTemplate (globalEnv : AssemblyConfiguration) (report : ExecutionStatus -> unit ) name (Test(template)) =
-        let env = name |> createEnvironment globalEnv
+    let createTestFromTemplate (globalEnv : AssemblyConfiguration) (report : ExecutionStatus -> unit ) name assembly (Test(template)) =
+        let env = name |> createEnvironment globalEnv assembly
 
-        fileFoundReport env report
+        report |> fileFoundReport env
 
         let testCase = (fun() -> 
                             let testingCode = (fun () ->
@@ -151,9 +152,9 @@ module Runner =
             |> Array.concat
             |> Array.filter filter
 
-    let buildTestPlan (environment : AssemblyConfiguration) report (tests:(string * Test)[]) =
+    let buildTestPlan (environment : AssemblyConfiguration) report assembly (tests:(string * Test)[]) =
         tests
-            |> Array.map(fun (name, test) -> test |> createTestFromTemplate environment report name)
+            |> Array.map(fun (name, test) -> test |> createTestFromTemplate environment report name assembly)
             |> Array.toList
 
     let shuffle<'a> (list: 'a []) (getRandom: (int * int) -> int) =
@@ -193,7 +194,7 @@ module Runner =
 
         tests
             |> shuffleTests
-            |> buildTestPlan environment report
+            |> buildTestPlan environment report assembly
 
     let convertTheoryToTests (Template({Data = data; Base = {UnitDescription = getUnitDescription; UnitTest = testTemplate}})) baseName =
         data

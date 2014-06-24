@@ -70,7 +70,7 @@ module BuildingOfTestsTests =
                 let env : AssemblyConfiguration = { Reporters = []}
 
                 let resultSummary = 
-                    let _, test = ``A Test That will fail`` |> createTestFromTemplate env ignore failDescription
+                    let _, test = ``A Test That will fail`` |> createTestFromTemplate env ignore failDescription assembly
                     test()
 
                 verify
@@ -124,7 +124,7 @@ module BuildingOfTestsTests =
                 let ex = IndexOutOfRangeException("The exception was out of range")
                 let ``A test that throws an exception`` =  Test((fun env -> raise ex))
 
-                let _, case = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore "A test that throws an exception"
+                let _, case = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore "A test that throws an exception" assembly
 
                 let summary = case()
                 let result = summary.TestResults

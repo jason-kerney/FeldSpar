@@ -87,6 +87,21 @@ module ApprovalsSupport =
         }
 
     let getStringFileApprover env result =
+        let trace = System.Diagnostics.StackTrace(true)
+
+        let (|GetFileName|_|) (frame:System.Diagnostics.StackFrame) =
+            if (frame.GetMethod ()).DeclaringType.Assembly = env.Assembly
+            then Some(frame.GetFileName ())
+            else None
+
+        let rec find frames = 
+            match frames with
+            | [] -> env.RootPath
+            | (GetFileName name)::_ -> name
+            | _::tail -> find tail
+
+        let path = find (trace.GetFrames () |> Seq.toList)
+
         ApprovalTests.Approvers.FileApprover(getStringFileWriter result, getNamer env) :> IApprovalApprover
 
     let getBinaryFileApprover env extentionWithoutDot result =
