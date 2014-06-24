@@ -65,3 +65,12 @@ module Utilities =
     let notYetImplemented = ignoreWith "Test not yet implemented"
 
     let indeterminateTest = ignoreWith "Indeterminate Test Result"
+
+    let calledWithEachOfThese (items: 'a seq) call =
+        seq { for i in items do
+                yield call i }
+            
+    let andAlsoEachOfThese items (calls: ('a -> 'b) seq) =
+        seq { for callWith in calls do
+                 for item in items do 
+                    yield callWith item }

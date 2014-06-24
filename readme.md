@@ -46,7 +46,22 @@ open FeldSpar.Framework.Verification.ApprovalSupport
                 
                 "My string under test" |> checkAgainstStringStandard env
             )
-        
+
+    let ``This is a Combinatory Gold Standard Testing`` =
+        Test(fun env ->
+            let names = ["Tom"; "Jane"; "Tarzan"; "Stephanie"]
+            let amounts = [11; 2; 5;]
+            let items = ["pears";"earrings";"cups"]
+
+            let createSentance item amount name = sprintf "%s has %d %s" name amount item
+
+            createSentance
+                |> calledWithEachOfThese items
+                |> andAlsoEachOfThese amounts
+                |> andAlsoEachOfThese names
+                |> checkAllAgainstStandard env
+        )
+
     let ``This is a theory Test`` =
         Theory(
             Tests({

@@ -62,7 +62,7 @@ module Checks =
         let approver = getStreamFileApprover env extentionWithoutDot results
         checkStandardsAndReport env reporter approver
 
-    let private checkAllAgainstStandardBy env (converter:'a -> string) (results:'a seq) =
+    let checkAllAgainstStandardBy env (converter:'a -> string) (results:'a seq) =
         let result =
             results
             |> Seq.map converter
@@ -70,7 +70,7 @@ module Checks =
 
         result |> checkAgainstStringStandard env
 
-    let private checkAllAgainstStandard env (results:'a seq) =
+    let checkAllAgainstStandard env (results:'a seq) =
         let result =
             results
             |> Seq.map (fun o -> o.ToString())
