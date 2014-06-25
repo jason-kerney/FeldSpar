@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D5009B
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.Tests", "FeldSpar.Tests\FeldSpar.Tests.fsproj", "{6F2261D9-2268-4595-B35D-C401148906D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{F5AC016A-D435-4A8E-A7B5-BE504E7E51A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5AC016A-D435-4A8E-A7B5-BE504E7E51A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5AC016A-D435-4A8E-A7B5-BE504E7E51A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F2261D9-2268-4595-B35D-C401148906D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F2261D9-2268-4595-B35D-C401148906D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F2261D9-2268-4595-B35D-C401148906D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F2261D9-2268-4595-B35D-C401148906D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
