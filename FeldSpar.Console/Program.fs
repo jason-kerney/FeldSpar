@@ -62,7 +62,7 @@ module Program =
                                         result + Environment.NewLine + sep + Environment.NewLine
                                 )
 
-        let tests = assembly |> runTestsAndReport reportConsoleColorForResult
+        let tests = testAssembly |> runTestsAndReport reportConsoleColorForResult
 
         let failedTests = tests
                             |> reduceToFailures 

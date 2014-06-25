@@ -6,7 +6,7 @@ open ApprovalTests
 
 module Data =
     type internal Marker = interface end
-    let assembly = typeof<Marker>.Assembly
+    let testAssembly = typeof<Marker>.Assembly
 
     let ``Setup Global Reports`` = 
         Config(fun () -> 
@@ -24,7 +24,7 @@ module Data =
         })
 
     let runTest description template = 
-            let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description assembly
+            let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description testAssembly
             test()
 
     let runAsTests templates = 
