@@ -63,8 +63,7 @@ open FeldSpar.Framework.Verification.ApprovalSupport
         )
 
     let ``This is a theory Test`` =
-        Theory(
-            Tests({
+        Theory({
                     Data = [
                                 (1, "1");
                                 (2, "2");
@@ -73,8 +72,8 @@ open FeldSpar.Framework.Verification.ApprovalSupport
                                 (6, "Fizz");
                                 (10,"Buzz");
                                 (15,"FizzBuzz")
-                            ] |> List.toSeq
-                    Template = 
+                    ] |> List.toSeq
+                    Base = 
                     {
                         UnitDescription = (fun (n,s) -> sprintf "test converts %d into \"%s\"" n s)
                         UnitTest = 
@@ -89,7 +88,26 @@ open FeldSpar.Framework.Verification.ApprovalSupport
                                 result |> expectsToBe expected "did not convert n correctly. Expected \"%s\" but got \"%s\""
                             )
                     }
-                  }) |> convertTheoryToTests)
+        })
+            
+    let ``Division Theory`` = 
+        {
+            UnitDescription = (fun n -> sprintf " (%f * %f) / %f = %f" n n n n)
+            UnitTest = (fun n _ ->
+                            let v1 = n ** 2.0
+                            let result = v1 / n
+
+                            result |> expectsToBe n "(%f <> %f)"
+            )
+        }
+          
+    let ``Whole Doubles from 1.0 to 20.0`` = seq { 1.0..20.0 }  
+
+    let ``Here is a second theory test`` =
+        Theory({
+                Data = ``Whole Doubles from 1.0 to 20.0``
+                Base = ``Division Theory``
+        })
 ```
 
 ### How to _(currently)_ run all tests
