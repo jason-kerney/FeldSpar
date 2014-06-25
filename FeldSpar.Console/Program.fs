@@ -13,21 +13,6 @@ open FeldSpar.Console.Tests.StandardsVerificationTests
 open ApprovalTests;
 
 module Program =
-    let ``Setup Global Reports`` = 
-        Config(fun () -> 
-        { 
-            Reporters = [
-                            fun () -> 
-                                    Searching
-                                        |> findFirstReporter<Reporters.DiffReporter>
-                                        |> findFirstReporter<Reporters.WinMergeReporter>
-                                        |> findFirstReporter<Reporters.NotepadLauncher>
-                                        |> unWrapReporter
-                                            
-                            fun () -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;
-                        ] 
-        })
-
     let getConsoleColor status =
         match status with
         | Found(_) -> ConsoleColor.Gray

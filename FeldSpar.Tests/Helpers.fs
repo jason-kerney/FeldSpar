@@ -1,10 +1,27 @@
 ﻿namespace FeldSpar.Console.Helpers
 open FeldSpar.Framework
 open FeldSpar.Framework.Engine
+open FeldSpar.Framework.Verification.ApprovalsSupport
+open ApprovalTests
 
 module Data =
     type internal Marker = interface end
     let assembly = typeof<Marker>.Assembly
+
+    let ``Setup Global Reports`` = 
+        Config(fun () -> 
+        { 
+            Reporters = [
+                            fun () -> 
+                                    Searching
+                                        |> findFirstReporter<Reporters.DiffReporter>
+                                        |> findFirstReporter<Reporters.WinMergeReporter>
+                                        |> findFirstReporter<Reporters.NotepadLauncher>
+                                        |> unWrapReporter
+                                            
+                            fun () -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;
+                        ] 
+        })
 
     let runTest description template = 
             let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description assembly
