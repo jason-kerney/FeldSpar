@@ -3,17 +3,16 @@ open System
 open FeldSpar.Framework
 open FeldSpar.Framework.TestSummaryUtilities
 open FeldSpar.Framework.Engine
-open FeldSpar.Framework.Verification.ApprovalsSupport;
+open FeldSpar.Framework.Verification.ApprovalsSupport
 
 open FeldSpar.Console.Helpers.Data
 open FeldSpar.Console.Tests.BuildingOfTestsTests
 open FeldSpar.Console.Tests.IsolationTests
 open FeldSpar.Console.Tests.FilteringTests
 open FeldSpar.Console.Tests.StandardsVerificationTests
-open ApprovalTests;
+open ApprovalTests
 
-open Microsoft.FSharp.Quotations
-open Microsoft.FSharp.Quotations.Patterns
+open Nessos.UnionArgParser
 
 module Program =
     let getConsoleColor status =
@@ -42,34 +41,23 @@ module Program =
 
         do Console.ForegroundColor <- oColor
 
+    type CommandArguments =
+        | UseColor
+    with
+        interface IArgParserTemplate with
+            member s.Usage =
+                match s with
+                | UseColor _ -> "Colors out put."
+
     [<EntryPoint>]
     let public main argv = 
-        (*
-        let theories =
-            let searchFilter = (typeof<Theory<_>>.GetGenericTypeDefinition ())
+        let parser = UnionArgParser<CommandArguments>()
+        let usage = parser.Usage()
 
-            let mi = typeof<Theory<_>>.Assembly.GetExportedTypes() 
-                        |> Seq.map(fun t -> t.GetMethods ()) 
-                        |> Seq.concat 
-                        |> Seq.filter (fun m -> m.Name = "convertTheoryToTests") 
-                        |> Seq.head
+        let results = parser.Parse(argv)
 
-            printfn "%A" fu
+        let useColor = results.Contains <@ UseColor @>
 
-            testAssembly.GetExportedTypes()
-            |> Seq.map(fun t -> t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static))
-            |> Seq.concat
-            |> Seq.filter(fun t -> t.PropertyType.IsGenericType)
-            |> Seq.filter(fun t -> t.PropertyType.GetGenericTypeDefinition () = searchFilter)
-            |> Seq.map(fun t -> 
-                        let g = t.PropertyType.GetGenericArguments() 
-                        let genericC = mi.MakeGenericMethod(g)
-                        genericC.Invoke(null, [|t.GetValue(null); t.Name|])
-            )
-            |> Seq.iter(fun v -> printfn "%A" v)
-
-        //*)            
-        //(*
         printfn "Running Tests"
 
         let formatResults result = 
