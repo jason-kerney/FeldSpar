@@ -10,7 +10,7 @@ open FeldSpar.Framework.Verification
 module BuildingOfTestsTests =
     let ``Can Create multiple Tests From one Theory Test`` =
         Test(fun env ->
-                let theory = Template({
+                let theory = Theory({
                                         Data = seq { for i in 1..4 do yield i};
                                         Base = {
                                                        UnitDescription = (fun n -> sprintf "testing %d" n);

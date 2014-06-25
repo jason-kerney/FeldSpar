@@ -19,42 +19,40 @@ module ExploritoryTests =
         }
           
     let ``Whole Doubles from 1.0 to 20.0`` = seq { 1.0..20.0 }  
-    
+
     let ``Here is a second theory test`` =
-        Theory(Template({
+        Theory({
                         Data = ``Whole Doubles from 1.0 to 20.0``
                         Base = ``Division Theory``
-            }) |> convertTheoryToTests)
+            })
 
     let ``This is a theory Test`` =
-        Theory(
-            Template({
-                        Data = [
-                                    (1, "1");
-                                    (2, "2");
-                                    (3, "Fizz");
-                                    (5,"Buzz");
-                                    (6, "Fizz");
-                                    (10,"Buzz");
-                                    (15,"FizzBuzz")
-                        ] |> List.toSeq
-                        Base = 
-                        {
-                            UnitDescription = (fun (n,s) -> sprintf "test converts %d into \"%s\"" n s)
-                            UnitTest = 
-                                (fun (n, expected) _ ->
-                                    let result = 
-                                        match n with
-                                        | v when v % 15 = 0 -> "FizzBuzz"
-                                        | v when v % 5 = 0 -> "Buzz"
-                                        | v when v % 3 = 0 -> "Fizz"
-                                        | v -> v.ToString()
+        Theory({
+                    Data = [
+                                (1, "1");
+                                (2, "2");
+                                (3, "Fizz");
+                                (5,"Buzz");
+                                (6, "Fizz");
+                                (10,"Buzz");
+                                (15,"FizzBuzz")
+                    ] |> List.toSeq
+                    Base = 
+                    {
+                        UnitDescription = (fun (n,s) -> sprintf "test converts %d into \"%s\"" n s)
+                        UnitTest = 
+                            (fun (n, expected) _ ->
+                                let result = 
+                                    match n with
+                                    | v when v % 15 = 0 -> "FizzBuzz"
+                                    | v when v % 5 = 0 -> "Buzz"
+                                    | v when v % 3 = 0 -> "Fizz"
+                                    | v -> v.ToString()
 
-                                    result |> expectsToBe expected "did not convert n correctly. Expected \"%s\" but got \"%s\""
-                                )
-                        }
-                }) |> convertTheoryToTests
-        )
+                                result |> expectsToBe expected "did not convert n correctly. Expected \"%s\" but got \"%s\""
+                            )
+                    }
+            })
 
         
     let ``This is an ignored test`` =

@@ -12,6 +12,9 @@ open FeldSpar.Console.Tests.FilteringTests
 open FeldSpar.Console.Tests.StandardsVerificationTests
 open ApprovalTests;
 
+open Microsoft.FSharp.Quotations
+open Microsoft.FSharp.Quotations.Patterns
+
 module Program =
     let getConsoleColor status =
         match status with
@@ -41,6 +44,32 @@ module Program =
 
     [<EntryPoint>]
     let public main argv = 
+        (*
+        let theories =
+            let searchFilter = (typeof<Theory<_>>.GetGenericTypeDefinition ())
+
+            let mi = typeof<Theory<_>>.Assembly.GetExportedTypes() 
+                        |> Seq.map(fun t -> t.GetMethods ()) 
+                        |> Seq.concat 
+                        |> Seq.filter (fun m -> m.Name = "convertTheoryToTests") 
+                        |> Seq.head
+
+            printfn "%A" fu
+
+            testAssembly.GetExportedTypes()
+            |> Seq.map(fun t -> t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static))
+            |> Seq.concat
+            |> Seq.filter(fun t -> t.PropertyType.IsGenericType)
+            |> Seq.filter(fun t -> t.PropertyType.GetGenericTypeDefinition () = searchFilter)
+            |> Seq.map(fun t -> 
+                        let g = t.PropertyType.GetGenericArguments() 
+                        let genericC = mi.MakeGenericMethod(g)
+                        genericC.Invoke(null, [|t.GetValue(null); t.Name|])
+            )
+            |> Seq.iter(fun v -> printfn "%A" v)
+
+        //*)            
+        //(*
         printfn "Running Tests"
 
         let formatResults result = 
@@ -76,6 +105,8 @@ module Program =
             |> printReports
 
         printfn "Done!"
+
+        //*)
 
         Console.ReadKey true |> ignore
         0

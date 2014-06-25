@@ -177,13 +177,16 @@ module Runner =
         let getNext = (fun (min, max) -> rnd.Next(min, max))
 
         shuffle list getNext
+    
+    let private isTheory (t:Type) =
+        t.IsGenericType && (t.GetGenericTypeDefinition()) = (typeof<Theory<_>>.GetGenericTypeDefinition())
 
     let private getTestsWith (map:PropertyInfo -> (string * Test)[]) (environment : AssemblyConfiguration) report (assembly:Assembly) = 
         let filter (prop:PropertyInfo) = 
             match prop.PropertyType with
             | t when t = typeof<Test> -> true
             | t when t = typeof<IgnoredTest> -> true
-            | t when t = typeof<TheoryMap> -> true
+            | t when isTheory t -> true
             | _ -> false
 
         let tests = 
@@ -196,22 +199,27 @@ module Runner =
             |> shuffleTests
             |> buildTestPlan environment report assembly
 
-    let convertTheoryToTests (Template({Data = data; Base = {UnitDescription = getUnitDescription; UnitTest = testTemplate}})) baseName =
+    let convertTheoryToTests (Theory({Data = data; Base = {UnitDescription = getUnitDescription; UnitTest = testTemplate}})) baseName =
         data
             |> Seq.map(fun datum -> (datum, datum |> testTemplate))
             |> Seq.map(fun (datum, testTemplate) -> (sprintf "%s.%s" baseName (getUnitDescription datum), Test(testTemplate)))
             |> Seq.toArray
 
     let private getTestsFromPropery (prop:PropertyInfo) =
+        let mi = typeof<Theory<_>>.Assembly.GetExportedTypes() 
+                    |> Seq.map(fun t -> t.GetMethods ()) 
+                    |> Seq.concat 
+                    |> Seq.filter (fun m -> m.Name = "convertTheoryToTests") 
+                    |> Seq.head
+
         match prop.PropertyType with
             | t when t = typeof<Test> -> [|(prop.Name, prop.GetValue(null) :?> Test)|]
             | t when t = typeof<IgnoredTest> -> [|(prop.Name, Test(fun _ -> ignoreWith "Compile Ignored"))|]
-            | t when t = typeof<TheoryMap> -> 
-                let getTests = 
-                    match prop.GetValue(null) :?> TheoryMap with
-                    | Theory(v) -> v
+            | t when t |> isTheory -> 
+                let g = t.GetGenericArguments() 
+                let genericC = mi.MakeGenericMethod(g)
 
-                prop.Name |> getTests
+                genericC.Invoke(null, [|prop.GetValue(null); prop.Name|]) :?> (string * Test)[]
             | _ -> raise (ArgumentException("Incorrect property found by engine"))
             
     let private getConfigurationError (prop:PropertyInfo) =
