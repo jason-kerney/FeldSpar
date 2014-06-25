@@ -58,8 +58,28 @@ module ApprovalsSupport =
         getBinaryFileWriter extentionWithoutDot data
 
     let private getNamer (env:TestEnvironment) = 
+        let trace = System.Diagnostics.StackTrace(true)
+
+        let (|GetFileName|_|) (frame:System.Diagnostics.StackFrame) =
+            if (frame.GetMethod ()).DeclaringType.Assembly = env.Assembly
+            then Some(frame.GetFileName ())
+            else None
+
+        let rec find frames = 
+            match frames with
+            | [] -> env.RootPath
+            | (GetFileName name)::_ -> 
+                let dir = System.IO.FileInfo(name).Directory
+                if dir.Exists
+                then dir.FullName + "\\"
+                else env.RootPath
+
+            | _::tail -> find tail
+
+        let path = find (trace.GetFrames () |> Seq.toList)
+
         {  new IApprovalNamer with
-            member this.SourcePath with get () = env.RootPath
+            member this.SourcePath with get () = path
             member this.Name with get () = env.CanonicalizedName
         }
 
@@ -87,21 +107,6 @@ module ApprovalsSupport =
         }
 
     let getStringFileApprover env result =
-        let trace = System.Diagnostics.StackTrace(true)
-
-        let (|GetFileName|_|) (frame:System.Diagnostics.StackFrame) =
-            if (frame.GetMethod ()).DeclaringType.Assembly = env.Assembly
-            then Some(frame.GetFileName ())
-            else None
-
-        let rec find frames = 
-            match frames with
-            | [] -> env.RootPath
-            | (GetFileName name)::_ -> name
-            | _::tail -> find tail
-
-        let path = find (trace.GetFrames () |> Seq.toList)
-
         ApprovalTests.Approvers.FileApprover(getStringFileWriter result, getNamer env) :> IApprovalApprover
 
     let getBinaryFileApprover env extentionWithoutDot result =
