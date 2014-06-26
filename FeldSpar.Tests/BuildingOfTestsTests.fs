@@ -95,7 +95,7 @@ module BuildingOfTestsTests =
             )
 
     let ``Find All Tests through Reflection`` = 
-        ITest((fun env ->
+        Test((fun env ->
                 let join : string list -> string = (fun (arry) -> 
                                                     let rec append (value: string list) (acc, cnt) =
                                                         match value with
