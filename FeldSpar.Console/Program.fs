@@ -42,26 +42,42 @@ module Program =
         do Console.ForegroundColor <- oColor
 
     type CommandArguments =
-        | UseColor
+        | ReportLocation of string
     with
         interface IArgParserTemplate with
             member s.Usage =
                 match s with
-                | UseColor _ -> "Colors out put."
+                | ReportLocation _ -> "This flag indicates that a JSON report is to be generated at the given location"
 
     [<EntryPoint>]
     let public main argv = 
-        let parser = UnionArgParser<CommandArguments>()
-        let usage = parser.Usage()
+        
+        let savePath =
+            let parser = UnionArgParser<CommandArguments>()
+            let usage = parser.Usage()
 
-        let results = parser.Parse(argv)
+            let args = parser.Parse(argv)
 
-        let useColor = results.Contains <@ UseColor @>
+            let saveJSONReport = args.Contains <@ ReportLocation @>
+
+            if saveJSONReport
+            then
+                let pathValue = args.GetResult <@ ReportLocation @>
+                let fName = System.IO.Path.GetFileName pathValue
+
+                if fName = null
+                then raise (ArgumentException("reportlocation must contain a valid file name"))
+
+                let fileInfo = IO.FileInfo(pathValue)
+
+                if fileInfo.Exists
+                then fileInfo.Delete ()
+
+                Some(fileInfo.FullName)
+            else
+                None
 
         printfn "Running Tests"
-
-        let formatResults result = 
-            sprintf "\t\t%A" result
 
         let printReports results =
             let oColor = Console.ForegroundColor
@@ -91,6 +107,13 @@ module Program =
             |> reportResults 
             |> seperateResults
             |> printReports
+
+        match savePath with
+        | Some(path) ->
+            let json = tests |> buildOutputReport |> JSONFormat
+
+            IO.File.WriteAllText(path, json)
+        | _ -> ()
 
         printfn "Done!"
 

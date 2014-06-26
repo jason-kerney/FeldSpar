@@ -19,7 +19,7 @@ module TestSummaryUtilities =
         let successes = 
             let subSuccesses =
                 value.Successes
-                |> Seq.map(fun s -> sprintf "\"%s\"" s)
+                |> Seq.map(fun s -> sprintf "\"%s\"" (s.Replace("\"", "'")))
                 |> joinWith ",\r\n\t\t"
 
             subSuccesses
@@ -30,13 +30,13 @@ module TestSummaryUtilities =
                 |> Array.map (fun { Name = name; FailureType = failureType } ->
                     let failMsg = 
                         match failureType with
-                        | GeneralFailure(msg) -> sprintf "General Failure ('%s')" msg
-                        | ExceptionFailure(ex) -> 
-                            let msg = sprintf "Exception Thrown:\r\n%A" ex
-                            msg.Replace("\"", "'")
+                        | GeneralFailure(msg)     -> sprintf "General Failure ('%s')" msg
+                        | ExceptionFailure(ex)    -> sprintf "Exception Thrown:\r\n%A" ex
                         | ExpectationFailure(msg) -> sprintf "Expectation Not Met ('%s')" msg
-                        | Ignored(msg) -> sprintf "Ignored ('%s')" msg
-                        | StandardNotMet -> "Standard was not Met"
+                        | Ignored(msg)            -> sprintf "Ignored ('%s')" msg
+                        | StandardNotMet          -> "Standard was not Met"
+
+                    let failMsg = failMsg.Replace("\"", "'")
 
                     sprintf "{ \"%s\" : \"%s\" }" name failMsg
                 )
