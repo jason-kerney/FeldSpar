@@ -6,8 +6,67 @@ open FeldSpar.Framework
 open FeldSpar.Framework.TestSummaryUtilities
 open FeldSpar.Framework.Engine
 open FeldSpar.Framework.Verification
+open FeldSpar.Framework.Verification.ApprovalsSupport
 
 module BuildingOfTestsTests =
+    let ``Can Build Report from Execution Summaries`` =
+        Test(fun env ->
+            let summaries = [
+                { 
+                    TestDescription = "Summary One"; 
+                    TestCanonicalizedName = "SummaryOne";
+                    TestResults = Success;
+                };
+                { 
+                    TestDescription = "Summary Two"; 
+                    TestCanonicalizedName = "SummaryTwo";
+                    TestResults = Failure(GeneralFailure("Something unknown happened"));
+                };
+                { 
+                    TestDescription = "Summary Three"; 
+                    TestCanonicalizedName = "SummaryThree";
+                    TestResults = Success;
+                };
+                { 
+                    TestDescription = "Summary Four"; 
+                    TestCanonicalizedName = "SummaryThree";
+                    TestResults = 5 |> expectsToBe 4 "%d <> %d";
+                };
+            ]
+
+            let report = summaries |> buildOutputReport
+            report |> checkAgainstStandardObjectAsString env
+        )
+
+    let ``Report exports to JSON`` =
+        Test(fun env ->
+            let summaries = [
+                { 
+                    TestDescription = "Summary One"; 
+                    TestCanonicalizedName = "SummaryOne";
+                    TestResults = Success;
+                };
+                { 
+                    TestDescription = "Summary Two"; 
+                    TestCanonicalizedName = "SummaryTwo";
+                    TestResults = Failure(GeneralFailure("Something unknown happened"));
+                };
+                { 
+                    TestDescription = "Summary Three"; 
+                    TestCanonicalizedName = "SummaryThree";
+                    TestResults = Success;
+                };
+                { 
+                    TestDescription = "Summary Four"; 
+                    TestCanonicalizedName = "SummaryThree";
+                    TestResults = 5 |> expectsToBe 4 "%d <> %d";
+                };
+            ]
+
+            let report = summaries |> buildOutputReport |> FeldSpar.Framework.TestSummaryUtilities.JSONFormat
+            report |> checkAgainstStringStandard env
+        )
+
     let ``Can Create multiple Tests From one Theory Test`` =
         Test(fun env ->
                 let theory = Theory({
@@ -36,7 +95,7 @@ module BuildingOfTestsTests =
             )
 
     let ``Find All Tests through Reflection`` = 
-        Test((fun env ->
+        ITest((fun env ->
                 let join : string list -> string = (fun (arry) -> 
                                                     let rec append (value: string list) (acc, cnt) =
                                                         match value with
@@ -61,6 +120,7 @@ module BuildingOfTestsTests =
                         return Success
                     }
             ))
+
     let ``Test that a failing test shows as a failure`` = 
         Test((fun env ->
                 let failDescription = "A Test That will fail"

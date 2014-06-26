@@ -4,6 +4,7 @@ open System
 open ApprovalsSupport
 open FeldSpar.Framework
 open FeldSpar.Framework.TestResultUtilities
+open FeldSpar.Framework.TestSummaryUtilities
 open ApprovalTests.Core
 
 [<AutoOpen>]

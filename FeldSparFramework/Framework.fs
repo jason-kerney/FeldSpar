@@ -17,9 +17,21 @@ type ExecutionSummary =
     {
         TestDescription : string;
         TestCanonicalizedName : string;
-        TestResults : TestResult
+        TestResults : TestResult;
     }
 
+type FailureReport = 
+    {
+        Name : string;
+        FailureType : FailureType;
+    }
+
+type OutputReport =
+    {
+        Failures : FailureReport[];
+        Successes : string[];
+    }
+    
 type AssemblyConfiguration =
     {
         Reporters : (unit -> IApprovalFailureReporter) List;
@@ -61,7 +73,7 @@ module Utilities =
 
     let failResult message = Failure(GeneralFailure(message))
 
-    let notYetImplemented = ignoreWith "Test not yet implemented"
+    let ``Not Yet Implemented`` = ignoreWith "Test not yet implemented"
 
     let indeterminateTest = ignoreWith "Indeterminate Test Result"
 
@@ -73,3 +85,26 @@ module Utilities =
         seq { for callWith in calls do
                  for item in items do 
                     yield callWith item }
+
+    let buildOutputReport (results:ExecutionSummary seq) =
+        let successes = 
+            results
+            |> Seq.filter (fun result -> result.TestResults = Success)
+            |> Seq.map (fun result -> result.TestDescription)
+            |> Seq.toArray
+
+        let failures =
+            results
+            |> Seq.filter (fun result -> result.TestResults <> Success)
+            |> Seq.map(fun { TestDescription = name; TestCanonicalizedName = _ ; TestResults = Failure(failType) } -> 
+                {
+                    Name = name;
+                    FailureType = failType;
+                }
+            )
+            |> Seq.toArray
+
+        {
+            Failures = failures;
+            Successes = successes;
+        }

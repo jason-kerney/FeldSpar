@@ -1,5 +1,6 @@
 ﻿namespace FeldSpar.Framework.Verification
 open FeldSpar.Framework
+open FeldSpar.Framework.TestSummaryUtilities
 
 (*
     This would not be possible without the help of Llewellyn Falco and his Approval Tests
@@ -13,9 +14,6 @@ module ApprovalsSupport =
     open System.IO
 
     let thanksUrl = "https://github.com/approvals/ApprovalTests.Net/"
-
-    let joinWith separator (strings : string seq) =
-        System.String.Join(separator, strings)
 
     type FindReporterResult =
         | FoundReporter of IApprovalFailureReporter

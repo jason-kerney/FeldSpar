@@ -1,0 +1,10 @@
+﻿{
+	"Failures" : [
+		{ "Summary Two" : "General Failure ('Something unknown happened')" },
+		{ "Summary Four" : "Expectation Not Met ('4 <> 5')" }
+	],
+	"Successes" : [
+		"Summary One",
+		"Summary Three"
+	]
+}
