@@ -1,7 +1,7 @@
 ﻿{
 	"Failures" : [
-		{ "Summary Two" : "General Failure ('Something unknown happened')" },
-		{ "Summary Four" : "Expectation Not Met ('4 <> 5')" }
+		{ "Summary Four" : "Expectation Not Met ('4 <> 5')" },
+		{ "Summary Two" : "General Failure ('Something unknown happened')" }
 	],
 	"Successes" : [
 		"Summary One",

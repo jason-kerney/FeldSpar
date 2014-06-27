@@ -90,12 +90,14 @@ module Utilities =
         let successes = 
             results
             |> Seq.filter (fun result -> result.TestResults = Success)
+            |> Seq.sortBy (fun result -> result.TestDescription)
             |> Seq.map (fun result -> result.TestDescription)
             |> Seq.toArray
 
         let failures =
             results
             |> Seq.filter (fun result -> result.TestResults <> Success)
+            |> Seq.sortBy (fun result -> result.TestDescription)
             |> Seq.map(fun { TestDescription = name; TestCanonicalizedName = _ ; TestResults = Failure(failType) } -> 
                 {
                     Name = name;
