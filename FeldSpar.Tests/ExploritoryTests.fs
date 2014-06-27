@@ -58,7 +58,7 @@ module ExploritoryTests =
     let ``This is an ignored test`` =
         ITest(fun env -> Success)
 
-    let ``Test that shufle works correctly`` =
+    let ``Test that shuffle works correctly`` =
         Test(fun env ->
                 let numbers = seq { for i in 1..100 do yield i } |> Seq.toArray
 

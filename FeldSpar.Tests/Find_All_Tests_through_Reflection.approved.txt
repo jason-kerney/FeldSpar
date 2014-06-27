@@ -35,7 +35,7 @@ Test[33] is ((Here is a second theory test. (8.000000 * 8.000000) / 8.000000 = 8
 Test[34] is ((Here is a second theory test. (9.000000 * 9.000000) / 9.000000 = 9.000000))
 Test[35] is ((Report exports to JSON))
 Test[36] is ((Test that a failing test shows as a failure))
-Test[37] is ((Test that shufle works correctly))
+Test[37] is ((Test that shuffle works correctly))
 Test[38] is ((Testing that CanoicalizationOfStrings Works))
 Test[39] is ((The environment of a test should canonicalize the description correctly into the name))
 Test[40] is ((This is a theory Test.test converts 1 into "1"))
