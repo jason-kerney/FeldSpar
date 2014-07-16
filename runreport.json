@@ -40,7 +40,7 @@
 		"Here is a second theory test. (9.000000 * 9.000000) / 9.000000 = 9.000000",
 		"Report exports to JSON",
 		"Test that a failing test shows as a failure",
-		"Test that shufle works correctly",
+		"Test that shuffle works correctly",
 		"Testing that CanoicalizationOfStrings Works",
 		"The environment of a test should canonicalize the description correctly into the name",
 		"This is a theory Test.test converts 1 into '1'",
