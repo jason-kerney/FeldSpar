@@ -6,6 +6,8 @@ open FeldSpar.Framework.Engine
 open FeldSpar.Framework.TestSummaryUtilities
 open FeldSpar.Framework.Verification.ApprovalsSupport
 
+open PathFinding.Tests.BaseTests
+
 open FeldSpar.Console.Helpers.Data
 open FeldSpar.Console.Tests.BuildingOfTestsTests
 open FeldSpar.Console.Tests.IsolationTests
@@ -54,12 +56,14 @@ module Program =
 
         printfn "Running Tests"
 
-        let tests = testFeldSparAssembly |> runAndReport
+        let testsFeldSpar = testFeldSparAssembly |> runAndReport
+        let testsPathFinding = testPathFindingAssembly |> runAndReport
         match savePath with
         | Some(path) ->
-            let json = tests |> buildOutputReport |> JSONFormat
+            let jsonFeldSpar = testsFeldSpar |> buildOutputReport |> JSONFormat
+            let jsonPathFinding =testsPathFinding |> buildOutputReport |> JSONFormat
 
-            IO.File.WriteAllText(path, json)
+            IO.File.WriteAllText(path, jsonFeldSpar + Environment.NewLine + jsonPathFinding)
         | _ -> ()
 
         printfn "Done!"
