@@ -54,7 +54,7 @@ module Program =
 
         printfn "Running Tests"
 
-        let tests = testAssembly |> runAndReport
+        let tests = testFeldSparAssembly |> runAndReport
         match savePath with
         | Some(path) ->
             let json = tests |> buildOutputReport |> JSONFormat

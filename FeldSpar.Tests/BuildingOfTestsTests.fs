@@ -110,7 +110,7 @@ module BuildingOfTestsTests =
                                                     ("", 0) |> append arry
                                                 )
 
-                let testTemplatesa = findTests (testAssembly) |> Seq.sortBy(fun (description, _) -> description) |> Seq.map(fun (description, _) -> "(" + description + ")")
+                let testTemplatesa = findTests (testFeldSparAssembly) |> Seq.sortBy(fun (description, _) -> description) |> Seq.map(fun (description, _) -> "(" + description + ")")
                 let testTemplatesb = testTemplatesa |> Seq.toList
                 let testTemplates = testTemplatesb |> join
 
@@ -130,7 +130,7 @@ module BuildingOfTestsTests =
                 let env : AssemblyConfiguration = { Reporters = []}
 
                 let resultSummary = 
-                    let _, test = ``A Test That will fail`` |> createTestFromTemplate env ignore failDescription testAssembly
+                    let _, test = ``A Test That will fail`` |> createTestFromTemplate env ignore failDescription testFeldSparAssembly
                     test()
 
                 verify
@@ -184,7 +184,7 @@ module BuildingOfTestsTests =
                 let ex = IndexOutOfRangeException("The exception was out of range")
                 let ``A test that throws an exception`` =  Test((fun env -> raise ex))
 
-                let _, case = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore "A test that throws an exception" testAssembly
+                let _, case = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore "A test that throws an exception" testFeldSparAssembly
 
                 let summary = case()
                 let result = summary.TestResults
