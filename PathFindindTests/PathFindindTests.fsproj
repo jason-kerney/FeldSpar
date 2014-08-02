@@ -49,6 +49,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework.fs" />
     <Compile Include="BaseTests.fs" />
   </ItemGroup>
   <PropertyGroup>
