@@ -1,13 +1,23 @@
 ﻿namespace PathFinding
 
-type Grid = 
+type GridSpaceType =
+    | Normal of GridSpace
+    | Start of GridSpace
+    | End of GridSpace
+
+and GridSpace = 
     {
-        Up : Grid Option;
-        Right : Grid Option;
-        Down : Grid Option;
-        Left : Grid Option;
+        Up : GridSpaceType Option;
+        Right : GridSpaceType Option;
+        Down : GridSpaceType Option;
+        Left : GridSpaceType Option;
+    }
+
+type Grid =
+    {
+        Starts : GridSpaceType List;
     }
 
 module Framework =
-    ()
+    let BuildGrid diminsion startingPoints endingPoints = ()
 
