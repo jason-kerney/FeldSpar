@@ -16,10 +16,13 @@ module TestSummaryUtilities =
         summaries |> reduceTo filterSuccesses
 
     let JSONFormat (value:OutputReport) =
+        let spacer = "\r\n\t"
+        let joinSpacer = sprintf ",%s\t" spacer
+
         let successes = 
             value.Successes
             |> Seq.map(fun s -> sprintf "\"%s\"" (s.Replace("\"", "'")))
-            |> joinWith ",\r\n\t\t"
+            |> joinWith joinSpacer
 
         let failures = 
             value.Failures
@@ -36,7 +39,7 @@ module TestSummaryUtilities =
 
                 sprintf "{ \"%s\" : \"%s\" }" name failMsg
             )
-            |> joinWith ",\r\n\t\t"
+            |> joinWith joinSpacer
 
-        let jsonString = sprintf "{\r\n\t\"Failures\" : [\r\n\t\t%s\r\n\t],\r\n\t\"Successes\" : [\r\n\t\t%s\r\n\t]\r\n}\r\n"  failures successes
+        let jsonString = sprintf "{%s\"Assembly Name\" : \"%s\" %s\"Failures\" : [\r\n\t\t%s\r\n\t],%s\"Successes\" : [\r\n\t\t%s\r\n\t]\r\n}\r\n" spacer (value.Name) spacer failures spacer successes
         jsonString

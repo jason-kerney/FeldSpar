@@ -54,3 +54,12 @@
 		"filterByFailures should remove any non failing tests summaries from a collection of result summaries"
 	]
 }
+
+{
+	"Failures" : [
+		
+	],
+	"Successes" : [
+		
+	]
+}

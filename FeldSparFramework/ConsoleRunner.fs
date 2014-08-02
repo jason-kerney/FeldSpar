@@ -46,9 +46,14 @@ module ConsoleRunner =
                                     let sep = s.PadLeft(24, '_')
                                     result + Environment.NewLine + sep + Environment.NewLine
                             )
-    let runAndReport testAssembly = 
-        let tests = testAssembly |> runTestsAndReport reportConsoleColorForResult
 
+    let getAssemblyName (testAssembly : Reflection.Assembly) =
+        testAssembly.FullName.Split([|','|]).[0]
+        
+    let runAndReport testAssembly = 
+        let name = testAssembly |> getAssemblyName 
+        let tests = testAssembly |> runTestsAndReport reportConsoleColorForResult
+        
         let failedTests = tests
                             |> reduceToFailures 
                             |> List.ofSeq
@@ -60,4 +65,4 @@ module ConsoleRunner =
             |> seperateResults
             |> printReports
 
-        tests
+        (name, tests)

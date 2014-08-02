@@ -28,6 +28,7 @@ type FailureReport =
 
 type OutputReport =
     {
+        Name : string;
         Failures : FailureReport[];
         Successes : string[];
     }
@@ -86,7 +87,7 @@ module Utilities =
                  for item in items do 
                     yield callWith item }
 
-    let buildOutputReport (results:ExecutionSummary seq) =
+    let buildOutputReport (name, results:ExecutionSummary seq) =
         let successes = 
             results
             |> Seq.filter (fun result -> result.TestResults = Success)
@@ -107,6 +108,7 @@ module Utilities =
             |> Seq.toArray
 
         {
+            Name = name;
             Failures = failures;
             Successes = successes;
         }

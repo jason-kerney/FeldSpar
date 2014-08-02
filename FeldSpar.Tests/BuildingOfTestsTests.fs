@@ -11,28 +11,30 @@ open FeldSpar.Framework.Verification.ApprovalsSupport
 module BuildingOfTestsTests =
     let ``Can Build Report from Execution Summaries`` =
         Test(fun env ->
-            let summaries = [
-                { 
-                    TestDescription = "Summary One"; 
-                    TestCanonicalizedName = "SummaryOne";
-                    TestResults = Success;
-                };
-                { 
-                    TestDescription = "Summary Two"; 
-                    TestCanonicalizedName = "SummaryTwo";
-                    TestResults = Failure(GeneralFailure("Something unknown happened"));
-                };
-                { 
-                    TestDescription = "Summary Three"; 
-                    TestCanonicalizedName = "SummaryThree";
-                    TestResults = Success;
-                };
-                { 
-                    TestDescription = "Summary Four"; 
-                    TestCanonicalizedName = "SummaryThree";
-                    TestResults = 5 |> expectsToBe 4 "%d <> %d";
-                };
-            ]
+            let summaries = (
+                "internal tests",
+                [
+                    { 
+                        TestDescription = "Summary One"; 
+                        TestCanonicalizedName = "SummaryOne";
+                        TestResults = Success;
+                    };
+                    { 
+                        TestDescription = "Summary Two"; 
+                        TestCanonicalizedName = "SummaryTwo";
+                        TestResults = Failure(GeneralFailure("Something unknown happened"));
+                    };
+                    { 
+                        TestDescription = "Summary Three"; 
+                        TestCanonicalizedName = "SummaryThree";
+                        TestResults = Success;
+                    };
+                    { 
+                        TestDescription = "Summary Four"; 
+                        TestCanonicalizedName = "SummaryThree";
+                        TestResults = 5 |> expectsToBe 4 "%d <> %d";
+                    };
+                ])
 
             let report = summaries |> buildOutputReport
             report |> checkAgainstStandardObjectAsString env
@@ -40,28 +42,30 @@ module BuildingOfTestsTests =
 
     let ``Report exports to JSON`` =
         Test(fun env ->
-            let summaries = [
-                { 
-                    TestDescription = "Summary One"; 
-                    TestCanonicalizedName = "SummaryOne";
-                    TestResults = Success;
-                };
-                { 
-                    TestDescription = "Summary Two"; 
-                    TestCanonicalizedName = "SummaryTwo";
-                    TestResults = Failure(GeneralFailure("Something unknown happened"));
-                };
-                { 
-                    TestDescription = "Summary Three"; 
-                    TestCanonicalizedName = "SummaryThree";
-                    TestResults = Success;
-                };
-                { 
-                    TestDescription = "Summary Four"; 
-                    TestCanonicalizedName = "SummaryThree";
-                    TestResults = 5 |> expectsToBe 4 "%d <> %d";
-                };
-            ]
+            let summaries = (
+                "internal tests",
+                [
+                    { 
+                        TestDescription = "Summary One"; 
+                        TestCanonicalizedName = "SummaryOne";
+                        TestResults = Success;
+                    };
+                    { 
+                        TestDescription = "Summary Two"; 
+                        TestCanonicalizedName = "SummaryTwo";
+                        TestResults = Failure(GeneralFailure("Something unknown happened"));
+                    };
+                    { 
+                        TestDescription = "Summary Three"; 
+                        TestCanonicalizedName = "SummaryThree";
+                        TestResults = Success;
+                    };
+                    { 
+                        TestDescription = "Summary Four"; 
+                        TestCanonicalizedName = "SummaryThree";
+                        TestResults = 5 |> expectsToBe 4 "%d <> %d";
+                    };
+                ])
 
             let report = summaries |> buildOutputReport |> FeldSpar.Framework.TestSummaryUtilities.JSONFormat
             report |> checkAgainstStringStandard env
