@@ -1,12 +1,14 @@
 {
+	"Assembly Name" : "FeldSpar.Tests" 
 	"Failures" : [
+		{ "Can Build Report from Execution Summaries" : "Standard was not Met" },
+		{ "Report exports to JSON" : "Standard was not Met" },
 		{ "This is an ignored test" : "Ignored ('Compile Ignored')" }
 	],
 	"Successes" : [
 		"A test that succeeds",
 		"A test to check verification",
 		"An exception thrown in a test should report exception failure",
-		"Can Build Report from Execution Summaries",
 		"Can Create multiple Tests From one Theory Test",
 		"Combinatory Gold Standard Testing",
 		"Find All Tests through Reflection",
@@ -38,7 +40,6 @@
 		"Here is a second theory test. (7.000000 * 7.000000) / 7.000000 = 7.000000",
 		"Here is a second theory test. (8.000000 * 8.000000) / 8.000000 = 8.000000",
 		"Here is a second theory test. (9.000000 * 9.000000) / 9.000000 = 9.000000",
-		"Report exports to JSON",
 		"Test that a failing test shows as a failure",
 		"Test that shuffle works correctly",
 		"Testing that CanoicalizationOfStrings Works",
@@ -56,8 +57,9 @@
 }
 
 {
+	"Assembly Name" : "PathFindindTests" 
 	"Failures" : [
-		
+		{ "Simple Pathfinding" : "Ignored ('not done')" }
 	],
 	"Successes" : [
 		

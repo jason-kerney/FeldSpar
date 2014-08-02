@@ -1,4 +1,5 @@
-﻿{Failures =
+﻿{Name = "internal tests";
+ Failures =
   [|{Name = "Summary Four";
      FailureType = ExpectationFailure "4 <> 5";};
     {Name = "Summary Two";
