@@ -12,7 +12,7 @@ module StandardsVerificationTests =
             Dojo:string*Color
         }
     
-    let ``A test to check verification`` = 
+    let ``A test, to check verification`` = 
         Test((fun env ->
                 let itemUnderTest = 
                     sprintf "%A%s"
