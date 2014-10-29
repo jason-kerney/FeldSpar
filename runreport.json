@@ -1,17 +1,16 @@
 {
 	"Assembly Name" : "FeldSpar.Tests" 
 	"Failures" : [
-		{ "Can Build Report from Execution Summaries" : "Standard was not Met" },
-		{ "Report exports to JSON" : "Standard was not Met" },
+		{ "Find All Tests through Reflection" : "Ignored ('Compile Ignored')" },
 		{ "This is an ignored test" : "Ignored ('Compile Ignored')" }
 	],
 	"Successes" : [
 		"A test that succeeds",
 		"A test to check verification",
 		"An exception thrown in a test should report exception failure",
+		"Can Build Report from Execution Summaries",
 		"Can Create multiple Tests From one Theory Test",
 		"Combinatory Gold Standard Testing",
-		"Find All Tests through Reflection",
 		"Fizz Buzzer return Buzz for 5",
 		"Fizz Buzzer returns 'Buzz' for all multiples of 5 up to 10",
 		"Fizz Buzzer returns 'Fizz' for multiples of 3 up to 10",
@@ -40,6 +39,7 @@
 		"Here is a second theory test. (7.000000 * 7.000000) / 7.000000 = 7.000000",
 		"Here is a second theory test. (8.000000 * 8.000000) / 8.000000 = 8.000000",
 		"Here is a second theory test. (9.000000 * 9.000000) / 9.000000 = 9.000000",
+		"Report exports to JSON",
 		"Test that a failing test shows as a failure",
 		"Test that shuffle works correctly",
 		"Testing that CanoicalizationOfStrings Works",
@@ -52,14 +52,19 @@
 		"This is a theory Test.test converts 5 into 'Buzz'",
 		"This is a theory Test.test converts 6 into 'Fizz'",
 		"Verify that tests run in isolation",
-		"filterByFailures should remove any non failing tests summaries from a collection of result summaries"
+		"expectsNotToBe fails if equal",
+		"expectsNotToBe will succeed for '5' expectsNotToBe '6'",
+		"filterByFailures should remove any non failing tests summaries from a collection of result summaries",
+		"isNull fails if nof null",
+		"isNull succeeds if null"
 	]
 }
 
 {
 	"Assembly Name" : "PathFindindTests" 
 	"Failures" : [
-		{ "Simple Pathfinding" : "Ignored ('not done')" }
+		{ "Simple Pathfinding" : "Ignored ('not done')" },
+		{ "Test Building Grid" : "Ignored ('not done')" }
 	],
 	"Successes" : [
 		

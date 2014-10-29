@@ -57,6 +57,7 @@
     <Compile Include="BuildingOfTestsTests.fs" />
     <Compile Include="FilteringTests.fs" />
     <Compile Include="IsolationTests.fs" />
+    <Compile Include="ExpectationTests.fs" />
     <Content Include="An_exception_thrown_in_a_test_should_report_exception_failure.approved.txt" />
     <Content Include="A_test_to_check_verification.approved.txt" />
     <Content Include="Find_All_Tests_through_Reflection.approved.txt" />

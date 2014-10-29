@@ -14,8 +14,11 @@ module Checks =
         then Success
         else Failure(failure)
 
-    let expectsToBe expected message actual =
-        if expected = actual
+    let isFalse failure success =
+        !success |> isTrue failure
+
+    let private expectationCheck expected message actual check =
+        if check expected actual
         then Success
         else
             let failureMessage = 
@@ -25,6 +28,18 @@ module Checks =
                     e -> raise e
                     
             Failure(ExpectationFailure(failureMessage))
+
+    let expectsToBe expected message actual =
+        (fun a b -> a = b) |> expectationCheck expected message actual
+
+    let expectsNotToBe  expected message actual =
+        (fun a b -> a <> b) |> expectationCheck  expected message actual
+
+    let isNull message actual =
+        actual |> expectsToBe null message
+
+    let isNotNull message actual =
+        actual |> expectsNotToBe null message
 
     let private checkStandardsAndReport env (reporter:IApprovalFailureReporter) (approver:IApprovalApprover) =
         if(approver.Approve ())
