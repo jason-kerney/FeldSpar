@@ -31,3 +31,31 @@ module ExpectationTests =
                 result |> expectsNotToBe Success "%A should not be %A"
         )
 
+    let ``expectsToBeTrue passes when true`` =
+        Test(
+            fun _ ->
+                true |> expectsToBeTrue "%b is not %b"
+        )
+
+
+    let ``expectsToBeTrue fails when false`` =
+        Test(
+            fun _ ->
+                let result = false |> expectsToBeTrue "%b is not %b"
+                result |> expectsNotToBe Success "false should not be true '%A' = '%A'"
+        )
+
+    let ``expectsToBeFalse passes when false`` =
+        Test(
+            fun _ ->
+                false |> expectsToBeFalse "%b is not %b"
+        )
+
+
+    let ``expectsToBeFalse fails when true`` =
+        Test(
+            fun _ ->
+                let result = true |> expectsToBeFalse "%b is not %b"
+                result |> expectsNotToBe Success "true should not be false '%A' = '%A'"
+        )
+

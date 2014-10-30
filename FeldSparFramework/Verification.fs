@@ -32,8 +32,14 @@ module Checks =
     let expectsToBe expected message actual =
         (fun a b -> a = b) |> expectationCheck expected message actual
 
-    let expectsNotToBe  expected message actual =
+    let expectsNotToBe expected message actual =
         (fun a b -> a <> b) |> expectationCheck  expected message actual
+
+    let expectsToBeTrue message actual =
+        actual |> expectsToBe true message
+
+    let expectsToBeFalse message actual =
+        actual |> expectsToBe false message
 
     let isNull message actual =
         actual |> expectsToBe null message

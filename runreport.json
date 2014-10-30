@@ -54,6 +54,10 @@
 		"Verify that tests run in isolation",
 		"expectsNotToBe fails if equal",
 		"expectsNotToBe will succeed for '5' expectsNotToBe '6'",
+		"expectsToBeFalse fails when true",
+		"expectsToBeFalse passes when false",
+		"expectsToBeTrue fails when false",
+		"expectsToBeTrue passes when true",
 		"filterByFailures should remove any non failing tests summaries from a collection of result summaries",
 		"isNull fails if nof null",
 		"isNull succeeds if null"
