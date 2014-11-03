@@ -238,20 +238,20 @@ module Runner =
             (getConfig(), mapper)
         | None -> (emptyGlobal, mapper)
 
-    let findTestsAndReport (environment : AssemblyConfiguration) report (assembly:Assembly) = 
+    let findTestsAndReport report (assembly:Assembly) = 
         let (env, mapper) = assembly |> findConfiguration |> getMapper |> determinEnvironmentAndMapping 
 
         assembly |> getTestsWith mapper env report
 
     let runTestsAndReport report (assembly:Assembly) = 
-        assembly |> findTestsAndReport emptyGlobal report |> List.map(fun (_, test) -> test())
+        assembly |> findTestsAndReport report |> List.map(fun (_, test) -> test())
 
-    let runTestsAndReportWith environment report (assembly:Assembly) = 
-        assembly |> findTestsAndReport environment report |> List.map(fun (_, test) -> test())
+    let runTestsAndReportWith report (assembly:Assembly) = 
+        assembly |> findTestsAndReport report |> List.map(fun (_, test) -> test())
 
-    let findTests (assembly:Assembly) =  assembly |> findTestsAndReport emptyGlobal ignore
+    let findTests (assembly:Assembly) =  assembly |> findTestsAndReport ignore
 
     let runTests (assembly:Assembly) = assembly |> runTestsAndReport ignore
 
     let runTestsWith (env : AssemblyConfiguration) (assembly : Assembly) =
-        assembly |> findTestsAndReport env ignore |> List.map(fun (_, test) -> test())
+        assembly |> findTestsAndReport ignore |> List.map(fun (_, test) -> test())
