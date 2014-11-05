@@ -120,7 +120,6 @@ module Runner =
                         
         (name, testCase)
         
-
     let reportResults results = Basic.reportResults results
 
     let private runTestCode (_, test: unit -> ExecutionSummary) = test()

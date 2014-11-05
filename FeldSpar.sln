@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.Framework", "FeldSparFramework\FeldSpar.Framework.fsproj", "{AD56B1EE-515D-40D2-8217-4B4335C0A37B}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.Tests", "FeldSpar.Tests\FeldSpar.Tests.fsproj", "{6F2261D9-2268-4595-B35D-C401148906D5}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PathFindindTests", "PathFindindTests\PathFindindTests.fsproj", "{546D5801-9FD4-4A17-AF78-A150AFE59F44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeldSpar.CSharp.Exploration", "FeldSpar.CSharp.Exploration\FeldSpar.CSharp.Exploration.csproj", "{8AB397E0-B17F-4432-A5F1-5099C896C109}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +45,10 @@ Global
 		{546D5801-9FD4-4A17-AF78-A150AFE59F44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{546D5801-9FD4-4A17-AF78-A150AFE59F44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{546D5801-9FD4-4A17-AF78-A150AFE59F44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AB397E0-B17F-4432-A5F1-5099C896C109}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AB397E0-B17F-4432-A5F1-5099C896C109}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AB397E0-B17F-4432-A5F1-5099C896C109}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AB397E0-B17F-4432-A5F1-5099C896C109}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
