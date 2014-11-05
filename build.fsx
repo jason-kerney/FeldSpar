@@ -29,7 +29,7 @@ Target "BuildTest" (fun _ ->
         |> Log "TestBuild-Output:"
 )
 
-(* Having problems with git conversion of end of line characters
+//(* Having problems with git conversion of end of line characters
 Target "Test" (fun _ ->
     FileSystemHelper.directoryInfo "./FeldSpar.Console/" |>
         FileSystemHelper.filesInDir |>
@@ -52,6 +52,7 @@ Target "Default" (fun _ ->
 "Clean"
     ==> "BuildApp"
     ==> "BuildTest"
+    ==> "Test"
     ==> "Zip"
     ==> "Default"
 
