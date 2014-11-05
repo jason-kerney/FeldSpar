@@ -1,7 +1,6 @@
 ﻿namespace FeldSpar.Framework.Engine
 open System
 open FeldSpar.Framework
-open FeldSpar.Framework.Verification
 open FeldSpar.Framework.Formatters
 open System.Reflection
 
@@ -121,8 +120,6 @@ module Runner =
         (name, testCase)
         
     let reportResults results = Basic.reportResults results
-
-    let private runTestCode (_, test: unit -> ExecutionSummary) = test()
 
     let private findStaticProperties (t:Type) = t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static)
 
@@ -252,5 +249,5 @@ module Runner =
 
     let runTests (assembly:Assembly) = assembly |> runTestsAndReport ignore
 
-    let runTestsWith (env : AssemblyConfiguration) (assembly : Assembly) =
+    let runTestsWith (assembly : Assembly) =
         assembly |> findTestsAndReport ignore |> List.map(fun (_, test) -> test())

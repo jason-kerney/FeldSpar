@@ -30,7 +30,6 @@ module ConsoleRunner =
 
         do Console.ForegroundColor <- oColor
 
-
     let printReports results =
         let oColor = Console.ForegroundColor
         Console.ForegroundColor <- System.ConsoleColor.Red
