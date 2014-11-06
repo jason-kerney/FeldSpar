@@ -23,6 +23,10 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PathFindindTests", "PathFin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeldSpar.CSharp.Exploration", "FeldSpar.CSharp.Exploration\FeldSpar.CSharp.Exploration.csproj", "{8AB397E0-B17F-4432-A5F1-5099C896C109}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuiRunner", "GuiRunner\GuiRunner.csproj", "{1CB4C291-BE55-496C-B32C-638DA258A486}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModel", "ViewModel\ViewModel.csproj", "{593E598D-EEE0-4884-BFCC-EC01F33A5276}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +53,14 @@ Global
 		{8AB397E0-B17F-4432-A5F1-5099C896C109}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AB397E0-B17F-4432-A5F1-5099C896C109}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AB397E0-B17F-4432-A5F1-5099C896C109}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CB4C291-BE55-496C-B32C-638DA258A486}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CB4C291-BE55-496C-B32C-638DA258A486}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CB4C291-BE55-496C-B32C-638DA258A486}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CB4C291-BE55-496C-B32C-638DA258A486}.Release|Any CPU.Build.0 = Release|Any CPU
+		{593E598D-EEE0-4884-BFCC-EC01F33A5276}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{593E598D-EEE0-4884-BFCC-EC01F33A5276}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{593E598D-EEE0-4884-BFCC-EC01F33A5276}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{593E598D-EEE0-4884-BFCC-EC01F33A5276}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
