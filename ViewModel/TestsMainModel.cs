@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using FeldSpar.Framework;
 
@@ -12,14 +11,16 @@ namespace ViewModel
 {
     public class TestsMainModel : PropertyNotifyBase
     {
-        private readonly string path = @"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\FeldSpar.Tests.dll";
+        private readonly string path1 = @"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\FeldSpar.Tests.dll";
+        private readonly string path2 = @"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\PathFindindTests.dll";
         private ObservableCollection<TestAssemblyModel> assemblies = new ObservableCollection<TestAssemblyModel>();
 
         public TestsMainModel()
         {
             var itemsRemovedActions = new[] { NotifyCollectionChangedAction.Remove, NotifyCollectionChangedAction.Replace };
 
-            assemblies.Add(new TestAssemblyModel(path));
+            assemblies.Add(new TestAssemblyModel(path1));
+            assemblies.Add(new TestAssemblyModel(path2));
 
             assemblies.CollectionChanged += (sender, args) =>
             {
@@ -54,7 +55,7 @@ namespace ViewModel
 
         public bool IsRunning { get; set; }
 
-        public async void Run(object ignored)
+        public void Run(object ignored)
         {
             IsRunning = true;
             foreach (var testAssemblyModel in assemblies)

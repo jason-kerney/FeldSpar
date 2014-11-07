@@ -111,6 +111,10 @@
       <Project>{ad56b1ee-515d-40d2-8217-4b4335c0a37b}</Project>
       <Name>FeldSpar.Framework</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PathFindindTests\PathFindindTests.fsproj">
+      <Project>{546d5801-9fd4-4a17-af78-a150afe59f44}</Project>
+      <Name>PathFindindTests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ViewModel\ViewModel.csproj">
       <Project>{593e598d-eee0-4884-bfcc-ec01f33a5276}</Project>
       <Name>ViewModel</Name>
