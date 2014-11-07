@@ -41,9 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DelegateCommand.cs" />
-    <Compile Include="MainViewModel.cs" />
+    <Compile Include="PropertyNotifyBase.cs" />
+    <Compile Include="TestAssemblyModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestDetailModel.cs" />
+    <Compile Include="TestStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FeldSpar.Tests\FeldSpar.Tests.fsproj">

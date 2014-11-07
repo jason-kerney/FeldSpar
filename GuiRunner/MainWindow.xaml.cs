@@ -24,12 +24,12 @@ namespace GuiRunner
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel = new MainViewModel();
+            ViewModel = new TestAssemblyModel();
         }
 
-        public MainViewModel ViewModel
+        public TestAssemblyModel ViewModel
         {
-            get { return (MainViewModel)DataContext; }
+            get { return (TestAssemblyModel)DataContext; }
             set { DataContext = value; }
         }
     }

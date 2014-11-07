@@ -1,111 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using FeldSpar.ClrInterop;
 using FeldSpar.Framework;
-using ViewModel.Annotations;
 
 namespace ViewModel
 {
-    public class PropertyNotifyBase : INotifyPropertyChanged
+    public class TestsMainModel
     {
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        private readonly string path = @"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\FeldSpar.Tests.dll";
+        private ObservableCollection<TestAssemblyModel> assemblies = new ObservableCollection<TestAssemblyModel>();
 
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public TestsMainModel()
         {
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            assemblies.Add(new TestAssemblyModel(path));
+        }
+        
+
+        public ObservableCollection<TestAssemblyModel> Assemblies
+        {
+            get { return assemblies; }
+            set { assemblies = value; }
         }
     }
 
-    public class TestDetail : PropertyNotifyBase
+    public class TestAssemblyModel : PropertyNotifyBase
     {
-        private string _name;
-        private TestStatus _status;
-        private string _failDetail;
+        readonly Engine engine;
+        private readonly ObservableCollection<TestDetailModel> tests = new ObservableCollection<TestDetailModel>();
+        private readonly ObservableCollection<TestResult> results = new ObservableCollection<TestResult>();
 
-        public string Name
+        private readonly Dictionary<string, TestDetailModel> knownTests = new Dictionary<string, TestDetailModel>();
+
+        private readonly string path;
+
+        public TestAssemblyModel()
+            : this(@"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\FeldSpar.Tests.dll")
         {
-            get { return _name; }
-            set
-            {
-                if (_name == value)
-                {
-                    return;
-                }
-                _name = value;
-                OnPropertyChanged();
-            }
+            
         }
 
-        public TestStatus Status
+        private bool isRunning;
+
+        public TestAssemblyModel(string path)
         {
-            get { return _status; }
-            set
-            {
-                if (_status == value)
-                {
-                    return;
-                }
-                
-                _status = value;
-                OnPropertyChanged();
-            }
-        }
+            this.path = path;
 
-        public string FailDetail
-        {
-            get { return _failDetail; }
-            set
-            {
-                if (_failDetail == value)
-                {
-                    return;
-                }
-
-                _failDetail = value;
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public enum TestStatus
-    {
-        None,
-        Running,
-        Success,
-        Failure,
-        Ignored
-    }
-
-    [Serializable]
-    public class MainViewModel : PropertyNotifyBase
-    {
-        Engine engine;
-        private ObservableCollection<TestDetail> tests = new ObservableCollection<TestDetail>();
-        private ObservableCollection<TestResult> results = new ObservableCollection<TestResult>();
-
-        private Dictionary<string, TestDetail> knownTests = new Dictionary<string, TestDetail>();
-
-        private const string path = @"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\FeldSpar.Tests.dll";
-
-        private bool _isRunning;
-
-        public MainViewModel()
-        {
             engine = new Engine();
             engine.TestFound += (sender, args) =>
             {
                 if (!knownTests.ContainsKey(args.Name))
                 {
-                    var testDetail = new TestDetail{Name = args.Name, Status = TestStatus.None};
+                    var testDetail = new TestDetailModel{Name = args.Name, Status = TestStatus.None};
                     Tests.Add(testDetail);
                     knownTests.Add(testDetail.Name, testDetail);
                 }
@@ -168,20 +116,20 @@ namespace ViewModel
 
         public bool IsRunning
         {
-            get { return _isRunning; }
+            get { return isRunning; }
             set
             {
-                if (_isRunning == value)
+                if (isRunning == value)
                 {
                     return;
                 }
 
-                _isRunning = value;
+                isRunning = value;
                 OnPropertyChanged();
             }
         }
 
-        public ObservableCollection<TestDetail> Tests { get { return tests; } }
+        public ObservableCollection<TestDetailModel> Tests { get { return tests; } }
 
         public ObservableCollection<TestResult> Results { get { return results; } }
 
