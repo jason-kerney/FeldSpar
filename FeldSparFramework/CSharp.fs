@@ -19,7 +19,9 @@ type Engine () =
     let foundEvent = new Event<TestEventArgs>()
     let runningEvent = new Event<TestEventArgs>()
     let testCompletedEvent = new Event<TestCompeteEventArgs>()
-    
+    let runningItems = new System.Collections.Generic.List<string>()
+    let finnishedItems = new System.Collections.Generic.List<string * TestResult>()
+
     let found name = 
         foundEvent.Trigger(TestEventArgs(name))
 
@@ -37,6 +39,13 @@ type Engine () =
 
         ()
 
+    let getAssembly path = 
+        path |> System.Reflection.Assembly.LoadFile
+
+    let doWork (work:(ExecutionStatus -> unit) -> Reflection.Assembly -> _) path =
+        path |> getAssembly |> work report |> ignore
+        
+
     [<CLIEvent>]
     member this.TestFound = foundEvent.Publish
 
@@ -46,8 +55,8 @@ type Engine () =
     [<CLIEvent>]
     member this.TestFinished = testCompletedEvent.Publish
 
-    member this.FindTests (assembly:System.Reflection.Assembly) =
-        assembly |> findTestsAndReport report |> ignore
+    member this.FindTests (path:string) =
+        path |> doWork findTestsAndReport
 
-    member this.RunTests (assembly:System.Reflection.Assembly) =
-        assembly |> runTestsAndReport report |> ignore
+    member this.RunTests (path:string) =
+        path |> doWork runTestsAndReport

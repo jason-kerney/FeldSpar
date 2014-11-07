@@ -75,8 +75,8 @@ module Runner =
     let private fileRunningReport (env:TestEnvironment) report =
         Running({Name = env.Name; }) |> report 
 
-    let private fileFinishedReport (env:TestEnvironment) report (result:TestResult) =
-        Finished({Name = env.Name; }, result) |> report 
+    let private fileFinishedReport name report (result:TestResult) =
+        Finished({Name = name; }, result) |> report 
 
     let getGlobalTestEnvironment reporters : AssemblyConfiguration = 
         { Reporters = reporters }
@@ -96,7 +96,7 @@ module Runner =
                                                                 TestResults = template env;
                                                             }
 
-                                                        result.TestResults |> fileFinishedReport env report
+                                                        //result.TestResults |> fileFinishedReport env report
 
                                                         result
                                                     with
@@ -108,7 +108,7 @@ module Runner =
                                                                 TestResults = Failure(ExceptionFailure(e));
                                                             }
 
-                                                        result.TestResults |> fileFinishedReport env report
+                                                        //result.TestResults |> fileFinishedReport env report
                                                         
                                                         result
                                                 )
@@ -239,15 +239,22 @@ module Runner =
 
         assembly |> getTestsWith mapper env report
 
+
     let runTestsAndReport report (assembly:Assembly) = 
-        assembly |> findTestsAndReport report |> List.map(fun (_, test) -> test())
+        assembly 
+        |> findTestsAndReport report 
+        |> List.map(
+            fun (_, test) -> 
+                let result = test()
+                result.TestResults |> fileFinishedReport result.TestDescription report
+                result
+           )
 
     let runTestsAndReportWith report (assembly:Assembly) = 
-        assembly |> findTestsAndReport report |> List.map(fun (_, test) -> test())
+        assembly |> runTestsAndReport report
 
     let findTests (assembly:Assembly) =  assembly |> findTestsAndReport ignore
 
     let runTests (assembly:Assembly) = assembly |> runTestsAndReport ignore
 
-    let runTestsWith (assembly : Assembly) =
-        assembly |> findTestsAndReport ignore |> List.map(fun (_, test) -> test())
+    let runTestsWith (assembly : Assembly) = assembly |> runTestsAndReport ignore

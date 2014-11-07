@@ -5,7 +5,6 @@
         Title="MainWindow">
     <Window.Resources>
         <ResourceDictionary>
-            <local:IsSuccesToColorValueConverter x:Key="isSuccesToColor"></local:IsSuccesToColorValueConverter>
             <local:TestStatusColorValueConverter x:Key="testStatusColor"></local:TestStatusColorValueConverter>
         </ResourceDictionary>
     </Window.Resources>
@@ -20,7 +19,7 @@
         </Grid.ColumnDefinitions>
         <DockPanel Grid.ColumnSpan="2" Grid.Row="0">
             <Button DockPanel.Dock="Left" Command="{Binding RunCommand}">Run</Button>
-            <ProgressBar Maximum="{Binding Tests.Count}" Value="{Binding Results.Count, Mode=OneWay}" Foreground="{Binding Results, Mode=OneWay, Converter={StaticResource isSuccesToColor}}"></ProgressBar>
+            <ProgressBar Maximum="{Binding Tests.Count}" Value="{Binding Results.Count, Mode=OneWay}"></ProgressBar>
         </DockPanel>
         <ListBox Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Tests, Mode=OneWay}">
             <ListBox.ItemTemplate>

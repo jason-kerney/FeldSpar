@@ -19,7 +19,7 @@ namespace GuiRunner.ValueConverters
                 case TestStatus.Running:
                     return Brushes.DodgerBlue;
                 case TestStatus.Ignored:
-                    return Brushes.Khaki;
+                    return Brushes.Gold;
                 case TestStatus.Failure:
                     return Brushes.Red;
                 default:

@@ -17,8 +17,8 @@ namespace FeldSpar.CSharp.Exploration
             eng.TestFound += eng_TestFound;
             eng.TestRunning += eng_TestRunning;
             eng.TestFinished += eng_TestFinnished;
-            eng.FindTests(FeldSpar.Console.Helpers.Data.testFeldSparAssembly);
-            eng.RunTests(FeldSpar.Console.Helpers.Data.testFeldSparAssembly);
+            eng.FindTests(@"C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.CSharp.Exploration\bin\Debug\FeldSpar.Tests.dll");
+            eng.RunTests(@"C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.CSharp.Exploration\bin\Debug\FeldSpar.Tests.dll");
 
             System.Console.WriteLine("Done");
             System.Console.ReadKey(true);

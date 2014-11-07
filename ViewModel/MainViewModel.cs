@@ -85,59 +85,84 @@ namespace ViewModel
         Ignored
     }
 
+    [Serializable]
     public class MainViewModel : PropertyNotifyBase
     {
         Engine engine;
         private ObservableCollection<TestDetail> tests = new ObservableCollection<TestDetail>();
         private ObservableCollection<TestResult> results = new ObservableCollection<TestResult>();
 
-        private Assembly _testFeldSparAssembly;
+        private Dictionary<string, TestDetail> knownTests = new Dictionary<string, TestDetail>();
+
+        private const string path = @"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\FeldSpar.Tests.dll";
+
         private bool _isRunning;
 
         public MainViewModel()
         {
-            engine = new FeldSpar.ClrInterop.Engine();
+            engine = new Engine();
             engine.TestFound += (sender, args) =>
             {
-                if(Tests.All(x => x.Name != args.Name))
-                    Tests.Add(new TestDetail{Name = args.Name, Status = TestStatus.None});
+                if (!knownTests.ContainsKey(args.Name))
+                {
+                    var testDetail = new TestDetail{Name = args.Name, Status = TestStatus.None};
+                    Tests.Add(testDetail);
+                    knownTests.Add(testDetail.Name, testDetail);
+                }
             };
 
             engine.TestFinished += (sender, args) =>
             {
                 results.Add(args.TestResult);
+                TestStatus status;
+                string msg = string.Empty;
+
+                if (args.TestResult.IsFailure && ((TestResult.Failure)args.TestResult).Item.IsIgnored)
+                {
+                    var failure = ((TestResult.Failure) args.TestResult).Item;
+                    status = TestStatus.Ignored;
+                    msg = failure.ToString();
+
+                }
+                else if (args.TestResult.IsFailure)
+                {
+                    var failure = ((TestResult.Failure)args.TestResult).Item;
+                    status = TestStatus.Failure;
+                    msg = failure.ToString();
+                }
+                else
+                {
+                    status = TestStatus.Success;
+                }
+
+                var testDetail = knownTests[args.Name];
+                testDetail.Status = status;
+                testDetail.FailDetail = msg;
             };
 
             engine.TestRunning += (sender, args) =>
             {
-
+                knownTests[args.Name].Status = TestStatus.Running;
             };
 
-            _testFeldSparAssembly = FeldSpar.Console.Helpers.Data.testFeldSparAssembly;
-            engine.FindTests(_testFeldSparAssembly);
+            engine.FindTests(path);
         }
 
         public async void Run(object ignored)
         {
-            var random = new Random();
             IsRunning = true;
-            //engine.RunTests(_testFeldSparAssembly);
+            var random = new Random();
+            results.Clear();
+
             foreach (var test in Tests)
             {
-                test.Status = TestStatus.Running;
-                await Task.Delay(TimeSpan.FromMilliseconds(100));
-                if (random.Next(10) == 1)
-                {
-                    test.Status = TestStatus.Failure;
-                    results.Add(TestResult.NewFailure(FailureType.NewGeneralFailure("Failed")));
-                }
-                else
-                {
-                    test.Status = TestStatus.Success;
-                    results.Add(TestResult.Success);
-                }
+                test.Status = TestStatus.None;
             }
 
+            await Task.Run(() => engine.RunTests(path));
+            engine.RunTests(path);
+
+            results.Clear();
             IsRunning = false;
         }
 

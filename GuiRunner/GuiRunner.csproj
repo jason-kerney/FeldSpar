@@ -54,7 +54,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ValueConverters\IsSuccesToColorValueConverter.cs" />
     <Compile Include="ValueConverters\TestStatusColorValueConverter.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -97,6 +96,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FeldSpar.Tests\FeldSpar.Tests.fsproj">
+      <Project>{6f2261d9-2268-4595-b35d-c401148906d5}</Project>
+      <Name>FeldSpar.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FeldSparFramework\FeldSpar.Framework.fsproj">
       <Project>{ad56b1ee-515d-40d2-8217-4b4335c0a37b}</Project>
       <Name>FeldSpar.Framework</Name>
