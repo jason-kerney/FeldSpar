@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using FeldSpar.ClrInterop;
@@ -8,24 +9,6 @@ using FeldSpar.Framework;
 
 namespace ViewModel
 {
-    public class TestsMainModel
-    {
-        private readonly string path = @"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\FeldSpar.Tests.dll";
-        private ObservableCollection<TestAssemblyModel> assemblies = new ObservableCollection<TestAssemblyModel>();
-
-        public TestsMainModel()
-        {
-            assemblies.Add(new TestAssemblyModel(path));
-        }
-        
-
-        public ObservableCollection<TestAssemblyModel> Assemblies
-        {
-            get { return assemblies; }
-            set { assemblies = value; }
-        }
-    }
-
     public class TestAssemblyModel : PropertyNotifyBase
     {
         readonly Engine engine;
@@ -35,6 +18,7 @@ namespace ViewModel
         private readonly Dictionary<string, TestDetailModel> knownTests = new Dictionary<string, TestDetailModel>();
 
         private readonly string path;
+        private bool isRunning;
 
         public TestAssemblyModel()
             : this(@"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\FeldSpar.Tests.dll")
@@ -42,7 +26,6 @@ namespace ViewModel
             
         }
 
-        private bool isRunning;
 
         public TestAssemblyModel(string path)
         {
@@ -94,6 +77,8 @@ namespace ViewModel
             };
 
             engine.FindTests(path);
+
+            Name = Path.GetFileName(path);
         }
 
         public async void Run(object ignored)
@@ -128,6 +113,8 @@ namespace ViewModel
                 OnPropertyChanged();
             }
         }
+
+        public string Name { get; private set; }
 
         public ObservableCollection<TestDetailModel> Tests { get { return tests; } }
 

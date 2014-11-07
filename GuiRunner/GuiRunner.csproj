@@ -54,7 +54,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="TestAssembliesWindow.xaml.cs">
+      <DependentUpon>TestAssembliesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ValueConverters\TestStatusColorValueConverter.cs" />
+    <Page Include="TestAssembliesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TestAssemblyWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

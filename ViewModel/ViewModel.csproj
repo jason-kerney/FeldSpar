@@ -46,6 +46,7 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestDetailModel.cs" />
+    <Compile Include="TestsMainModel.cs" />
     <Compile Include="TestStatus.cs" />
   </ItemGroup>
   <ItemGroup>

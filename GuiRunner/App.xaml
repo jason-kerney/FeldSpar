@@ -1,7 +1,7 @@
 ﻿<Application x:Class="GuiRunner.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="TestAssemblyWindow.xaml">
+             StartupUri="TestAssembliesWindow.xaml">
     <Application.Resources>
          
     </Application.Resources>

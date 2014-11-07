@@ -25,6 +25,7 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
+        
         <DockPanel Grid.ColumnSpan="2" Grid.Row="0">
             <Button DockPanel.Dock="Left" Command="{Binding RunCommand}">Run</Button>
             <ProgressBar Maximum="{Binding Tests.Count}" Value="{Binding Results.Count, Mode=OneWay}"></ProgressBar>
