@@ -1,9 +1,9 @@
-﻿<Window x:Class="GuiRunner.MainWindow"
+﻿<Window x:Class="GuiRunner.TestAssemblyWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:GuiRunner.ValueConverters"
         xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-        Title="MainWindow">
+        Title="TestAssemblyWindow">
     <Window.Resources>
         <ResourceDictionary>
             <local:TestStatusColorValueConverter x:Key="testStatusColor"></local:TestStatusColorValueConverter>
