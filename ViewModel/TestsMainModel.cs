@@ -14,6 +14,8 @@ namespace ViewModel
         private readonly string path1 = @"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\FeldSpar.Tests.dll";
         private readonly string path2 = @"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\PathFindindTests.dll";
         private ObservableCollection<TestAssemblyModel> assemblies = new ObservableCollection<TestAssemblyModel>();
+        private string description;
+        private TestDetailModel selected;
 
         public TestsMainModel()
         {
@@ -67,6 +69,37 @@ namespace ViewModel
             IsRunning = false;
         }
 
+        public string Description
+        {
+            get { return description; }
+            private set
+            {
+                if (value == description)
+                {
+                    return;
+                }
+
+                description = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public TestDetailModel Selected
+        {
+            get { return selected; }
+            set
+            {
+                if (selected == value)
+                {
+                    return;
+                }
+
+                selected = value;
+                OnPropertyChanged();
+
+                Description = selected.FailDetail + "";
+            }
+        }
 
         public ObservableCollection<TestAssemblyModel> Assemblies
         {

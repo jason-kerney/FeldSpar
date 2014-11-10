@@ -12,13 +12,12 @@ namespace GuiRunner
         public TestAssembliesWindow()
         {
             InitializeComponent();
-            TestAssemblies = new ObservableCollection<TestsMainModel>();
-            TestAssemblies.Add(new TestsMainModel());
+            TestAssemblies = new TestsMainModel();
         }
 
-        public ObservableCollection<TestsMainModel> TestAssemblies
+        public TestsMainModel TestAssemblies
         {
-            get { return (ObservableCollection<TestsMainModel>) DataContext; }
+            get { return (TestsMainModel) DataContext; }
             set { DataContext = value; }
         }
     }
