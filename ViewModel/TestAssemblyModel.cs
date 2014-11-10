@@ -21,13 +21,6 @@ namespace ViewModel
         private bool isRunning;
         private bool isVisible;
 
-        public TestAssemblyModel()
-            : this(@"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\FeldSpar.Tests.dll")
-        {
-            
-        }
-
-
         public TestAssemblyModel(string path)
         {
             isVisible = true;
