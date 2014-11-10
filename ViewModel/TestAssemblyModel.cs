@@ -44,29 +44,12 @@ namespace ViewModel
             engine.TestFinished += (sender, args) =>
             {
                 results.Add(args.TestResult);
-                TestStatus status;
-                string msg = string.Empty;
 
-                if (args.TestResult.IsFailure && ((TestResult.Failure)args.TestResult).Item.IsIgnored)
-                {
-                    var failure = ((TestResult.Failure) args.TestResult).Item;
-                    status = TestStatus.Ignored;
-                    msg = failure.ToString();
-                }
-                else if (args.TestResult.IsFailure)
-                {
-                    var failure = ((TestResult.Failure)args.TestResult).Item;
-                    status = TestStatus.Failure;
-                    msg = failure.ToString();
-                }
-                else
-                {
-                    status = TestStatus.Success;
-                }
+                var info = ConvertResultIntoTestInfo(args.TestResult);
 
                 var testDetail = knownTests[args.Name];
-                testDetail.Status = status;
-                testDetail.FailDetail = msg;
+                testDetail.Status = info.Item1;
+                testDetail.FailDetail = info.Item2;
                 OnPropertyChanged("Tests");
             };
 
@@ -77,6 +60,46 @@ namespace ViewModel
 
             engine.FindTests(path);
 
+        }
+
+        private static Tuple<TestStatus, string> ConvertResultIntoTestInfo(TestResult testResult)
+        {
+            TestStatus status;
+            string msg = string.Empty;
+            Tuple<TestStatus, string> info;
+
+            if (testResult.IsFailure)
+            {
+                status = TestStatus.Failure;
+                var failure = ((TestResult.Failure) testResult).Item;
+                if (failure.IsExceptionFailure)
+                {
+                    msg = ((FailureType.ExceptionFailure) failure).Item.ToString();
+                }
+                else if (failure.IsExpectationFailure)
+                {
+                    msg = ((FailureType.ExpectationFailure) failure).Item;
+                }
+                else if (failure.IsGeneralFailure)
+                {
+                    msg = "General Failure" + Environment.NewLine + ((FailureType.GeneralFailure) failure).Item;
+                }
+                else if (failure.IsIgnored)
+                {
+                    status = TestStatus.Ignored;
+                    msg = "Ignored:" + Environment.NewLine + ((FailureType.Ignored) failure).Item;
+                }
+                else if (failure.IsStandardNotMet)
+                {
+                    msg = "Standard not met, check the comparison";
+                }
+            }
+            else
+            {
+                status = TestStatus.Success;
+            }
+            info = Tuple.Create(status, msg);
+            return info;
         }
 
         public bool IsVisible
