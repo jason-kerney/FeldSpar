@@ -7,63 +7,83 @@
         Title="TestAssembliesWindow">
     <Window.Resources>
         <ResourceDictionary>
-            <valueConverters:TestStatusColorValueConverter x:Key="testStatusColor"></valueConverters:TestStatusColorValueConverter>
+            <valueConverters:TestStatusColorValueConverter x:Key="testStatusColor" />
+            <valueConverters:BinaryVisibilityConverter x:Key="binaryVisibility" />
+            <valueConverters:TestAssemblyStatusColorValueConverter x:Key="assemblyStatusColor" />
+            <CollectionViewSource Source="{Binding Tests, Mode=OneWay}" x:Key="collectionSource">
+                <CollectionViewSource.SortDescriptions>
+                    <componentModel:SortDescription PropertyName="Name" />
+                </CollectionViewSource.SortDescriptions>
+                <CollectionViewSource.GroupDescriptions>
+                    <PropertyGroupDescription PropertyName="AssemblyName" />
+                </CollectionViewSource.GroupDescriptions>
+            </CollectionViewSource>
         </ResourceDictionary>
     </Window.Resources>
 
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
-        <DockPanel Grid.Column="0" Grid.Row="0"></DockPanel>
-        <DockPanel Grid.Column="0" Grid.Row="1">
+
+        <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0"/>
+        <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
             <Button DockPanel.Dock="Left" Command="{Binding RunCommand}">Run</Button>
-            <ProgressBar Maximum="{Binding Tests.Count}" Value="{Binding Results.Count, Mode=OneWay}"></ProgressBar>
+            <ProgressBar Maximum="{Binding Tests.Count}" Value="{Binding Results.Count, Mode=OneWay}" />
         </DockPanel>
-        <ScrollViewer Grid.Column="0" Grid.Row="2" HorizontalScrollBarVisibility="Auto" 
-                  VerticalScrollBarVisibility="Auto">
-        <ListView ItemsSource="{Binding Assemblies}" >
-            <ListBox.Resources>
-                <ResourceDictionary>
-                    <CollectionViewSource Source="{Binding Tests, Mode=OneWay}" x:Key="collectionSource">
-                        <CollectionViewSource.SortDescriptions>
-                            <componentModel:SortDescription PropertyName="Name"></componentModel:SortDescription>
-                        </CollectionViewSource.SortDescriptions>
-                    </CollectionViewSource>
-                </ResourceDictionary>
-            </ListBox.Resources>
-            
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        
-                        <TextBlock Grid.Row="0" Text="{Binding Name}"></TextBlock>
-                        <ListBox Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Source={StaticResource collectionSource}}">
-                            <ListBox.ItemTemplate>
+        <ScrollViewer Grid.Column="0" Grid.Row="2" HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto">
+            <ListView ItemsSource="{Binding  Source={StaticResource collectionSource}}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" Width="Auto">
+                            <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Background="{Binding Status, Converter={StaticResource testStatusColor}}" Text="{Binding Name}"></TextBlock>
+                                    <Label Content="{Binding Name}" Foreground="{Binding Status, Converter={StaticResource testStatusColor}}"></Label>
                                 </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListView>
-            </ScrollViewer>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Status" Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Label Content="{Binding Status}" Foreground="{Binding Status, Converter={StaticResource testStatusColor}}"></Label>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+                
+                <ListView.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <Expander IsExpanded="True">
+                                                <Expander.Header>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="22" VerticalAlignment="Bottom"></TextBlock>
+                                                    </StackPanel>
+                                                </Expander.Header>
+                                                <ItemsPresenter />
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
+        </ScrollViewer>
+        <TextBox Grid.Column="1" Grid.Row="2"></TextBox>
     </Grid>
 </Window>

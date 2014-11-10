@@ -5,6 +5,8 @@ namespace ViewModel
         private string name;
         private TestStatus status;
         private string failDetail;
+        private string assemblyName;
+        private TestAssemblyModel parent;
 
         public string Name
         {
@@ -46,6 +48,36 @@ namespace ViewModel
                 }
 
                 failDetail = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string AssemblyName
+        {
+            get { return assemblyName; }
+            set
+            {
+                if (value == assemblyName)
+                {
+                    return;
+                }
+
+                assemblyName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public TestAssemblyModel Parent
+        {
+            get { return parent; }
+            set
+            {
+                if (parent == value)
+                {
+                    return;
+                }
+
+                parent = value;
                 OnPropertyChanged();
             }
         }

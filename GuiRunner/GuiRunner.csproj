@@ -57,6 +57,9 @@
     <Compile Include="TestAssembliesWindow.xaml.cs">
       <DependentUpon>TestAssembliesWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueConverters\BinaryVisibilityConverter.cs" />
+    <Compile Include="ValueConverters\FailedTestCountToTextConverter.cs" />
+    <Compile Include="ValueConverters\TestAssemblyStatusColorValueConverter.cs" />
     <Compile Include="ValueConverters\TestStatusColorValueConverter.cs" />
     <Page Include="TestAssembliesWindow.xaml">
       <SubType>Designer</SubType>

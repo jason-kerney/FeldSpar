@@ -19,6 +19,7 @@ namespace ViewModel
 
         private readonly string path;
         private bool isRunning;
+        private bool isVisible;
 
         public TestAssemblyModel()
             : this(@"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\FeldSpar.Tests.dll")
@@ -29,17 +30,22 @@ namespace ViewModel
 
         public TestAssemblyModel(string path)
         {
+            isVisible = true;
             this.path = path;
+            Name = Path.GetFileName(path);
 
             engine = new Engine();
             engine.TestFound += (sender, args) =>
             {
-                if (!knownTests.ContainsKey(args.Name))
+                if (knownTests.ContainsKey(args.Name))
                 {
-                    var testDetail = new TestDetailModel{Name = args.Name, Status = TestStatus.None};
-                    Tests.Add(testDetail);
-                    knownTests.Add(testDetail.Name, testDetail);
+                    return;
                 }
+
+                var testDetail = new TestDetailModel{Name = args.Name, Status = TestStatus.None, AssemblyName = Name, Parent = this};
+                Tests.Add(testDetail);
+                knownTests.Add(testDetail.Name, testDetail);
+                OnPropertyChanged("Tests");
             };
 
             engine.TestFinished += (sender, args) =>
@@ -53,7 +59,6 @@ namespace ViewModel
                     var failure = ((TestResult.Failure) args.TestResult).Item;
                     status = TestStatus.Ignored;
                     msg = failure.ToString();
-
                 }
                 else if (args.TestResult.IsFailure)
                 {
@@ -69,6 +74,7 @@ namespace ViewModel
                 var testDetail = knownTests[args.Name];
                 testDetail.Status = status;
                 testDetail.FailDetail = msg;
+                OnPropertyChanged("Tests");
             };
 
             engine.TestRunning += (sender, args) =>
@@ -78,7 +84,20 @@ namespace ViewModel
 
             engine.FindTests(path);
 
-            Name = Path.GetFileName(path);
+        }
+
+        public bool IsVisible
+        {
+            get { return isVisible; }
+            set
+            {
+                if (isVisible == value)
+                {
+                    return;
+                }
+                isVisible = value;
+                OnPropertyChanged();
+            }
         }
 
         public async void Run(object ignored)
@@ -97,6 +116,11 @@ namespace ViewModel
 
             results.Clear();
             IsRunning = false;
+        }
+
+        public void ToggleVisible(object ignored)
+        {
+            IsVisible = !IsVisible;
         }
 
         public bool IsRunning
@@ -121,5 +145,7 @@ namespace ViewModel
         public ObservableCollection<TestResult> Results { get { return results; } }
 
         public ICommand RunCommand { get { return new DelegateCommand(Run, _ => !IsRunning); } }
+
+        public ICommand ToggleVisibilityCommand { get { return new DelegateCommand(ToggleVisible);} }
     }
 }

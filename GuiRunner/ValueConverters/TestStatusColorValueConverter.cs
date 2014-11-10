@@ -15,15 +15,15 @@ namespace GuiRunner.ValueConverters
             switch (status)
             {
                 case TestStatus.Success:
-                    return Brushes.GreenYellow;
+                    return Brushes.ForestGreen;
                 case TestStatus.Running:
                     return Brushes.DodgerBlue;
                 case TestStatus.Ignored:
-                    return Brushes.Gold;
+                    return Brushes.Goldenrod;
                 case TestStatus.Failure:
                     return Brushes.Red;
                 default:
-                    return Brushes.LightGray;
+                    return Brushes.Gray;
             }
         }
 
