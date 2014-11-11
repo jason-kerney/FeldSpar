@@ -119,7 +119,6 @@ namespace ViewModel
         public async void Run(object ignored)
         {
             IsRunning = true;
-            var random = new Random();
             results.Clear();
 
             foreach (var test in Tests)
