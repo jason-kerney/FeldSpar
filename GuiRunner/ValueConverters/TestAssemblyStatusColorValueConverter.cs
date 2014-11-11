@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
-using System.Windows.Media;
+using GuiRunner.StyleConstants;
 using ViewModel;
 
 namespace GuiRunner.ValueConverters
@@ -12,29 +12,35 @@ namespace GuiRunner.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var status = (IEnumerable<TestDetailModel>) value;
+            var tests = (IEnumerable<TestDetailModel>) value;
 
-            if (status.Any(tst => tst.Status == TestStatus.Failure))
+            var statuses = (
+                from testDetailModel in tests
+                select testDetailModel.Status
+                ).Distinct().ToList();
+
+
+            if (statuses.Any(tst => tst == TestStatus.Failure))
             {
-                return Brushes.Red;
+                return TestStatusColors.FailureBrush;
             }
 
-            if (status.Any(tst => tst.Status == TestStatus.Ignored))
+            if (statuses.Any(tst => tst == TestStatus.Ignored))
             {
-                return Brushes.Gold;
+                return TestStatusColors.IgnoredBrush;
             }
 
-            if (status.Any(tst => tst.Status == TestStatus.Success))
+            if (statuses.Any(tst => tst == TestStatus.Success))
             {
-                return Brushes.GreenYellow;
+                return TestStatusColors.SuccessBrush;
             }
 
-            if (status.Any(tst => tst.Status == TestStatus.Running))
+            if (statuses.Any(tst => tst == TestStatus.Running))
             {
-                return Brushes.DodgerBlue;
+                return TestStatusColors.RunningBrush;
             }
 
-            return Brushes.LightGray;
+            return TestStatusColors.NoneBrush;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

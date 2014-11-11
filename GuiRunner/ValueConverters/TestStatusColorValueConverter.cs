@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
+using GuiRunner.StyleConstants;
 using ViewModel;
 
 namespace GuiRunner.ValueConverters
@@ -15,15 +16,15 @@ namespace GuiRunner.ValueConverters
             switch (status)
             {
                 case TestStatus.Success:
-                    return Brushes.ForestGreen;
+                    return TestStatusColors.SuccessBrush;
                 case TestStatus.Running:
-                    return Brushes.DodgerBlue;
+                    return TestStatusColors.RunningBrush;
                 case TestStatus.Ignored:
-                    return Brushes.Goldenrod;
+                    return TestStatusColors.IgnoredBrush;
                 case TestStatus.Failure:
-                    return Brushes.Red;
+                    return TestStatusColors.FailureBrush;
                 default:
-                    return Brushes.Gray;
+                    return TestStatusColors.NoneBrush;
             }
         }
 
