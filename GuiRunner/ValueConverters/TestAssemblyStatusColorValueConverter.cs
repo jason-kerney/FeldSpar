@@ -20,6 +20,11 @@ namespace GuiRunner.ValueConverters
                 ).Distinct().ToList();
 
 
+            if (statuses.Any(tst => tst == TestStatus.Running))
+            {
+                return TestStatusColors.RunningBrush;
+            }
+
             if (statuses.Any(tst => tst == TestStatus.Failure))
             {
                 return TestStatusColors.FailureBrush;
@@ -33,11 +38,6 @@ namespace GuiRunner.ValueConverters
             if (statuses.Any(tst => tst == TestStatus.Success))
             {
                 return TestStatusColors.SuccessBrush;
-            }
-
-            if (statuses.Any(tst => tst == TestStatus.Running))
-            {
-                return TestStatusColors.RunningBrush;
             }
 
             return TestStatusColors.NoneBrush;
