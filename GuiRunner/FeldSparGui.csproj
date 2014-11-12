@@ -54,6 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="StyleConstants\TestStatusColors.cs" />
     <Compile Include="StyleConstants\TestStatusFontWeight.cs" />
     <Compile Include="TestAssembliesWindow.xaml.cs">
@@ -64,6 +65,12 @@
     <Compile Include="ValueConverters\TestAssemblyStatusColorValueConverter.cs" />
     <Compile Include="ValueConverters\TestStatusColorValueConverter.cs" />
     <Compile Include="ValueConverters\TestStatusToFontWeightConverter.cs" />
+    <Compile Include="VeiwModels\DelegateCommand.cs" />
+    <Compile Include="VeiwModels\PropertyNotifyBase.cs" />
+    <Compile Include="VeiwModels\TestAssemblyModel.cs" />
+    <Compile Include="VeiwModels\TestDetailModel.cs" />
+    <Compile Include="VeiwModels\TestsMainModel.cs" />
+    <Compile Include="VeiwModels\TestStatus.cs" />
     <Page Include="TestAssembliesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -101,17 +108,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FeldSpar.Tests\FeldSpar.Tests.fsproj">
-      <Project>{6f2261d9-2268-4595-b35d-c401148906d5}</Project>
-      <Name>FeldSpar.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\FeldSparFramework\FeldSpar.Framework.fsproj">
       <Project>{ad56b1ee-515d-40d2-8217-4b4335c0a37b}</Project>
       <Name>FeldSpar.Framework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ViewModel\ViewModel.csproj">
-      <Project>{593e598d-eee0-4884-bfcc-ec01f33a5276}</Project>
-      <Name>ViewModel</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

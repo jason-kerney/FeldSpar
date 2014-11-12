@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using ViewModel;
+using FeldSparGuiCSharp.VeiwModels;
 
 namespace FeldSparGuiCSharp
 {

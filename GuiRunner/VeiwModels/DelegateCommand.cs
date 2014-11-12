@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace ViewModel
+namespace FeldSparGuiCSharp.VeiwModels
 {
 
     // Thank you:

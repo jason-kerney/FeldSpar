@@ -7,12 +7,10 @@ using System.Linq;
 using System.Windows.Input;
 using FeldSpar.Framework;
 
-namespace ViewModel
+namespace FeldSparGuiCSharp.VeiwModels
 {
     public class TestsMainModel : PropertyNotifyBase
     {
-        private readonly string path1 = @"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\FeldSpar.Tests.dll";
-        private readonly string path2 = @"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\PathFindindTests.dll";
         private string description;
         private TestDetailModel selected;
 

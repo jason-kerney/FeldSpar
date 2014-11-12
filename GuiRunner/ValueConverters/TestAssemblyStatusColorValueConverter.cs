@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using FeldSparGuiCSharp.StyleConstants;
-using ViewModel;
+using FeldSparGuiCSharp.VeiwModels;
 
 namespace FeldSparGuiCSharp.ValueConverters
 {

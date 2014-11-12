@@ -7,7 +7,7 @@ using System.Windows.Input;
 using FeldSpar.ClrInterop;
 using FeldSpar.Framework;
 
-namespace ViewModel
+namespace FeldSparGuiCSharp.VeiwModels
 {
     public class TestAssemblyModel : PropertyNotifyBase
     {

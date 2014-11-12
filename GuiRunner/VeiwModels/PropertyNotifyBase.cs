@@ -1,17 +1,18 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using ViewModel.Annotations;
+using FeldSparGuiCSharp.Annotations;
 
-namespace ViewModel
+namespace FeldSparGuiCSharp.VeiwModels
 {
     public class PropertyNotifyBase : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

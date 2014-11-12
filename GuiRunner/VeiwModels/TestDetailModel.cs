@@ -1,4 +1,4 @@
-namespace ViewModel
+namespace FeldSparGuiCSharp.VeiwModels
 {
     public class TestDetailModel : PropertyNotifyBase
     {
