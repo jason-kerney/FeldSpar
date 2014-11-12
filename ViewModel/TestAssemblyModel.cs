@@ -17,15 +17,15 @@ namespace ViewModel
 
         private readonly Dictionary<string, TestDetailModel> knownTests = new Dictionary<string, TestDetailModel>();
 
-        private readonly string path;
+        private readonly string assemblyPath;
         private bool isRunning;
         private bool isVisible;
 
-        public TestAssemblyModel(string path)
+        public TestAssemblyModel(string assemblyPath)
         {
             isVisible = true;
-            this.path = path;
-            Name = Path.GetFileName(path);
+            this.assemblyPath = assemblyPath;
+            Name = Path.GetFileName(AssemblyPath);
 
             engine = new Engine();
             engine.TestFound += (sender, args) =>
@@ -59,7 +59,7 @@ namespace ViewModel
                 knownTests[args.Name].Status = TestStatus.Running;
             };
 
-            engine.FindTests(path);
+            engine.FindTests(assemblyPath);
 
         }
 
@@ -127,7 +127,7 @@ namespace ViewModel
                 test.Status = TestStatus.None;
             }
 
-            await Task.Run(() => engine.RunTests(path));
+            await Task.Run(() => engine.RunTests(assemblyPath));
 
             IsRunning = false;
         }
@@ -153,6 +153,8 @@ namespace ViewModel
         }
 
         public string Name { get; private set; }
+
+        public string AssemblyPath { get { return assemblyPath; } }
 
         public ObservableCollection<TestDetailModel> Tests { get { return tests; } }
 

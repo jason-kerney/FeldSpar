@@ -13,7 +13,6 @@ namespace ViewModel
     {
         private readonly string path1 = @"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\FeldSpar.Tests.dll";
         private readonly string path2 = @"C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\bin\Debug\PathFindindTests.dll";
-        private ObservableCollection<TestAssemblyModel> assemblies = new ObservableCollection<TestAssemblyModel>();
         private string description;
         private TestDetailModel selected;
 
@@ -21,11 +20,19 @@ namespace ViewModel
         {
             var itemsRemovedActions = new[] { NotifyCollectionChangedAction.Remove, NotifyCollectionChangedAction.Replace };
 
-            assemblies.CollectionChanged += (sender, args) =>
+            Assemblies = new ObservableCollection<TestAssemblyModel>();
+            Assemblies.CollectionChanged += (sender, args) =>
             {
+                var testChanged = false;
                 foreach (TestAssemblyModel newItem in args.NewItems)
                 {
                     newItem.PropertyChanged += ItemOnPropertyChanged;
+                    testChanged = true;
+                }
+
+                if (testChanged)
+                {
+                    OnPropertyChanged("Tests");
                 }
 
                 if (itemsRemovedActions.All(x => args.Action != x))
@@ -33,14 +40,18 @@ namespace ViewModel
                     return;
                 }
 
+                testChanged = false;
                 foreach (TestAssemblyModel oldItem in args.OldItems)
                 {
                     oldItem.PropertyChanged -= ItemOnPropertyChanged;
+                    testChanged = true;
+                }
+
+                if (testChanged)
+                {
+                    OnPropertyChanged("Tests");
                 }
             };
-
-            assemblies.Add(new TestAssemblyModel(path1));
-            assemblies.Add(new TestAssemblyModel(path2));
         }
 
         private void ItemOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -60,13 +71,29 @@ namespace ViewModel
         public void Run(object ignored)
         {
             IsRunning = true;
-            foreach (var testAssemblyModel in assemblies)
+            foreach (var testAssemblyModel in Assemblies)
             {
                 var model = testAssemblyModel;
                 model.Run(ignored);
             }
 
             IsRunning = false;
+        }
+
+        public void Add(object ignored)
+        {
+            var fileOpen = new Microsoft.Win32.OpenFileDialog {Filter = "test suites|*.dll;*.exe", Multiselect = false};
+
+            var result = fileOpen.ShowDialog();
+            if (result != true)
+            {
+                return;
+            }
+
+            if (Assemblies.All(assembly => assembly.AssemblyPath != fileOpen.FileName))
+            {
+                Assemblies.Add(new TestAssemblyModel(fileOpen.FileName));
+            }
         }
 
         public string Description
@@ -101,17 +128,16 @@ namespace ViewModel
             }
         }
 
-        public ObservableCollection<TestAssemblyModel> Assemblies
-        {
-            get { return assemblies; }
-            set { assemblies = value; }
-        }
+        public ObservableCollection<TestAssemblyModel> Assemblies { get; set; }
 
-        private T[] GetTestItems<T>(Func<TestAssemblyModel, IEnumerable<T>> selector) { return assemblies.SelectMany(selector).ToArray(); }
+        private T[] GetTestItems<T>(Func<TestAssemblyModel, IEnumerable<T>> selector) { return Assemblies.SelectMany(selector).ToArray(); }
 
         public TestResult[] Results { get { return GetTestItems(assembly => assembly.Results); } }
 
         public TestDetailModel[] Tests { get { return GetTestItems(assembyly => assembyly.Tests); } }
+
         public ICommand RunCommand { get { return new DelegateCommand(Run, _ => !IsRunning); } }
+
+        public ICommand AddCommand { get { return new DelegateCommand(Add); } }
     }
 }
