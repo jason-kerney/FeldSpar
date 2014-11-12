@@ -54,6 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="StyleConstants\TestStatusColors.cs" />
     <Compile Include="StyleConstants\TestStatusFontWeight.cs" />
     <Compile Include="TestAssembliesWindow.xaml.cs">
