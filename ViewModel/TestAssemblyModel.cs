@@ -50,6 +50,7 @@ namespace ViewModel
                 var testDetail = knownTests[args.Name];
                 testDetail.Status = info.Item1;
                 testDetail.FailDetail = info.Item2;
+                OnPropertyChanged("Results");
                 OnPropertyChanged("Tests");
             };
 
@@ -127,9 +128,7 @@ namespace ViewModel
             }
 
             await Task.Run(() => engine.RunTests(path));
-            engine.RunTests(path);
 
-            results.Clear();
             IsRunning = false;
         }
 

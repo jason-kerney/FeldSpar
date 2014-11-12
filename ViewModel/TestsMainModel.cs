@@ -21,12 +21,9 @@ namespace ViewModel
         {
             var itemsRemovedActions = new[] { NotifyCollectionChangedAction.Remove, NotifyCollectionChangedAction.Replace };
 
-            assemblies.Add(new TestAssemblyModel(path1));
-            assemblies.Add(new TestAssemblyModel(path2));
-
             assemblies.CollectionChanged += (sender, args) =>
             {
-                foreach (TestDetailModel newItem in args.NewItems)
+                foreach (TestAssemblyModel newItem in args.NewItems)
                 {
                     newItem.PropertyChanged += ItemOnPropertyChanged;
                 }
@@ -36,11 +33,14 @@ namespace ViewModel
                     return;
                 }
 
-                foreach (TestDetailModel oldItem in args.OldItems)
+                foreach (TestAssemblyModel oldItem in args.OldItems)
                 {
                     oldItem.PropertyChanged -= ItemOnPropertyChanged;
                 }
             };
+
+            assemblies.Add(new TestAssemblyModel(path1));
+            assemblies.Add(new TestAssemblyModel(path2));
         }
 
         private void ItemOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -107,11 +107,11 @@ namespace ViewModel
             set { assemblies = value; }
         }
 
-        private IEnumerable<T> GetTestItems<T>(Func<TestAssemblyModel, IEnumerable<T>> selector) { return assemblies.SelectMany(selector); }
+        private T[] GetTestItems<T>(Func<TestAssemblyModel, IEnumerable<T>> selector) { return assemblies.SelectMany(selector).ToArray(); }
 
-        public IEnumerable<TestResult> Results { get { return GetTestItems(assembly => assembly.Results); } }
+        public TestResult[] Results { get { return GetTestItems(assembly => assembly.Results); } }
 
-        public IEnumerable<TestDetailModel> Tests { get { return GetTestItems(assembyly => assembyly.Tests); } }
+        public TestDetailModel[] Tests { get { return GetTestItems(assembyly => assembyly.Tests); } }
         public ICommand RunCommand { get { return new DelegateCommand(Run, _ => !IsRunning); } }
     }
 }

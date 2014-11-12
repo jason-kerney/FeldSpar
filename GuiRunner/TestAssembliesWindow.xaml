@@ -33,10 +33,14 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Background="Lavender"/>
+        <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Background="Lavender">
+            <Menu Height="Auto" Visibility="Visible" IsMainMenu="True" Background="Lavender">
+                <MenuItem Header="_Run" Command="{Binding RunCommand}"></MenuItem>
+                <MenuItem Header="_Add Test Suite"></MenuItem>
+            </Menu>
+        </DockPanel>
         <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Background="Lavender">
-            <Button DockPanel.Dock="Left" Command="{Binding RunCommand}" Background="Lavender">Run</Button>
-            <ProgressBar Maximum="{Binding Tests.Count}" Value="{Binding Results.Count, Mode=OneWay}" Background="Lavender" />
+            <ProgressBar Height="12" Maximum="{Binding Tests.Length}" Value="{Binding Results.Length, Mode=OneWay}" Background="Lavender" Visibility="Visible" />
         </DockPanel>
         <ScrollViewer Grid.Column="0" Grid.Row="2" HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
