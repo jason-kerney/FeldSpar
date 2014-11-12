@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Data;
 using ViewModel;
 
-namespace GuiRunner.ValueConverters
+namespace FeldSparGuiCSharp.ValueConverters
 {
     public class FailedTestCountToTextConverter : IValueConverter
     {

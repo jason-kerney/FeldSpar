@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Data;
-using GuiRunner.StyleConstants;
+using FeldSparGuiCSharp.StyleConstants;
 using ViewModel;
 
-namespace GuiRunner.ValueConverters
+namespace FeldSparGuiCSharp.ValueConverters
 {
     public class TestStatusToFontWeightConverter : IValueConverter
     {

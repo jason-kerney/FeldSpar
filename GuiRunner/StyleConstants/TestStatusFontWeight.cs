@@ -1,6 +1,6 @@
 using System.Windows;
 
-namespace GuiRunner.StyleConstants
+namespace FeldSparGuiCSharp.StyleConstants
 {
     public static class TestStatusFontWeight
     {

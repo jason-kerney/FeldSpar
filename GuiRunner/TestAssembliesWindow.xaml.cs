@@ -1,8 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows;
+﻿using System.Windows;
 using ViewModel;
 
-namespace GuiRunner
+namespace FeldSparGuiCSharp
 {
     /// <summary>
     /// Interaction logic for TestAssembliesWindow.xaml

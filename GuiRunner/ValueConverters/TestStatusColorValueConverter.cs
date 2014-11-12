@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using System.Windows.Media;
-using GuiRunner.StyleConstants;
+using FeldSparGuiCSharp.StyleConstants;
 using ViewModel;
 
-namespace GuiRunner.ValueConverters
+namespace FeldSparGuiCSharp.ValueConverters
 {
     public class TestStatusColorValueConverter : IValueConverter
     {

@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace GuiRunner.ValueConverters
+namespace FeldSparGuiCSharp.ValueConverters
 {
     public class BinaryVisibilityConverter : IValueConverter
     {
