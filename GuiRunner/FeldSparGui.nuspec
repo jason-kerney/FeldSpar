@@ -4,12 +4,12 @@
     <id>$id$</id>
     <version>$version$</version>
     <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <authors>R. Jason Kerney</authors>
+    <owners>R. Jason Kerney</owners>
     <licenseUrl>https://github.com/jason-kerney/FeldSpar/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/jason-kerney/FeldSpar</projectUrl>
-    <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>$description$</description>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A test runner for the FeldSpar testing framework</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags></tags>
