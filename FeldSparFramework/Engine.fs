@@ -29,7 +29,7 @@ module Runner =
     let private emptyGlobal : AssemblyConfiguration = { Reporters = [] }
 
     let private executeInNewDomain (input : 'a) (env : TestEnvironment) (action : 'a -> 'b) =
-        let appDomain = AppDomain.CreateDomain("AppDomainHelper.ExecuteInNewAppDomain") 
+        let appDomain = AppDomain.CreateDomain("AppDomainHelper.ExecuteInNewAppDomain", new Security.Policy.Evidence(), appBasePath = System.IO.Path.GetDirectoryName(env.Assembly.Location), appRelativeSearchPath = System.IO.Path.GetDirectoryName(env.Assembly.Location), shadowCopyFiles = true)
 
         try
             try
