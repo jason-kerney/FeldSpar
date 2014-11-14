@@ -19,7 +19,7 @@ namespace FeldSparGuiCSharp.VeiwModels
         {
             var itemsRemovedActions = new[] { NotifyCollectionChangedAction.Remove, NotifyCollectionChangedAction.Replace };
 
-            Assemblies = new ObservableCollection<TestAssemblyModel>();
+            Assemblies = new ObservableCollection<ITestAssemblyModel>();
             Assemblies.CollectionChanged += (sender, args) =>
             {
                 var testChanged = false;
@@ -127,9 +127,9 @@ namespace FeldSparGuiCSharp.VeiwModels
             }
         }
 
-        public ObservableCollection<TestAssemblyModel> Assemblies { get; set; }
+        public ObservableCollection<ITestAssemblyModel> Assemblies { get; set; }
 
-        private T[] GetTestItems<T>(Func<TestAssemblyModel, IEnumerable<T>> selector) { return Assemblies.SelectMany(selector).ToArray(); }
+        private T[] GetTestItems<T>(Func<ITestAssemblyModel, IEnumerable<T>> selector) { return Assemblies.SelectMany(selector).ToArray(); }
 
         public TestResult[] Results { get { return GetTestItems(assembly => assembly.Results); } }
 

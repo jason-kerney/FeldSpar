@@ -8,7 +8,7 @@ namespace FeldSparGuiCSharp.VeiwModels
         private TestStatus status;
         private string failDetail;
         private string assemblyName;
-        private TestAssemblyModel parent;
+        private ITestAssemblyModel parent;
 
         public string Name
         {
@@ -69,7 +69,7 @@ namespace FeldSparGuiCSharp.VeiwModels
             }
         }
 
-        public TestAssemblyModel Parent
+        public ITestAssemblyModel Parent
         {
             get { return parent; }
             set

@@ -11,7 +11,7 @@ namespace FeldSparGuiCSharp.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var assemblyModel = (TestAssemblyModel) value;
+            var assemblyModel = (ITestAssemblyModel)value;
 
             var testDetailModels =
                 from test in assemblyModel.Tests
