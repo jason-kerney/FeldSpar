@@ -60,3 +60,10 @@ type Engine () =
 
     member this.RunTests (path:string) =
         path |> doWork runTestsAndReport
+
+type TestStatus = 
+    | None = 0
+    | Running = 1
+    | Success = 2
+    | Failure = 3
+    | Ignored = 4

@@ -70,7 +70,6 @@
     <Compile Include="VeiwModels\TestAssemblyModel.cs" />
     <Compile Include="VeiwModels\TestDetailModel.cs" />
     <Compile Include="VeiwModels\TestsMainModel.cs" />
-    <Compile Include="VeiwModels\TestStatus.cs" />
     <Page Include="TestAssembliesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

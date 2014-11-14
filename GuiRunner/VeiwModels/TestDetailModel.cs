@@ -1,3 +1,5 @@
+using FeldSpar.ClrInterop;
+
 namespace FeldSparGuiCSharp.VeiwModels
 {
     public class TestDetailModel : PropertyNotifyBase

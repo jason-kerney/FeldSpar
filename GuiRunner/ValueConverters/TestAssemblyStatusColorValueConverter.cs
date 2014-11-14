@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
+using FeldSpar.ClrInterop;
 using FeldSparGuiCSharp.StyleConstants;
 using FeldSparGuiCSharp.VeiwModels;
 

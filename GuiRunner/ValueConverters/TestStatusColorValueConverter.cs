@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using FeldSpar.ClrInterop;
 using FeldSparGuiCSharp.StyleConstants;
 using FeldSparGuiCSharp.VeiwModels;
 
@@ -10,21 +11,7 @@ namespace FeldSparGuiCSharp.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var status = (TestStatus) value;
-
-            switch (status)
-            {
-                case TestStatus.Success:
-                    return TestStatusColors.SuccessBrush;
-                case TestStatus.Running:
-                    return TestStatusColors.RunningBrush;
-                case TestStatus.Ignored:
-                    return TestStatusColors.IgnoredBrush;
-                case TestStatus.Failure:
-                    return TestStatusColors.FailureBrush;
-                default:
-                    return TestStatusColors.NoneBrush;
-            }
+            return TestStatusColors.GetStatusBrush((TestStatus) value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
