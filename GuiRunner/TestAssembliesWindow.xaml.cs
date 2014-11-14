@@ -14,9 +14,9 @@ namespace FeldSparGuiCSharp
             TestAssemblies = new TestsMainModel();
         }
 
-        public TestsMainModel TestAssemblies
+        public ITestsMainModel TestAssemblies
         {
-            get { return (TestsMainModel) DataContext; }
+            get { return (ITestsMainModel)DataContext; }
             set { DataContext = value; }
         }
     }
