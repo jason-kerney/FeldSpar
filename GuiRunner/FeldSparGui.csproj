@@ -66,7 +66,6 @@
     <Compile Include="ValueConverters\TestStatusColorValueConverter.cs" />
     <Compile Include="ValueConverters\TestStatusToFontWeightConverter.cs" />
     <Compile Include="VeiwModels\DelegateCommand.cs" />
-    <Compile Include="VeiwModels\PropertyNotifyBase.cs" />
     <Compile Include="VeiwModels\TestAssemblyModel.cs" />
     <Compile Include="VeiwModels\TestDetailModel.cs" />
     <Compile Include="VeiwModels\TestsMainModel.cs" />

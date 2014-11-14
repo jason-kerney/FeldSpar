@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
+using FeldSpar.ClrInterop;
 using FeldSpar.Framework;
 
 namespace FeldSparGuiCSharp.VeiwModels
@@ -22,7 +23,7 @@ namespace FeldSparGuiCSharp.VeiwModels
             Assemblies.CollectionChanged += (sender, args) =>
             {
                 var testChanged = false;
-                foreach (TestAssemblyModel newItem in args.NewItems)
+                foreach (INotifyPropertyChanged newItem in args.NewItems)
                 {
                     newItem.PropertyChanged += ItemOnPropertyChanged;
                     testChanged = true;
@@ -39,7 +40,7 @@ namespace FeldSparGuiCSharp.VeiwModels
                 }
 
                 testChanged = false;
-                foreach (TestAssemblyModel oldItem in args.OldItems)
+                foreach (INotifyPropertyChanged oldItem in args.OldItems)
                 {
                     oldItem.PropertyChanged -= ItemOnPropertyChanged;
                     testChanged = true;

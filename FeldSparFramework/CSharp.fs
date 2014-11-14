@@ -2,6 +2,8 @@
 open System
 open FeldSpar.Framework
 open FeldSpar.Framework.Engine
+open System.ComponentModel
+open System.Runtime.CompilerServices
 
 type TestEventArgs (name:string) =
     inherit EventArgs ()
@@ -67,3 +69,16 @@ type TestStatus =
     | Success = 2
     | Failure = 3
     | Ignored = 4
+
+type PropertyNotifyBase () =
+    let notify = new Event<_, _>()
+
+    interface INotifyPropertyChanged with
+        [<CLIEvent>]
+        member this.PropertyChanged = notify.Publish
+
+    abstract member OnPropertyChanged : string -> unit
+    default this.OnPropertyChanged ([<CallerMemberName>]propertyName:string) =
+        notify.Trigger(this, new PropertyChangedEventArgs(propertyName))
+
+    member this.OnPropertyChanged () = this.OnPropertyChanged(null)
