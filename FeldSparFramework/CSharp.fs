@@ -83,3 +83,20 @@ type PropertyNotifyBase () =
 
     member this.OnPropertyChanged () = this.OnPropertyChanged(null)
 
+type ITestDetailModel = 
+    abstract member Name : string with get, set
+    abstract member Status : TestStatus with get, set
+    abstract member FailDetail : string with get, set
+    abstract member AssemblyName : string with get, set
+    abstract member Parent : ITestAssemblyModel with get, set
+
+and ITestAssemblyModel =
+    abstract member IsVisible : bool with get, set
+    abstract member IsRunning : bool with get, set
+    abstract member Name : string with get
+    abstract member AssemblyPath : string with get
+    abstract member Tests : System.Collections.ObjectModel.ObservableCollection<ITestDetailModel> with get
+    abstract member Results : System.Collections.ObjectModel.ObservableCollection<TestResult> with get
+    abstract member RunCommand : System.Windows.Input.ICommand with get
+    abstract member ToggleVisibilityCommand : System.Windows.Input.ICommand with get
+    abstract member Run : obj -> unit

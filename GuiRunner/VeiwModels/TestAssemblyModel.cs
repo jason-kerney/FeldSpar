@@ -9,22 +9,6 @@ using FeldSpar.Framework;
 
 namespace FeldSparGuiCSharp.VeiwModels
 {
-    public interface ITestAssemblyModel
-    {
-        bool IsVisible { get; set; }
-        bool IsRunning { get; set; }
-        string Name { get; }
-        string AssemblyPath { get; }
-        ObservableCollection<ITestDetailModel> Tests { get; }
-        ObservableCollection<TestResult> Results { get; }
-        ICommand RunCommand { get; }
-        ICommand ToggleVisibilityCommand { get; }
-        void Run(object ignored);
-        void ToggleVisible(object ignored);
-        void OnPropertyChanged(string propertyName);
-        void OnPropertyChanged();
-    }
-
     public class TestAssemblyModel : PropertyNotifyBase, ITestAssemblyModel
     {
         readonly Engine engine;
