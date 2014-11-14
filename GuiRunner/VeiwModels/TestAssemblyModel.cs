@@ -15,7 +15,7 @@ namespace FeldSparGuiCSharp.VeiwModels
         bool IsRunning { get; set; }
         string Name { get; }
         string AssemblyPath { get; }
-        ObservableCollection<TestDetailModel> Tests { get; }
+        ObservableCollection<ITestDetailModel> Tests { get; }
         ObservableCollection<TestResult> Results { get; }
         ICommand RunCommand { get; }
         ICommand ToggleVisibilityCommand { get; }
@@ -28,10 +28,10 @@ namespace FeldSparGuiCSharp.VeiwModels
     public class TestAssemblyModel : PropertyNotifyBase, ITestAssemblyModel
     {
         readonly Engine engine;
-        private readonly ObservableCollection<TestDetailModel> tests = new ObservableCollection<TestDetailModel>();
+        private readonly ObservableCollection<ITestDetailModel> tests = new ObservableCollection<ITestDetailModel>();
         private readonly ObservableCollection<TestResult> results = new ObservableCollection<TestResult>();
 
-        private readonly Dictionary<string, TestDetailModel> knownTests = new Dictionary<string, TestDetailModel>();
+        private readonly Dictionary<string, ITestDetailModel> knownTests = new Dictionary<string, ITestDetailModel>();
 
         private readonly string assemblyPath;
         private bool isRunning;
@@ -172,7 +172,7 @@ namespace FeldSparGuiCSharp.VeiwModels
 
         public string AssemblyPath { get { return assemblyPath; } }
 
-        public ObservableCollection<TestDetailModel> Tests { get { return tests; } }
+        public ObservableCollection<ITestDetailModel> Tests { get { return tests; } }
 
         public ObservableCollection<TestResult> Results { get { return results; } }
 

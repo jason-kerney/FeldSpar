@@ -13,7 +13,7 @@ namespace FeldSparGuiCSharp.VeiwModels
     public class TestsMainModel : PropertyNotifyBase
     {
         private string description;
-        private TestDetailModel selected;
+        private ITestDetailModel selected;
 
         public TestsMainModel()
         {
@@ -110,7 +110,7 @@ namespace FeldSparGuiCSharp.VeiwModels
             }
         }
 
-        public TestDetailModel Selected
+        public ITestDetailModel Selected
         {
             get { return selected; }
             set
@@ -133,7 +133,7 @@ namespace FeldSparGuiCSharp.VeiwModels
 
         public TestResult[] Results { get { return GetTestItems(assembly => assembly.Results); } }
 
-        public TestDetailModel[] Tests { get { return GetTestItems(assembyly => assembyly.Tests); } }
+        public ITestDetailModel[] Tests { get { return GetTestItems(assembyly => assembyly.Tests); } }
 
         public ICommand RunCommand { get { return new DelegateCommand(Run, _ => !IsRunning); } }
 

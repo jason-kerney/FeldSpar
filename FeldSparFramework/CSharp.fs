@@ -82,3 +82,4 @@ type PropertyNotifyBase () =
         notify.Trigger(this, new PropertyChangedEventArgs(propertyName))
 
     member this.OnPropertyChanged () = this.OnPropertyChanged(null)
+
