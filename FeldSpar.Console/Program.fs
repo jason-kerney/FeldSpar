@@ -20,21 +20,31 @@ open Nessos.UnionArgParser
 module Program =
     type CommandArguments =
         | ReportLocation of string
+        | [<Mandatory>][<AltCommandLine("--a")>]TestAssembly of string
     with
         interface IArgParserTemplate with
             member s.Usage =
                 match s with
                 | ReportLocation _ -> "This flag indicates that a JSON report is to be generated at the given location"
+                | TestAssembly _ -> "This is the location of the test library. It can be a *.dll or a *.exe file"
 
     [<EntryPoint>]
     let public main argv = 
-        
+        let parser = UnionArgParser<CommandArguments>()
+
+        let args = parser.Parse(argv)
+
+        let assebmlyValidation a =
+            let ext = IO.Path.GetExtension a
+            if not ([".exe"; ".dll"] |> List.exists (fun e -> e = ext)) then failwith "invalid file extension must be *.dll or *.exe"
+
+            if not (IO.FileInfo(a).Exists) then failwith (sprintf "%A must exist" a)
+
+            a
+
+        let assemblyLocations = args.PostProcessResults(<@ TestAssembly @>, assebmlyValidation )
+
         let savePath =
-            let parser = UnionArgParser<CommandArguments>()
-            let usage = parser.Usage()
-
-            let args = parser.Parse(argv)
-
             let saveJSONReport = args.Contains <@ ReportLocation @>
 
             if saveJSONReport
@@ -56,19 +66,15 @@ module Program =
 
         printfn "Running Tests"
 
-        let testsFeldSpar = testFeldSparAssembly |> runAndReport
-        let testsPathFinding = testPathFindingAssembly |> runAndReport
+        let testsFeldSpar = assemblyLocations |> List.map runAndReportAll
         match savePath with
         | Some(path) ->
-            let jsonFeldSpar = testsFeldSpar |> buildOutputReport |> JSONFormat
-            let jsonPathFinding =testsPathFinding |> buildOutputReport |> JSONFormat
+            let jsonFeldSpar = testsFeldSpar |> List.map buildOutputReport |> List.map JSONFormat
 
-            IO.File.WriteAllText(path, jsonFeldSpar + Environment.NewLine + jsonPathFinding)
+            IO.File.WriteAllText(path, jsonFeldSpar |> List.reduce (fun a b -> a + Environment.NewLine + b))
         | _ -> ()
 
         printfn "Done!"
-
-        //*)
 
         Console.ReadKey true |> ignore
         0

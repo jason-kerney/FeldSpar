@@ -28,7 +28,22 @@ module ConsoleRunner =
         | Finished(token, result) -> 
             printfn "\t\tFinished: '%s'" token.Name
 
-        do Console.ForegroundColor <- oColor
+        Console.ForegroundColor <- oColor
+
+    let reportFilteredBy isReported status =
+        if status |> isReported then status |> reportConsoleColorForResult
+
+    let reportAll status =
+        status |> reportFilteredBy (fun _ -> true)
+
+    let reportFailure status =
+        let isFalure (s:ExecutionStatus) =
+            match s with
+            | Finished(_, Success) -> false
+            | Finished(_, Failure(_)) -> true
+            | _ -> false
+
+        status |> reportFilteredBy isFalure
 
     let printReports results =
         let oColor = Console.ForegroundColor
@@ -48,10 +63,11 @@ module ConsoleRunner =
 
     let getAssemblyName (testAssembly : Reflection.Assembly) =
         testAssembly.FullName.Split([|','|]).[0]
-        
-    let runAndReport testAssembly = 
+
+    let runAndReport reporter testAssemblyLocation = 
+        let testAssembly = testAssemblyLocation |> IO.File.ReadAllBytes |> Reflection.Assembly.Load 
         let name = testAssembly |> getAssemblyName 
-        let tests = testAssembly.Location |> runTestsAndReport reportConsoleColorForResult
+        let tests = testAssemblyLocation |> runTestsAndReport reporter
         
         let failedTests = tests
                             |> reduceToFailures 
@@ -65,3 +81,10 @@ module ConsoleRunner =
             |> printReports
 
         (name, tests)
+        
+                
+    let runAndReportAll testAssemblyLocation =
+        runAndReport reportAll testAssemblyLocation
+
+    let runAndReportFailure testAssemblyLocation =
+        runAndReport reportFailure testAssemblyLocation
