@@ -10,19 +10,19 @@ using FeldSpar.Framework;
 
 namespace FeldSparGuiCSharp.VeiwModels
 {
-    public interface ITestsMainModel
-    {
-        bool IsRunning { get; set; }
-        string Description { get; }
-        ITestDetailModel Selected { get; set; }
-        ObservableCollection<ITestAssemblyModel> Assemblies { get; set; }
-        TestResult[] Results { get; }
-        ITestDetailModel[] Tests { get; }
-        ICommand RunCommand { get; }
-        ICommand AddCommand { get; }
-        void Run(object ignored);
-        void Add(object ignored);
-    }
+//    public interface ITestsMainModel
+//    {
+//        bool IsRunning { get; set; }
+//        string Description { get; }
+//        ITestDetailModel Selected { get; set; }
+//        ObservableCollection<ITestAssemblyModel> Assemblies { get; set; }
+//        TestResult[] Results { get; }
+//        ITestDetailModel[] Tests { get; }
+//        ICommand RunCommand { get; }
+//        ICommand AddCommand { get; }
+//        void Run(object ignored);
+//        void Add(object ignored);
+//    }
 
     public class TestsMainModel : PropertyNotifyBase, ITestsMainModel
     {

@@ -100,3 +100,13 @@ and ITestAssemblyModel =
     abstract member RunCommand : System.Windows.Input.ICommand with get
     abstract member ToggleVisibilityCommand : System.Windows.Input.ICommand with get
     abstract member Run : obj -> unit
+
+type ITestsMainModel =
+    abstract IsRunning : bool with get, set
+    abstract Description : string with get
+    abstract Selected : ITestDetailModel with get, set
+    abstract Assemblies : System.Collections.ObjectModel.ObservableCollection<ITestAssemblyModel> with get, set
+    abstract Results : TestResult array with get
+    abstract Tests : ITestDetailModel array with get
+    abstract RunCommand : System.Windows.Input.ICommand with get
+    abstract AddCommand : System.Windows.Input.ICommand with get

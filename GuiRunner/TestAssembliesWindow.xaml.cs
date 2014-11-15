@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using FeldSpar.ClrInterop;
 using FeldSparGuiCSharp.VeiwModels;
 
 namespace FeldSparGuiCSharp
