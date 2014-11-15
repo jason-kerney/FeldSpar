@@ -42,7 +42,7 @@ type Engine () =
         ()
 
     let getAssembly path = 
-        path |> System.Reflection.Assembly.LoadFile
+        path |> Reflection.Assembly.LoadFile
 
     let doWork (work:(ExecutionStatus -> unit) -> Reflection.Assembly -> _) path =
         path |> getAssembly |> work report |> ignore
