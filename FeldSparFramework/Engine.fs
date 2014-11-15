@@ -35,7 +35,7 @@ module Runner =
             try
 
                 let exicutionType = typeof<Executioner<'a, 'b>>
-                let sandBoxName = exicutionType.Name
+                //let sandBoxName = exicutionType.Name
                 let sandBoxAssemblyName = exicutionType.Assembly.GetName () |> fun assembly -> assembly.FullName
                 let sandBoxTypeName = exicutionType.FullName
 
