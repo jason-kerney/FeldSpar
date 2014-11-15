@@ -4,6 +4,10 @@ open FeldSpar.Framework
 open FeldSpar.Framework.Engine
 open System.ComponentModel
 open System.Runtime.CompilerServices
+open System.Collections.ObjectModel
+open System.Collections.Generic
+open System.IO
+open System.Windows.Input
 
 type TestEventArgs (name:string) =
     inherit EventArgs ()
@@ -95,8 +99,8 @@ and ITestAssemblyModel =
     abstract member IsRunning : bool with get, set
     abstract member Name : string with get
     abstract member AssemblyPath : string with get
-    abstract member Tests : System.Collections.ObjectModel.ObservableCollection<ITestDetailModel> with get
-    abstract member Results : System.Collections.ObjectModel.ObservableCollection<TestResult> with get
+    abstract member Tests : ObservableCollection<ITestDetailModel> with get
+    abstract member Results : ObservableCollection<TestResult> with get
     abstract member RunCommand : System.Windows.Input.ICommand with get
     abstract member ToggleVisibilityCommand : System.Windows.Input.ICommand with get
     abstract member Run : obj -> unit
@@ -145,7 +149,7 @@ module Defaults =
                 with get () = String.Empty
                 and set value = ()
             member this.Status 
-                with get () = TestStatus.Success
+                with get () = TestStatus.None
                 and set value = ()
             member this.FailDetail
                 with get () = String.Empty
@@ -164,7 +168,7 @@ type DelegateCommand (execute:Action<obj>, canExecute:Predicate<obj>) =
     let notify = new Event<_, _>()
 
 
-    interface System.Windows.Input.ICommand with
+    interface ICommand with
         [<CLIEvent>]
         member this.CanExecuteChanged = notify.Publish
 
@@ -228,3 +232,115 @@ type TestDetailModel () =
         member this.Parent
             with get () = parent
             and set value = parent <- value
+
+type TestAssemblyModel (assemblyPath) as this =
+    inherit PropertyNotifyBase ()
+
+    let engine = new Engine()
+    let tests = new ObservableCollection<ITestDetailModel>()
+    let results = new ObservableCollection<TestResult>()
+    let knownTests = new Dictionary<string, ITestDetailModel>()
+    let name = Path.GetFileName(assemblyPath)
+
+    let mutable isRunning = true
+    let mutable isVisible = true
+
+    let convert (result:TestResult) = 
+        match result with
+        | Success -> (TestStatus.Success, String.Empty)
+        | Failure(GeneralFailure(msg)) -> (TestStatus.Failure, "General Failure" + Environment.NewLine + msg)
+        | Failure(ExpectationFailure(msg)) -> (TestStatus.Failure, "Expectation Not Met" + Environment.NewLine + msg)
+        | Failure(ExceptionFailure(ex)) -> (TestStatus.Failure, ex.ToString())
+        | Failure(Ignored(msg)) -> (TestStatus.Failure, "Ignored:" + Environment.NewLine + msg)
+        | Failure(StandardNotMet) -> (TestStatus.Failure, "Gold Standard not met, check the comparison or configure comparison")
+    
+    do
+        engine.TestFound.Add
+            (
+                fun args ->
+                    if knownTests.ContainsKey (args.Name) then ()
+                    else
+                        let detail = new TestDetailModel()
+                        detail.Name <- args.Name
+                        detail.Status <- TestStatus.None
+                        detail.AssemblyName <- name
+                        detail.Parent <- this
+
+                        tests.Add detail
+
+                        knownTests.Add (detail.Name, detail)
+                        this.OnPropertyChanged("Tests")
+            )
+
+        engine.TestFinished.Add
+            (
+                fun args ->
+                    results.Add (args.TestResult)
+
+                    let status, message = convert (args.TestResult)
+                    let detail = knownTests.[args.Name]
+                    detail.Status <- status
+                    detail.FailDetail <- message
+
+                    this.OnPropertyChanged("Results")
+                    this.OnPropertyChanged("Tests")
+            )
+
+        engine.TestRunning.Add (fun args -> knownTests.[args.Name].Status <- TestStatus.Running)
+
+        engine.FindTests(assemblyPath)
+
+    member private this.ITestAssemblyModel = this :> ITestAssemblyModel
+
+    member this.ToggleVisibility _ =
+        this.ITestAssemblyModel.IsVisible <- not this.ITestAssemblyModel.IsVisible
+
+    interface ITestAssemblyModel with
+        member this.IsVisible
+            with get () = isVisible
+            and set value = 
+                if value = isVisible then ()
+                else
+                    isVisible <- value
+                    this.OnPropertyChanged "IsVisible"
+
+        member this.IsRunning
+            with get () = isRunning
+            and set value = 
+                if isRunning = value then ()
+                else
+                    isRunning <- value
+                    this.OnPropertyChanged "IsRunning"
+
+        member this.Name with get () = name
+
+        member this.AssemblyPath with get () = assemblyPath
+
+        member this.Tests with get () = tests
+
+        member this.Results with get () = results
+
+        member this.Run _ = 
+            async {
+                this.ITestAssemblyModel.IsRunning <- true
+                results.Clear()
+
+                for test in tests do
+                    test.Status <- TestStatus.None
+
+                let t = new Threading.Tasks.Task<unit>(fun () -> engine.RunTests(assemblyPath))
+                t.Start()
+                do! Async.AwaitTask(t)
+
+                this.ITestAssemblyModel.IsRunning <- false
+
+            } |> Async.Start
+
+        member this.RunCommand 
+            with get () = 
+                new DelegateCommand(fun ignored -> this.ITestAssemblyModel.Run(ignored)) :> ICommand
+
+        member this.ToggleVisibilityCommand 
+            with get () =
+                new DelegateCommand(fun ignored -> this.ToggleVisibility(ignored)) :> ICommand
+                
