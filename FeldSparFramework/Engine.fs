@@ -29,7 +29,7 @@ module Runner =
     let private emptyGlobal : AssemblyConfiguration = { Reporters = [] }
 
     let private executeInNewDomain (input : 'a) (env : TestEnvironment) (action : 'a -> 'b) =
-        let appDomain = AppDomain.CreateDomain("AppDomainHelper.ExecuteInNewAppDomain", new Security.Policy.Evidence(), appBasePath = System.IO.Path.GetDirectoryName(env.Assembly.Location), appRelativeSearchPath = System.IO.Path.GetDirectoryName(env.Assembly.Location), shadowCopyFiles = true)
+        let appDomain = AppDomain.CreateDomain("AppDomainHelper.ExecuteInNewAppDomain", new Security.Policy.Evidence(), appBasePath = System.IO.Path.GetDirectoryName(env.AssemblyPath), appRelativeSearchPath = System.IO.Path.GetDirectoryName(env.AssemblyPath), shadowCopyFiles = true)
 
         try
             try
@@ -65,7 +65,8 @@ module Runner =
             Name = name;
             CanonicalizedName = name |> Formatters.Basic.CanonicalizeString;
             RootPath = path;
-            Assembly = assembly;
+            Assembly = assembly |> IO.File.ReadAllBytes |> Assembly.Load;
+            AssemblyPath = assembly;
             Reporters = env.Reporters;
         }
 
@@ -96,8 +97,6 @@ module Runner =
                                                                 TestResults = template env;
                                                             }
 
-                                                        //result.TestResults |> fileFinishedReport env report
-
                                                         result
                                                     with
                                                     | e -> 
@@ -108,8 +107,6 @@ module Runner =
                                                                 TestResults = Failure(ExceptionFailure(e));
                                                             }
 
-                                                        //result.TestResults |> fileFinishedReport env report
-                                                        
                                                         result
                                                 )
 
@@ -123,7 +120,8 @@ module Runner =
 
     let private findStaticProperties (t:Type) = t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static)
 
-    let findConfiguration (assembly:Assembly) = 
+    let findConfiguration (assemblyPath:string) = 
+        let assembly = assemblyPath |> IO.File.ReadAllBytes |> Assembly.Load
         let configs = assembly.GetExportedTypes()
                      |> List.ofSeq
                      |> List.map findStaticProperties
@@ -140,7 +138,8 @@ module Runner =
         else
             None
 
-    let private findTestProperties (filter : PropertyInfo -> bool) (assembly:Assembly) = 
+    let private findTestProperties (filter : PropertyInfo -> bool) (assemblyPath:string) = 
+        let assembly = assemblyPath |> IO.File.ReadAllBytes |> Assembly.Load
         (assembly.GetExportedTypes())
             |> List.ofSeq
             |> List.map findStaticProperties
@@ -177,7 +176,7 @@ module Runner =
     let private isTheory (t:Type) =
         t.IsGenericType && (t.GetGenericTypeDefinition()) = (typeof<Theory<_>>.GetGenericTypeDefinition())
 
-    let private getTestsWith (map:PropertyInfo -> (string * Test)[]) (environment : AssemblyConfiguration) report (assembly:Assembly) = 
+    let private getTestsWith (map:PropertyInfo -> (string * Test)[]) (environment : AssemblyConfiguration) report (assembly:string) = 
         let filter (prop:PropertyInfo) = 
             match prop.PropertyType with
             | t when t = typeof<Test> -> true
@@ -234,13 +233,13 @@ module Runner =
             (getConfig(), mapper)
         | None -> (emptyGlobal, mapper)
 
-    let findTestsAndReport report (assembly:Assembly) = 
+    let findTestsAndReport report (assembly:string) = 
         let (env, mapper) = assembly |> findConfiguration |> getMapper |> determinEnvironmentAndMapping 
 
         assembly |> getTestsWith mapper env report
 
 
-    let runTestsAndReport report (assembly:Assembly) = 
+    let runTestsAndReport report (assembly:string) = 
         assembly 
         |> findTestsAndReport report 
         |> List.map(
@@ -250,11 +249,11 @@ module Runner =
                 result
            )
 
-    let runTestsAndReportWith report (assembly:Assembly) = 
+    let runTestsAndReportWith report (assembly:string) = 
         assembly |> runTestsAndReport report
 
-    let findTests (assembly:Assembly) =  assembly |> findTestsAndReport ignore
+    let findTests (assembly:string) =  assembly |> findTestsAndReport ignore
 
-    let runTests (assembly:Assembly) = assembly |> runTestsAndReport ignore
+    let runTests (assembly:string) = assembly |> runTestsAndReport ignore
 
-    let runTestsWith (assembly : Assembly) = assembly |> runTestsAndReport ignore
+    let runTestsWith (assembly : string) = assembly |> runTestsAndReport ignore

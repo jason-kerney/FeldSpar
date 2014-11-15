@@ -24,7 +24,7 @@ module Data =
         })
 
     let runTest description template = 
-            let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description testFeldSparAssembly
+            let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description (testFeldSparAssembly.Location)
             test()
 
     let runAsTests templates = 

@@ -46,10 +46,12 @@ type Engine () =
         ()
 
     let getAssembly path = 
-        path |> Reflection.Assembly.LoadFile
+        let bytes = path |> File.ReadAllBytes 
 
-    let doWork (work:(ExecutionStatus -> unit) -> Reflection.Assembly -> _) path =
-        path |> getAssembly |> work report |> ignore
+        Reflection.Assembly.Load(bytes)
+
+    let doWork (work:(ExecutionStatus -> unit) -> string -> _) path =
+        path |> work report |> ignore
         
 
     [<CLIEvent>]
@@ -262,9 +264,9 @@ type TestAssemblyModel (path) as this =
         | WatcherChangeTypes.Renamed -> 
             assemblyPath <- args.FullPath
             name <- args.Name
-        | _ ->()
-
-        engine.FindTests(assemblyPath)
+            engine.FindTests(assemblyPath)
+        | _ ->
+            engine.FindTests(assemblyPath)
 
     let convert (result:TestResult) = 
         match result with
@@ -272,7 +274,7 @@ type TestAssemblyModel (path) as this =
         | Failure(GeneralFailure(msg)) -> (TestStatus.Failure, "General Failure" + Environment.NewLine + msg)
         | Failure(ExpectationFailure(msg)) -> (TestStatus.Failure, "Expectation Not Met" + Environment.NewLine + msg)
         | Failure(ExceptionFailure(ex)) -> (TestStatus.Failure, ex.ToString())
-        | Failure(Ignored(msg)) -> (TestStatus.Failure, "Ignored:" + Environment.NewLine + msg)
+        | Failure(Ignored(msg)) -> (TestStatus.Ignored, "Ignored:" + Environment.NewLine + msg)
         | Failure(StandardNotMet) -> (TestStatus.Failure, "Gold Standard not met, check the comparison or configure comparison")
     
     do

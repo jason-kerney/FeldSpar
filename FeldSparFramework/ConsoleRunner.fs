@@ -51,7 +51,7 @@ module ConsoleRunner =
         
     let runAndReport testAssembly = 
         let name = testAssembly |> getAssemblyName 
-        let tests = testAssembly |> runTestsAndReport reportConsoleColorForResult
+        let tests = testAssembly.Location |> runTestsAndReport reportConsoleColorForResult
         
         let failedTests = tests
                             |> reduceToFailures 
