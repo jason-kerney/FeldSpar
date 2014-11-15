@@ -111,6 +111,53 @@ type ITestsMainModel =
     abstract RunCommand : System.Windows.Input.ICommand with get
     abstract AddCommand : System.Windows.Input.ICommand with get
 
+module Defaults =
+    let emptyCommand = 
+        {new System.Windows.Input.ICommand with
+            [<CLIEvent>]
+            member this.CanExecuteChanged = (new Event<_, _>()).Publish
+            member this.CanExecute param = true
+            member this.Execute param = ()
+        }
+
+    let emptyTestAssemblyModel = 
+        {new ITestAssemblyModel with
+            member this.IsVisible 
+                with get () = false
+                and set value = ()
+            member this.IsRunning
+                with get () = false
+                and set value = ()
+            member this.Name with get () = String.Empty
+            member this.AssemblyPath with get () = String.Empty
+            member this.Tests 
+                with get () = new System.Collections.ObjectModel.ObservableCollection<ITestDetailModel>()
+            member this.Results 
+                with get () = new System.Collections.ObjectModel.ObservableCollection<TestResult>()
+            member this.RunCommand with get () = emptyCommand
+            member this.ToggleVisibilityCommand with get () = emptyCommand
+            member this.Run param = ()
+        }
+
+    let emptyTestDetailModel = 
+        {new ITestDetailModel with
+            member this.Name
+                with get () = String.Empty
+                and set value = ()
+            member this.Status 
+                with get () = TestStatus.Success
+                and set value = ()
+            member this.FailDetail
+                with get () = String.Empty
+                and set value = ()
+            member this.AssemblyName
+                with get () = String.Empty
+                and set value = ()
+            member this.Parent
+                with get () = emptyTestAssemblyModel
+                and set value = ()
+        }
+
 // Thank you:
 // http://wpftutorial.net/DelegateCommand.html
 type DelegateCommand (execute:Action<obj>, canExecute:Predicate<obj>) =
@@ -131,3 +178,53 @@ type DelegateCommand (execute:Action<obj>, canExecute:Predicate<obj>) =
 
 
     member this.RaiseCanExecuteChanged () = notify.Trigger(this, EventArgs.Empty)
+
+type TestDetailModel () =
+    inherit PropertyNotifyBase ()
+
+    let mutable name = ""
+    let mutable status = TestStatus.Success
+    let mutable failDetail = ""
+    let mutable assemblyName = ""
+    let mutable parent :ITestAssemblyModel = Defaults.emptyTestAssemblyModel
+
+    member this.Name
+        with get () = name
+        and set value = name <- value
+
+    member this.Status
+        with get () = status
+        and set value = status <- value
+
+    member this.FailDetail
+        with get () = failDetail
+        and set value = failDetail <- value
+
+    member this.AssemblyName
+        with get () = assemblyName
+        and set value = assemblyName <- value
+
+    member this.Parent
+        with get () = parent
+        and set value = parent <- value
+    
+    interface ITestDetailModel with
+        member this.Name
+            with get () = name
+            and set value = name <- value
+
+        member this.Status
+            with get () = status
+            and set value = status <- value
+
+        member this.FailDetail
+            with get () = failDetail
+            and set value = failDetail <- value
+
+        member this.AssemblyName
+            with get () = assemblyName
+            and set value = assemblyName <- value
+
+        member this.Parent
+            with get () = parent
+            and set value = parent <- value
