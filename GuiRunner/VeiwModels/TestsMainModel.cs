@@ -91,7 +91,16 @@ namespace FeldSparGuiCSharp.VeiwModels
 
             if (Assemblies.All(assembly => assembly.AssemblyPath != fileOpen.FileName))
             {
-                Assemblies.Add(new TestAssemblyModel(fileOpen.FileName));
+                var testAssemblyModel = new TestAssemblyModel(fileOpen.FileName);
+                Assemblies.Add(testAssemblyModel);
+
+                EventHandler onDeletedFile = null;
+                onDeletedFile = (sender, args) =>
+                {
+                    Assemblies.Remove(testAssemblyModel);
+                    ((ITestAssemblyModel) testAssemblyModel).DeletedFile -= onDeletedFile;
+                };
+                ((ITestAssemblyModel) testAssemblyModel).DeletedFile += onDeletedFile;
             }
         }
 

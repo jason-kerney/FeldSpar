@@ -95,6 +95,7 @@ type ITestDetailModel =
     abstract member Parent : ITestAssemblyModel with get, set
 
 and ITestAssemblyModel =
+    [<CLIEvent>]abstract member DeletedFile : IEvent<EventHandler, EventArgs>
     abstract member IsVisible : bool with get, set
     abstract member IsRunning : bool with get, set
     abstract member Name : string with get
@@ -141,6 +142,8 @@ module Defaults =
             member this.RunCommand with get () = emptyCommand
             member this.ToggleVisibilityCommand with get () = emptyCommand
             member this.Run param = ()
+            [<CLIEvent>]
+            member this.DeletedFile = (new Event<EventHandler, EventArgs>()).Publish
         }
 
     let emptyTestDetailModel = 
@@ -233,17 +236,35 @@ type TestDetailModel () =
             with get () = parent
             and set value = parent <- value
 
-type TestAssemblyModel (assemblyPath) as this =
+type TestAssemblyModel (path) as this =
     inherit PropertyNotifyBase ()
 
+    let deletedFile = new Event<_, _>()
+
+    let mutable assemblyPath = path
     let engine = new Engine()
     let tests = new ObservableCollection<ITestDetailModel>()
     let results = new ObservableCollection<TestResult>()
     let knownTests = new Dictionary<string, ITestDetailModel>()
-    let name = Path.GetFileName(assemblyPath)
+    let watcher = new FileSystemWatcher(Path.GetDirectoryName(assemblyPath), "*.*")
 
+    let mutable name = Path.GetFileName(assemblyPath)
     let mutable isRunning = true
     let mutable isVisible = true
+
+    let watchHandler (args:FileSystemEventArgs) = 
+        results.Clear()
+        tests.Clear()
+        knownTests.Clear()
+
+        match args.ChangeType with
+        | WatcherChangeTypes.Deleted -> ()
+        | WatcherChangeTypes.Renamed -> 
+            assemblyPath <- args.FullPath
+            name <- args.Name
+        | _ ->()
+
+        engine.FindTests(assemblyPath)
 
     let convert (result:TestResult) = 
         match result with
@@ -288,6 +309,13 @@ type TestAssemblyModel (assemblyPath) as this =
 
         engine.TestRunning.Add (fun args -> knownTests.[args.Name].Status <- TestStatus.Running)
 
+        watcher.Changed.Add watchHandler
+        watcher.Deleted.Add watchHandler
+        watcher.Renamed.Add watchHandler
+        watcher.Created.Add watchHandler
+
+        watcher.EnableRaisingEvents <- true
+
         engine.FindTests(assemblyPath)
 
     member private this.ITestAssemblyModel = this :> ITestAssemblyModel
@@ -296,6 +324,9 @@ type TestAssemblyModel (assemblyPath) as this =
         this.ITestAssemblyModel.IsVisible <- not this.ITestAssemblyModel.IsVisible
 
     interface ITestAssemblyModel with
+        [<CLIEvent>]
+        member this.DeletedFile = deletedFile.Publish
+
         member this.IsVisible
             with get () = isVisible
             and set value = 
