@@ -10,7 +10,7 @@ let testDir = "./test/"
 let deployDir = "./deploy/"
 
 // version info
-let version = "0.2.1"
+let version = "0.3.0"
 
 // Default target
 Target "Clean" (fun _ ->
@@ -19,6 +19,13 @@ Target "Clean" (fun _ ->
 
 Target "BuildApp" (fun _ ->
     !! "./FeldSparFramework/*.fsproj"
+     |> MSBuildRelease buildDir "Build"
+     |> Log "AppBuild-Output:"
+)
+
+
+Target "BuildGui" (fun _ ->
+    !! "./GuiRunner/*.csproj"
      |> MSBuildRelease buildDir "Build"
      |> Log "AppBuild-Output:"
 )
@@ -51,6 +58,7 @@ Target "Default" (fun _ ->
 // Dependencies
 "Clean"
     ==> "BuildApp"
+    ==> "BuildGui"
     ==> "BuildTest"
     ==> "Test"
     ==> "Zip"
