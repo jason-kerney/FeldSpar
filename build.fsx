@@ -60,7 +60,8 @@ Target "Test" (fun _ ->
         Array.map(fun fi -> fi.FullName) |>
         Array.filter(fun fi -> fi.Contains("approved")) |>
         Copy testDir
-    Shell.Exec (testDir + "FeldSpar.Console.exe" ,"--a \"FeldSpar.Tests.dll\"", ?dir=Some(testDir)) |> ignore
+    let result = Shell.Exec (testDir + "FeldSpar.Console.exe" ,"--a \"FeldSpar.Tests.dll\"", ?dir=Some(testDir))
+    if result <> 0 then failwith "Failed Tests"
 )
 
 Target "Zip" (fun _ ->

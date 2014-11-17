@@ -44,75 +44,80 @@ type Launcher () =
         printfn "Done!"
 
     let run args =
-        let parser = UnionArgParser<CommandArguments>()
+        try
+            let parser = UnionArgParser<CommandArguments>()
 
-        let args = parser.Parse(args)
+            let args = parser.Parse(args)
 
-        let assebmlyValidation a =
-            let ext = IO.Path.GetExtension a
-            if not ([".exe"; ".dll"] |> List.exists (fun e -> e = ext)) then failwith "invalid file extension must be *.dll or *.exe"
+            let assebmlyValidation a =
+                let ext = IO.Path.GetExtension a
+                if not ([".exe"; ".dll"] |> List.exists (fun e -> e = ext)) then failwith "invalid file extension must be *.dll or *.exe"
 
-            if not (IO.FileInfo(a).Exists) then failwith (sprintf "%A must exist" a)
+                if not (IO.FileInfo(a).Exists) then failwith (sprintf "%A must exist" a)
 
-            a
+                a
 
-        let pause = args.Contains (<@ Pause @>) || args.Contains (<@ Auto_Loop @>)
+            let pause = args.Contains (<@ Pause @>) || args.Contains (<@ Auto_Loop @>)
 
-        let tests = args.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation )
+            let tests = args.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation )
 
-        let savePath =
-            let saveJSONReport = args.Contains <@ Report_Location @>
+            let savePath =
+                let saveJSONReport = args.Contains <@ Report_Location @>
 
-            if saveJSONReport
+                if saveJSONReport
+                then
+                    let pathValue = args.GetResult <@ Report_Location @>
+                    let fName = System.IO.Path.GetFileName pathValue
+
+                    if fName = null
+                    then raise (ArgumentException("reportlocation must contain a valid file name"))
+
+                    let fileInfo = IO.FileInfo(pathValue)
+
+                    if fileInfo.Exists
+                    then fileInfo.Delete ()
+
+                    Some(fileInfo.FullName)
+                else
+                    None
+
+            let runner = 
+                if args.Contains <@ Verbose @>
+                then runAndReportAll
+                elif args.Contains <@ Verbose_Errors @>
+                then runAndReportFailure
+                else runAndReportNone
+
+            if args.Contains <@ Auto_Loop @> 
             then
-                let pathValue = args.GetResult <@ Report_Location @>
-                let fName = System.IO.Path.GetFileName pathValue
+                let paths = tests
+                
+                for path in paths do
+                    let fileName = IO.Path.GetFileName path
+                    let path = IO.Path.GetDirectoryName path
+                    let watcherA = new IO.FileSystemWatcher(path, fileName)
 
-                if fName = null
-                then raise (ArgumentException("reportlocation must contain a valid file name"))
+                    let changed (ar:IO.FileSystemEventArgs) = 
+                        Threading.Thread.Sleep 100
+                        [ar.FullPath] |> runTests savePath runner
 
-                let fileInfo = IO.FileInfo(pathValue)
+                    let created (ar:IO.FileSystemEventArgs) = 
+                        Threading.Thread.Sleep 100
+                        [ar.FullPath] |> runTests savePath runner
 
-                if fileInfo.Exists
-                then fileInfo.Delete ()
+                    watcherA.Changed.Add changed
+                    watcherA.Created.Add created
 
-                Some(fileInfo.FullName)
-            else
-                None
+                    watcherA.EnableRaisingEvents <- true
 
-        let runner = 
-            if args.Contains <@ Verbose @>
-            then runAndReportAll
-            elif args.Contains <@ Verbose_Errors @>
-            then runAndReportFailure
-            else runAndReportNone
+            runTests savePath runner tests
 
-        if args.Contains <@ Auto_Loop @> 
-        then
-            let paths = tests
-            
-            for path in paths do
-                let fileName = IO.Path.GetFileName path
-                let path = IO.Path.GetDirectoryName path
-                let watcherA = new IO.FileSystemWatcher(path, fileName)
-
-                let changed (ar:IO.FileSystemEventArgs) = 
-                    Threading.Thread.Sleep 100
-                    [ar.FullPath] |> runTests savePath runner
-
-                let created (ar:IO.FileSystemEventArgs) = 
-                    Threading.Thread.Sleep 100
-                    [ar.FullPath] |> runTests savePath runner
-
-                watcherA.Changed.Add changed
-                watcherA.Created.Add created
-
-                watcherA.EnableRaisingEvents <- true
-
-        runTests savePath runner tests
-
-        if pause then Console.ReadKey true |> ignore
-        0
+            if pause then Console.ReadKey true |> ignore
+            0
+        with
+        | ex -> 
+            printfn "%A" (ex.Message)
+            -1
 
     member this.Run args = 
         run args
