@@ -59,7 +59,7 @@ module Runner =
             | Some(_) -> p.Parent.FullName |> getSourcePath
             | None -> p.FullName + "\\"
 
-        let path = System.Environment.CurrentDirectory |> getSourcePath
+        let path = assembly |> IO.Path.GetDirectoryName |> getSourcePath
             
         { 
             Name = name;
