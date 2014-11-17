@@ -43,6 +43,8 @@ type Launcher () =
 
         printfn "Done!"
 
+        testsFeldSpar
+
     let run args =
         try
             let parser = UnionArgParser<CommandArguments>()
@@ -88,7 +90,8 @@ type Launcher () =
                 then runAndReportFailure
                 else runAndReportNone
 
-            if args.Contains <@ Auto_Loop @> 
+            let autoLoop = args.Contains <@ Auto_Loop @> 
+            if autoLoop 
             then
                 let paths = tests
                 
@@ -99,21 +102,36 @@ type Launcher () =
 
                     let changed (ar:IO.FileSystemEventArgs) = 
                         Threading.Thread.Sleep 100
-                        [ar.FullPath] |> runTests savePath runner
+                        [ar.FullPath] |> runTests savePath runner |> ignore
 
                     let created (ar:IO.FileSystemEventArgs) = 
                         Threading.Thread.Sleep 100
-                        [ar.FullPath] |> runTests savePath runner
+                        [ar.FullPath] |> runTests savePath runner |> ignore
 
                     watcherA.Changed.Add changed
                     watcherA.Created.Add created
 
                     watcherA.EnableRaisingEvents <- true
 
-            runTests savePath runner tests
+            let results = runTests savePath runner tests |> List.collect(fun (_, r) -> r)
 
             if pause then Console.ReadKey true |> ignore
-            0
+            
+            if autoLoop then 0
+            else
+                results 
+                    |> List.filter
+                        (
+                            fun { TestDescription = _;  TestCanonicalizedName = _; TestResults = r } -> 
+                                
+                                match r with
+                                | Failure(Ignored(_)) -> false
+                                | Failure(_) -> true
+                                | _ -> false
+                        )
+
+                    |> List.length
+
         with
         | ex -> 
             printfn "%A" (ex.Message)
