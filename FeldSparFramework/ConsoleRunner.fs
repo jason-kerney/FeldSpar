@@ -45,6 +45,11 @@ module ConsoleRunner =
 
         status |> reportFilteredBy isFalure
 
+    let reportNone status =
+        let isNone _ = false
+
+        status |> reportFilteredBy isNone
+
     let printReports results =
         let oColor = Console.ForegroundColor
         Console.ForegroundColor <- System.ConsoleColor.Red
@@ -88,3 +93,6 @@ module ConsoleRunner =
 
     let runAndReportFailure testAssemblyLocation =
         runAndReport reportFailure testAssemblyLocation
+
+    let runAndReportNone testAssemblyLocation =
+        runAndReport reportNone testAssemblyLocation
