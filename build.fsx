@@ -1,6 +1,7 @@
 // include Fake lib
 #r @"packages\FAKE\tools\FakeLib.dll"
 open Fake
+open Fake.VersionHelper
 
 RestorePackages ()
 
@@ -17,7 +18,10 @@ let nugetDeployDir =
     else deployDir
 
 // version info
-let version = "0.3.1"
+//let version = "0.3.1"
+
+let version () =
+    buildDir + "FeldSparFramework.dll" |> GetAssemblyVersionString 
 
 let build appDir tmpDir targetDir label projecType =
     let tmpDir = (appDir + tmpDir)
@@ -66,7 +70,7 @@ Target "Test" (fun _ ->
 
 Target "Zip" (fun _ ->
     !! (buildDir + "/**/*.*")
-        |> Zip buildDir (deployDir + "FeldSparFSharp." + version + ".zip")
+        |> Zip buildDir (deployDir + "FeldSparFSharp." + (version ()) + ".zip")
 )
 
 Target "Default" (fun _ ->
