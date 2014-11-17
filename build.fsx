@@ -5,12 +5,14 @@ open Fake
 RestorePackages ()
 
 // Properties
+let testDirName = "test"
 let buildDir = "./build/"
-let testDir = "./test/"
+let testDir = "./" + testDirName + "/"
+let testPath = ".\\" + testDirName + "\\"
 let deployDir = "./deploy/"
 
 // version info
-let version = "0.3.0"
+let version = "0.3.1"
 
 // Default target
 Target "Clean" (fun _ ->
@@ -23,6 +25,11 @@ Target "BuildApp" (fun _ ->
      |> Log "AppBuild-Output:"
 )
 
+Target "BuildConsole" (fun _ ->
+    !! "./FeldSpar.Console/*.fsproj"
+     |> MSBuildRelease buildDir "Build"
+     |> Log "AppBuild-Output:"
+)
 
 Target "BuildGui" (fun _ ->
     !! "./GuiRunner/*.csproj"
@@ -31,7 +38,7 @@ Target "BuildGui" (fun _ ->
 )
 
 Target "BuildTest" (fun _ ->
-    !! "./FeldSpar.Console/*.fsproj"
+    !! "./**/*.fsproj"
         |> MSBuildDebug testDir "Build"
         |> Log "TestBuild-Output:"
 )
@@ -43,7 +50,7 @@ Target "Test" (fun _ ->
         Array.map(fun fi -> fi.FullName) |>
         Array.filter(fun fi -> fi.Contains("approved")) |>
         Copy testDir
-    Shell.Exec (testDir + "FeldSpar.Console.exe", ?dir=Some(testDir)) |> ignore
+    Shell.Exec (testPath + "FeldSpar.Console.exe" ,"--a \"FeldSpar.Tests.dll\"", ?dir=Some(testDir)) |> ignore
 )//*)
 
 Target "Zip" (fun _ ->
@@ -59,6 +66,7 @@ Target "Default" (fun _ ->
 "Clean"
     ==> "BuildApp"
     ==> "BuildGui"
+    ==> "BuildConsole"
     ==> "BuildTest"
     ==> "Test"
     ==> "Zip"
