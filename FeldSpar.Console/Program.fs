@@ -6,13 +6,6 @@ open FeldSpar.Framework.Engine
 open FeldSpar.Framework.TestSummaryUtilities
 open FeldSpar.Framework.Verification.ApprovalsSupport
 
-open PathFinding.Tests.BaseTests
-
-open FeldSpar.Console.Helpers.Data
-open FeldSpar.Console.Tests.BuildingOfTestsTests
-open FeldSpar.Console.Tests.IsolationTests
-open FeldSpar.Console.Tests.FilteringTests
-open FeldSpar.Console.Tests.StandardsVerificationTests
 open ApprovalTests
 open Nessos.UnionArgParser
 
