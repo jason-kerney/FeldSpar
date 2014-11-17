@@ -65,11 +65,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PathFindindTests\PathFindindTests.fsproj">
-      <Name>PathFindindTests</Name>
-      <Project>{546d5801-9fd4-4a17-af78-a150afe59f44}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <Reference Include="ApprovalTests">
       <HintPath>..\packages\ApprovalTests.3.0.6\lib\net40\ApprovalTests.dll</HintPath>
       <Private>True</Private>
@@ -85,11 +80,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <ProjectReference Include="..\FeldSpar.Tests\FeldSpar.Tests.fsproj">
-      <Name>FeldSpar.Tests</Name>
-      <Project>{6f2261d9-2268-4595-b35d-c401148906d5}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\FeldSparFramework\FeldSpar.Framework.fsproj">
       <Name>FeldSpar.Framework</Name>
       <Project>{ad56b1ee-515d-40d2-8217-4b4335c0a37b}</Project>
