@@ -3,13 +3,13 @@
   <metadata>
     <id>$id$</id>
     <version>$version$</version>
-    <title>FeldSpar Test Framework for F#</title>
+    <title>FeldSpar Console Test Runner</title>
     <authors>R. Jason Kerney</authors>
     <owners>R. Jason Kerney</owners>
     <licenseUrl>https://github.com/jason-kerney/FeldSpar/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/jason-kerney/FeldSpar</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>An opinionated fully functional testing framework for F#</description>
+    <description>Allows the running of FeldSpar tests using the console</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags></tags>
