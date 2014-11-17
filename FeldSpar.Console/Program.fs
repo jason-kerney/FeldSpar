@@ -15,6 +15,7 @@ type CommandArguments =
     | [<AltCommandLine("--v")>]Verbose
     | [<AltCommandLine("--ve")>]Verbose_Errors
     | [<AltCommandLine("--al")>]Auto_Loop
+    | [<AltCommandLine("--p")>]Pause
 with
     interface IArgParserTemplate with
         member s.Usage =
@@ -22,8 +23,9 @@ with
             | Report_Location _ -> "This flag indicates that a JSON report is to be generated at the given location"
             | Test_Assembly _ -> "This is the location of the test library. It can be a *.dll or a *.exe file"
             | Verbose -> "This prints to the console all events while running."
-            | Verbose_Errors -> "This prints only failing tests to console. It is ignored if \"Verbose\" is used."
+            | Verbose_Errors -> "This prints only failing tests to console. It is ignored if \"verbose\" is used."
             | Auto_Loop -> "This makes the command contiuously run executing on every compile."
+            | Pause -> "This makes the console wait for key press inorder to exit. This is automaticly in effect if \"auto-loop\" is used"
 
 type Launcher () =
     inherit MarshalByRefObject ()
@@ -54,8 +56,9 @@ type Launcher () =
 
             a
 
-        let tests = args.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation )
+        let pause = args.Contains (<@ Pause @>) || args.Contains (<@ Auto_Loop @>)
 
+        let tests = args.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation )
 
         let savePath =
             let saveJSONReport = args.Contains <@ Report_Location @>
@@ -107,7 +110,8 @@ type Launcher () =
                 watcherA.EnableRaisingEvents <- true
 
         runTests savePath runner tests
-        Console.ReadKey true |> ignore
+
+        if pause then Console.ReadKey true |> ignore
         0
 
     member this.Run args = 

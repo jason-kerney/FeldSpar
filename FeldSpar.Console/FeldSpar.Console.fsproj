@@ -25,7 +25,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\Debug\FeldSpar.Console.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
-    <StartArguments>--ve --a "C:\Users\Jason\Documents\Visual Studio 2013\Projects\JavaScriptTdd\JavaScriptTdd\bin\Debug\JavaScriptTdd.exe" --al</StartArguments>
+    <StartArguments>--ve --a "C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.Tests\bin\Debug\FeldSpar.Tests.dll" --ve --p</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
