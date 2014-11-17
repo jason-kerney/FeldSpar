@@ -8,6 +8,9 @@ RestorePackages ()
 // Properties
 let fSharpProjects = "*.fsproj"
 let releaseDir = "bin/Release/"
+
+
+
 let buildDir = "./build/"
 let testDir = "./test/"
 let deployDir = "./deploy/"
@@ -17,14 +20,14 @@ let nugetDeployDir =
     if System.IO.Directory.Exists t then t
     else deployDir
 
-// version info
-//let version = "0.3.1"
-
 let version () =
     buildDir + "FeldSparFramework.dll" |> GetAssemblyVersionString 
 
 let build appDir tmpDir targetDir label projecType =
     let tmpDir = (appDir + tmpDir)
+
+    tmpDir |> directoryInfo |> (fun d -> d.ToString()) |> CleanDir
+
     let o = !! (appDir + projecType)
             |> MSBuildRelease tmpDir "Build"
             |> Log label
@@ -64,7 +67,7 @@ Target "Test" (fun _ ->
         Array.map(fun fi -> fi.FullName) |>
         Array.filter(fun fi -> fi.Contains("approved")) |>
         Copy testDir
-    let result = Shell.Exec (testDir + "FeldSpar.Console.exe" ,"--a \"FeldSpar.Tests.dll\"", ?dir=Some(testDir))
+    let result = Shell.Exec (buildDir + "FeldSpar.Console.exe" ,"--v  --a \".\\FeldSpar.Tests.dll\"", ?dir=Some(testDir))
     if result <> 0 then failwith "Failed Tests"
 )
 

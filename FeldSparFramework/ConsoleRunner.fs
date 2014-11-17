@@ -12,7 +12,7 @@ module ConsoleRunner =
             match result with
             | Success -> ConsoleColor.Green
             | Failure(ExceptionFailure(_)) -> ConsoleColor.Magenta
-            | Failure(Ignored(_)) -> ConsoleColor.DarkRed
+            | Failure(Ignored(_)) -> ConsoleColor.DarkYellow
             | _ -> ConsoleColor.Red
 
     let reportConsoleColorForResult status = 
