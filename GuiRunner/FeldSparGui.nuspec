@@ -12,6 +12,6 @@
     <description>A test runner for the FeldSpar testing framework</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2014</copyright>
-    <tags></tags>
+    <tags>F#, FSharp, F-Sharp, Unit Testing, Unit Tests, Runner</tags>
   </metadata>
 </package>

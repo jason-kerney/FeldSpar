@@ -12,6 +12,6 @@
     <description>An opinionated fully functional testing framework for F#</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2014</copyright>
-    <tags></tags>
+    <tags>F#, FSharp, F-Sharp, Unit Testing, Unit Tests</tags>
   </metadata>
 </package>
