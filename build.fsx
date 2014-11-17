@@ -5,53 +5,63 @@ open Fake
 RestorePackages ()
 
 // Properties
-let testDirName = "test"
+let fSharpProjects = "*.fsproj"
+let releaseDir = "bin/Release/"
 let buildDir = "./build/"
-let testDir = "./" + testDirName + "/"
-let testPath = ".\\" + testDirName + "\\"
+let testDir = "./test/"
 let deployDir = "./deploy/"
+
+let nugetDeployDir = 
+    let t = "C:/Nuget.Local/"
+    if System.IO.Directory.Exists t then t
+    else deployDir
 
 // version info
 let version = "0.3.1"
 
+let build appDir tmpDir targetDir label projecType =
+    let tmpDir = (appDir + tmpDir)
+    let o = !! (appDir + projecType)
+            |> MSBuildRelease tmpDir "Build"
+            |> Log label
+
+    FileSystemHelper.directoryInfo tmpDir
+        |> FileSystemHelper.filesInDir
+        |> Array.map (fun fi -> fi.FullName)
+        |> Copy targetDir
+    ()
+
 // Default target
 Target "Clean" (fun _ ->
-    CleanDirs [buildDir; testDir; deployDir]
+    CleanDirs [buildDir; testDir; deployDir; nugetDeployDir]
 )
 
 Target "BuildApp" (fun _ ->
-    !! "./FeldSparFramework/*.fsproj"
-     |> MSBuildRelease buildDir "Build"
-     |> Log "AppBuild-Output:"
+    build "./FeldSparFramework/" releaseDir buildDir "AppBuild-Output:" fSharpProjects
 )
 
 Target "BuildConsole" (fun _ ->
-    !! "./FeldSpar.Console/*.fsproj"
-     |> MSBuildRelease buildDir "Build"
-     |> Log "AppBuild-Output:"
+    build "./FeldSpar.Console/" releaseDir buildDir "BuildConsole-Output:" fSharpProjects
 )
 
 Target "BuildGui" (fun _ ->
-    !! "./GuiRunner/*.csproj"
-     |> MSBuildRelease buildDir "Build"
-     |> Log "AppBuild-Output:"
+    build "./GuiRunner/" releaseDir buildDir "BuildGui-Output:" "*.csproj"
 )
 
 Target "BuildTest" (fun _ ->
     !! "./**/*.fsproj"
-        |> MSBuildDebug testDir "Build"
+        |> MSBuildRelease testDir "Build"
         |> Log "TestBuild-Output:"
 )
 
-//(* Having problems with git conversion of end of line characters
 Target "Test" (fun _ ->
     FileSystemHelper.directoryInfo "./FeldSpar.Console/" |>
         FileSystemHelper.filesInDir |>
         Array.map(fun fi -> fi.FullName) |>
         Array.filter(fun fi -> fi.Contains("approved")) |>
         Copy testDir
-    Shell.Exec (testPath + "FeldSpar.Console.exe" ,"--a \"FeldSpar.Tests.dll\"", ?dir=Some(testDir)) |> ignore
-)//*)
+    Shell.Exec (testDir + "FeldSpar.Console.exe" ,"--a \"FeldSpar.Tests.dll\"", ?dir=Some(testDir)) |> ignore
+)
 
 Target "Zip" (fun _ ->
     !! (buildDir + "/**/*.*")
@@ -62,16 +72,38 @@ Target "Default" (fun _ ->
     trace "Hello world from FAKE"
 )
 
+Target "Nuget" (fun _ ->
+    Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSparFramework\FeldSpar.Framework.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.Console\FeldSpar.Console.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\FeldSparGui.csproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+)
+
+Target "LocalDeploy" (fun _ ->
+    if deployDir = nugetDeployDir then ()
+    else
+        FileSystemHelper.directoryInfo deployDir
+            |> FileSystemHelper.filesInDir
+            |> Array.filter (fun fi -> fi.Extension = ".nupkg")
+            |> Array.map (fun fi -> fi.FullName)
+            |> Copy nugetDeployDir
+
+        FileSystemHelper.directoryInfo nugetDeployDir
+            |> FileSystemHelper.filesInDir
+            |> Array.map (fun fi -> fi.FullName)
+            |> Array.iter (printfn "LocalDeploy-Output: %s")
+)
+
 // Dependencies
 "Clean"
     ==> "BuildApp"
-    ==> "BuildGui"
     ==> "BuildConsole"
+    ==> "BuildGui"
     ==> "BuildTest"
     ==> "Test"
     ==> "Zip"
     ==> "Default"
-
+    ==> "Nuget"
+    ==> "LocalDeploy"
 
 // start build
 RunTargetOrDefault "Default"
