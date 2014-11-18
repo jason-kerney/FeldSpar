@@ -45,11 +45,6 @@ type Engine () =
 
         ()
 
-    let getAssembly path = 
-        let bytes = path |> File.ReadAllBytes 
-
-        Reflection.Assembly.Load(bytes)
-
     let doWork (work:(ExecutionStatus -> unit) -> string -> _) path =
         path |> work report |> ignore
         

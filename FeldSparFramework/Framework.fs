@@ -51,6 +51,11 @@ type TestEnvironment =
 type Test = | Test of (TestEnvironment -> TestResult)
 type IgnoredTest = | ITest of (TestEnvironment -> TestResult)
 type Configuration = | Config of (unit -> AssemblyConfiguration)
+type RunConfiguration = 
+    {
+        Assembly: Reflection.Assembly;
+        Config: Configuration option;
+    }
 
 type TheoryCaseTemplate<'a> =
     {

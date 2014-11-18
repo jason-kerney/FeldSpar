@@ -134,7 +134,7 @@ module BuildingOfTestsTests =
                 let env : AssemblyConfiguration = { Reporters = []}
 
                 let resultSummary = 
-                    let _, test = ``A Test That will fail`` |> createTestFromTemplate env ignore failDescription (testFeldSparAssembly.Location)
+                    let _, test = ``A Test That will fail`` |> createTestFromTemplate env ignore failDescription (testFeldSparAssembly.Location) (Data.testFeldSparAssembly)
                     test()
 
                 verify
@@ -174,7 +174,7 @@ module BuildingOfTestsTests =
                     {
                         let! testRanCorrectly =(
                             [("Can0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~", ``Can0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~``)] 
-                                |> runAsTests
+                                |> runAsTests 
                                 |> reduceToFailures
                                 |> Seq.isEmpty 
                                 |> isTrue (ExpectationFailure("test Failed to have correct Name")))
@@ -188,7 +188,7 @@ module BuildingOfTestsTests =
                 let ex = IndexOutOfRangeException("The exception was out of range")
                 let ``A test that throws an exception`` =  Test((fun env -> raise ex))
 
-                let _, case = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore "A test that throws an exception" (testFeldSparAssembly.Location)
+                let _, case = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore "A test that throws an exception" (testFeldSparAssembly.Location) (Data.testFeldSparAssembly)
 
                 let summary = case()
                 let result = summary.TestResults
