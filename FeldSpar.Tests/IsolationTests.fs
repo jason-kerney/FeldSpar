@@ -40,7 +40,7 @@ module IsolationTests =
                             actual |> expectsToBe expected "changer did not increment correctly expected %d but got %d"
                         ))
 
-                let results = [("First test to test isolation", ``First test to test isolation``); ("Second test to test isolation", ``Second test to test isolation``)] |> runAsTests
+                let results = [("First test to test isolation", ``First test to test isolation``); ("Second test to test isolation", ``Second test to test isolation``)] |> runAsTests (env.AssemblyPath)
                 let isolatedResults = results |> reduceToFailures |> Seq.isEmpty
 
                 let mainActual = changer.X

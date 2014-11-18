@@ -114,7 +114,7 @@ module BuildingOfTestsTests =
                                                     ("", 0) |> append arry
                                                 )
 
-                let testTemplatesa = findTests (testFeldSparAssembly.Location) |> Seq.sortBy(fun (description, _) -> description) |> Seq.map(fun (description, _) -> "(" + description + ")")
+                let testTemplatesa = findTests (env.AssemblyPath) |> Seq.sortBy(fun (description, _) -> description) |> Seq.map(fun (description, _) -> "(" + description + ")")
                 let testTemplatesb = testTemplatesa |> Seq.toList
                 let testTemplates = testTemplatesb |> join
 
@@ -131,10 +131,10 @@ module BuildingOfTestsTests =
                 let ``A Test That will fail`` = 
                     Test((fun env -> failResult "Expected Failure"))
 
-                let env : AssemblyConfiguration = { Reporters = []}
+                let config : AssemblyConfiguration = { Reporters = []}
 
                 let resultSummary = 
-                    let _, test = ``A Test That will fail`` |> createTestFromTemplate env ignore failDescription (testFeldSparAssembly.Location) (Data.testFeldSparAssembly)
+                    let _, test = ``A Test That will fail`` |> createTestFromTemplate config ignore failDescription (env.AssemblyPath) (Data.testFeldSparAssembly)
                     test()
 
                 verify
@@ -174,7 +174,7 @@ module BuildingOfTestsTests =
                     {
                         let! testRanCorrectly =(
                             [("Can0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~", ``Can0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~``)] 
-                                |> runAsTests 
+                                |> runAsTests (env.AssemblyPath)
                                 |> reduceToFailures
                                 |> Seq.isEmpty 
                                 |> isTrue (ExpectationFailure("test Failed to have correct Name")))
@@ -188,7 +188,7 @@ module BuildingOfTestsTests =
                 let ex = IndexOutOfRangeException("The exception was out of range")
                 let ``A test that throws an exception`` =  Test((fun env -> raise ex))
 
-                let _, case = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore "A test that throws an exception" (testFeldSparAssembly.Location) (Data.testFeldSparAssembly)
+                let _, case = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore "A test that throws an exception" (env.AssemblyPath) (Data.testFeldSparAssembly)
 
                 let summary = case()
                 let result = summary.TestResults

@@ -23,12 +23,13 @@ module Data =
                         ]
         })
 
-    let runTest description template = 
-            let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description (testFeldSparAssembly.Location) testFeldSparAssembly
+    let runTest description assemblyPath template = 
+            printfn "\t\tLoading '%s'" (testFeldSparAssembly.Location) 
+            let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description assemblyPath testFeldSparAssembly
             test()
 
-    let runAsTests templates = 
-        templates |> Seq.map (fun (description, template) -> template |> runTest description)
+    let runAsTests assemblyPath templates = 
+        templates |> Seq.map (fun (description, template) -> template |> runTest description assemblyPath)
 
     let filteringSetUp = 
         let hasOnlySuccesses =

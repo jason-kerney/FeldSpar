@@ -118,25 +118,25 @@ module Runner =
 
     let findConfiguration (assemblyPath:string) = 
         
-        let getTests (assemblyPath:string) = 
-            let assembly = assemblyPath |> IO.File.ReadAllBytes |> Assembly.Load
-            let configs = assembly.GetExportedTypes()
-                         |> List.ofSeq
-                         |> List.map findStaticProperties
-                         |> List.toSeq
-                         |> Array.concat
-                         |> Array.filter(fun p -> p.PropertyType = typeof<Configuration>)
+        //let getTests (assemblyPath:string) = 
+        let assembly = assemblyPath |> IO.File.ReadAllBytes |> Assembly.Load
+        let configs = assembly.GetExportedTypes()
+                        |> List.ofSeq
+                        |> List.map findStaticProperties
+                        |> List.toSeq
+                        |> Array.concat
+                        |> Array.filter(fun p -> p.PropertyType = typeof<Configuration>)
 
-            if configs.Length = 0
-            then { Assembly = assembly; Config = Some(Config(fun () -> emptyGlobal)) }
-            elif configs.Length = 1
-            then
-                let config = configs.[0] |> (fun p -> p.GetValue (null) :?> Configuration)
-                { Assembly = assembly; Config = Some(config) }
-            else
-                { Assembly = assembly; Config =  None}
+        if configs.Length = 0
+        then { Assembly = assembly; Config = Some(Config(fun () -> emptyGlobal)) }
+        elif configs.Length = 1
+        then
+            let config = configs.[0] |> (fun p -> p.GetValue (null) :?> Configuration)
+            { Assembly = assembly; Config = Some(config) }
+        else
+            { Assembly = assembly; Config =  None}
 
-        executeInNewDomain assemblyPath assemblyPath "findConfiguration" getTests
+        //executeInNewDomain assemblyPath assemblyPath "findConfiguration" getTests
 
     let private findTestProperties (filter : PropertyInfo -> bool) (assembly:Reflection.Assembly) (assemblyPath:string) = 
         assembly.GetExportedTypes()
