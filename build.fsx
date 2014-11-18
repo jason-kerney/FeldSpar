@@ -67,7 +67,7 @@ Target "Test" (fun _ ->
         Array.map(fun fi -> fi.FullName) |>
         Array.filter(fun fi -> fi.Contains("approved")) |>
         Copy testDir
-    let result = Shell.Exec (buildDir + "FeldSpar.Console.exe" ,"--v  --a \".\\FeldSpar.Tests.dll\"", ?dir=Some(testDir))
+    let result = Shell.Exec (buildDir + "FeldSpar.Console.exe" ,"--ve  --a \".\\FeldSpar.Tests.dll\"", ?dir=Some(testDir))
     if result <> 0 then failwith "Failed Tests"
 )
 
