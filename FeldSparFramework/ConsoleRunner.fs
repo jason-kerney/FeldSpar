@@ -66,12 +66,8 @@ module ConsoleRunner =
                                     result + Environment.NewLine + sep + Environment.NewLine
                             )
 
-    let getAssemblyName (testAssembly : Reflection.Assembly) =
-        testAssembly.FullName.Split([|','|]).[0]
-
     let runAndReport reporter testAssemblyLocation = 
-        let testAssembly = testAssemblyLocation |> IO.File.ReadAllBytes |> Reflection.Assembly.Load 
-        let name = testAssembly |> getAssemblyName 
+        let name = testAssemblyLocation |> IO.Path.GetFileName
         let tests = testAssemblyLocation |> runTestsAndReport reporter
         
         let failedTests = tests

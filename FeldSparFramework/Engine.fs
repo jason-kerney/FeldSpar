@@ -28,8 +28,8 @@ module Runner =
 
     let private emptyGlobal : AssemblyConfiguration = { Reporters = [] }
 
-    let private executeInNewDomain (input : 'a) (env : TestEnvironment) (action : 'a -> 'b) =
-        let appDomain = AppDomain.CreateDomain("AppDomainHelper.ExecuteInNewAppDomain", new Security.Policy.Evidence(), appBasePath = System.IO.Path.GetDirectoryName(env.AssemblyPath), appRelativeSearchPath = System.IO.Path.GetDirectoryName(env.AssemblyPath), shadowCopyFiles = true)
+    let private executeInNewDomain (input : 'a) assemblyPath name (action : 'a -> 'b) =
+        let appDomain = AppDomain.CreateDomain("AppDomainHelper.ExecuteInNewAppDomain", new Security.Policy.Evidence(), appBasePath = System.IO.Path.GetDirectoryName(assemblyPath), appRelativeSearchPath = System.IO.Path.GetDirectoryName(assemblyPath), shadowCopyFiles = true)
 
         try
             try
@@ -43,7 +43,7 @@ module Runner =
                 sandbox.Execute input action
             with 
             | e when (e.Message.Contains("Unexpected assembly-qualifier in a typename.")) ->
-                raise (ArgumentException(sprintf "``%s`` Failed to load. Test member name may not contain a comma" env.Name))
+                raise (ArgumentException(sprintf "``%s`` Failed to load. Test member name may not contain a comma" name))
             | e -> raise e
         finally
             AppDomain.Unload(appDomain)
@@ -107,7 +107,7 @@ module Runner =
                                                 )
 
                             fileRunningReport env report
-                            testingCode |> executeInNewDomain () env
+                            testingCode |> executeInNewDomain () env.AssemblyPath env.Name
                         )
                         
         (name, testCase)
@@ -117,22 +117,26 @@ module Runner =
     let private findStaticProperties (t:Type) = t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static)
 
     let findConfiguration (assemblyPath:string) = 
-        let assembly = assemblyPath |> IO.File.ReadAllBytes |> Assembly.Load
-        let configs = assembly.GetExportedTypes()
-                     |> List.ofSeq
-                     |> List.map findStaticProperties
-                     |> List.toSeq
-                     |> Array.concat
-                     |> Array.filter(fun p -> p.PropertyType = typeof<Configuration>)
+        
+        let getTests (assemblyPath:string) = 
+            let assembly = assemblyPath |> IO.File.ReadAllBytes |> Assembly.Load
+            let configs = assembly.GetExportedTypes()
+                         |> List.ofSeq
+                         |> List.map findStaticProperties
+                         |> List.toSeq
+                         |> Array.concat
+                         |> Array.filter(fun p -> p.PropertyType = typeof<Configuration>)
 
-        if configs.Length = 0
-        then { Assembly = assembly; Config = Some(Config(fun () -> emptyGlobal)) }
-        elif configs.Length = 1
-        then
-            let config = configs.[0] |> (fun p -> p.GetValue (null) :?> Configuration)
-            { Assembly = assembly; Config = Some(config) }
-        else
-            { Assembly = assembly; Config =  None}
+            if configs.Length = 0
+            then { Assembly = assembly; Config = Some(Config(fun () -> emptyGlobal)) }
+            elif configs.Length = 1
+            then
+                let config = configs.[0] |> (fun p -> p.GetValue (null) :?> Configuration)
+                { Assembly = assembly; Config = Some(config) }
+            else
+                { Assembly = assembly; Config =  None}
+
+        executeInNewDomain assemblyPath assemblyPath "findConfiguration" getTests
 
     let private findTestProperties (filter : PropertyInfo -> bool) (assembly:Reflection.Assembly) (assemblyPath:string) = 
         assembly.GetExportedTypes()
