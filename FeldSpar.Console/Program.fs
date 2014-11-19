@@ -47,7 +47,7 @@ type Launcher () =
 
     let run args =
         try
-            let parser = UnionArgParser<CommandArguments>()
+            let parser = UnionArgParser.Create<CommandArguments>()
 
             let args = parser.Parse(args)
 
@@ -143,14 +143,20 @@ type Launcher () =
 module Program =
     [<EntryPoint>]
     let public main args = 
-        let applicationName = "FeldSparConsole"
-        let path = IO.Path.GetDirectoryName(Reflection.Assembly.GetExecutingAssembly().Location)
-        let appDomain = AppDomain.CreateDomain(applicationName, null, path, path, true)
+        try
+            let applicationName = "FeldSparConsole"
+            let path = IO.Path.GetDirectoryName(Reflection.Assembly.GetExecutingAssembly().Location)
+            let appDomain = AppDomain.CreateDomain(applicationName, null, path, path, true)
 
-        let launcherType = typeof<Launcher>
-        let sandBoxAssemblyName = launcherType.Assembly.FullName
-        let sandBoxTypeName = launcherType.FullName
+            let launcherType = typeof<Launcher>
+            let sandBoxAssemblyName = launcherType.Assembly.FullName
+            let sandBoxTypeName = launcherType.FullName
 
-        let sandbox = appDomain.CreateInstanceAndUnwrap(sandBoxAssemblyName, sandBoxTypeName) :?> Launcher
+            let sandbox = appDomain.CreateInstanceAndUnwrap(sandBoxAssemblyName, sandBoxTypeName) :?> Launcher
 
-        sandbox.Run args
+            sandbox.Run args
+        with
+        | ex -> 
+            printfn "%A" ex
+            -1
+
