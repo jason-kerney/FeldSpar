@@ -199,7 +199,7 @@ module BuildingOfTestsTests =
                 let mtch = regex.Match(resultString)
                 let goodLength = mtch.Index + 1
 
-                let cleaned = resultString.Substring(0, goodLength) + " ..."
+                let cleaned = resultString.Substring(0, goodLength) + " ..." |> (fun s -> s.Replace("\r\n","\n"))
 
                 verify
                     {
