@@ -9,6 +9,9 @@ open ApprovalTests.Core
 
 [<AutoOpen>]
 module Checks =
+    let removeCarageReturns (s:string) =
+        s.Replace("\r\n", "\n").Replace('\r', '\n')
+
     let isTrue failure success =
         if success
         then Success
@@ -68,6 +71,7 @@ module Checks =
         checkStandardsAndReport env reporter approver
 
     let checkAgainstStringStandard env result =
+        let result = result |> removeCarageReturns
         let approver = getStringFileApprover env result
         checkAgainstStandard env approver
 
@@ -88,6 +92,7 @@ module Checks =
         let result =
             results
             |> Seq.map converter
+            |> Seq.map removeCarageReturns
             |> joinWith "\n"
 
         result |> checkAgainstStringStandard env
@@ -95,7 +100,7 @@ module Checks =
     let checkAllAgainstStandard env (results:'a seq) =
         let result =
             results
-            |> Seq.map (fun o -> o.ToString())
+            |> Seq.map (fun o -> o.ToString() |> removeCarageReturns)
             |> joinWith "\n"
 
         result |> checkAgainstStringStandard env
