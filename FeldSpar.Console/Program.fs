@@ -11,7 +11,7 @@ open Nessos.UnionArgParser
 
 [<AutoOpen>]
 module Extras =    
-    let vebosityLevels = ["Max"; "Results"; "Errors"]
+    let vebosityLevels = ["Max"; "Results"; "Errors"; "Detail"]
 
 
 type CommandArguments =
@@ -74,10 +74,11 @@ type Launcher () =
                 if compareVerbosity a
                 then
                     let a = a.ToUpper()
-                    if a = "MAX" then runAndReportAll
-                    elif a = "RESULTS" then runAndReportResults
-                    elif a = "ERRORS" then runAndReportFailure
-                    else runAndReportNone
+                    if a = "MAX" then (runAndReportAll true)
+                    elif a = "RESULTS" then (runAndReportResults false)
+                    elif a = "ERRORS" then (runAndReportFailure true)
+                    elif a = "DETAIL" then (runAndReportNone true)
+                    else (runAndReportNone false)
                 else
                     failwith (sprintf "verbosity must be one of: %A" vebosityLevels)
 
@@ -90,7 +91,7 @@ type Launcher () =
                 if args.Contains(<@ Verbosity @>)
                 then
                     args.PostProcessResult(<@ Verbosity @>, verbosityCheck)
-                else runAndReportNone
+                else (runAndReportNone false)
 
             let savePath =
                 let saveJSONReport = args.Contains <@ Report_Location @>

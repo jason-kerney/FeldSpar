@@ -83,7 +83,7 @@ module ConsoleRunner =
                                     result + "\n" + sep + "\n"
                             )
 
-    let runAndReport reporter testAssemblyLocation = 
+    let runAndReport reporter showDetails testAssemblyLocation = 
         let name = testAssemblyLocation |> IO.Path.GetFileName
         let tests = testAssemblyLocation |> runTestsAndReport reporter
         
@@ -93,22 +93,24 @@ module ConsoleRunner =
 
         printfn "Displaying Results (%d Failed of %d)" (failedTests |> List.length) (tests |> List.length)
 
-        failedTests 
-            |> reportResults 
-            |> seperateResults
-            |> printReports
+        if showDetails
+        then
+            failedTests 
+                |> reportResults 
+                |> seperateResults
+                |> printReports
 
         (name, tests)
         
                 
-    let runAndReportAll testAssemblyLocation =
-        runAndReport reportAll testAssemblyLocation
+    let runAndReportAll showDetails testAssemblyLocation =
+        runAndReport reportAll showDetails testAssemblyLocation
 
-    let runAndReportResults testAssemblyLocation =
-        runAndReport reportOnlyResults testAssemblyLocation
+    let runAndReportResults showDetails testAssemblyLocation =
+        runAndReport reportOnlyResults showDetails testAssemblyLocation
 
-    let runAndReportFailure testAssemblyLocation =
-        runAndReport reportFailure testAssemblyLocation
+    let runAndReportFailure showDetails testAssemblyLocation =
+        runAndReport reportFailure showDetails testAssemblyLocation
 
-    let runAndReportNone testAssemblyLocation =
-        runAndReport reportNone testAssemblyLocation
+    let runAndReportNone showDetails testAssemblyLocation =
+        runAndReport reportNone showDetails testAssemblyLocation
