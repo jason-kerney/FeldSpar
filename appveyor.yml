@@ -5,4 +5,5 @@ before_build:
 	- nuget restore
 
 # package application
+build:
 	verbosity: minimal
