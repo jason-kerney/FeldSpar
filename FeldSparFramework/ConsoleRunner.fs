@@ -26,7 +26,16 @@ module ConsoleRunner =
         | Running(token) ->
             printfn "\t\tRunning: '%s'" token.Name
         | Finished(token, result) -> 
-            printfn "\t\tFinished: '%s'" token.Name
+            let display status =
+                printfn "\t\t%s: '%s'" status token.Name
+
+            match result with
+            | Success -> display "Success"
+            | Failure(Ignored(_)) -> display "Ignored"
+            | Failure(ExpectationFailure(_)) -> display "Expectation Failure"
+            | Failure(ExceptionFailure(_)) -> display "Exception Failure"
+            | Failure(GeneralFailure(_)) -> display "General Failure"
+            | Failure(StandardNotMet) -> display "Standard not met Failure"
 
         Console.ForegroundColor <- oColor
 
