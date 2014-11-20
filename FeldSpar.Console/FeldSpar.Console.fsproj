@@ -37,7 +37,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\Release\FeldSpar.Console.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
-    <StartArguments>--a "C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.Tests\bin\Release\FeldSpar.Tests.dll" --a "C:\Users\Jason\Documents\GitHub\FeldSpar\PathFindindTests\bin\Release\PathFindindTests.dll" --p --v</StartArguments>
+    <StartArguments>--a "C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.Tests\bin\Release\FeldSpar.Tests.dll" --a "C:\Users\Jason\Documents\GitHub\FeldSpar\PathFindindTests\bin\Release\PathFindindTests.dll" --p --v RESULTS</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion>12.0</VisualStudioVersion>

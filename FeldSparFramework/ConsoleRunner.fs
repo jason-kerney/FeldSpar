@@ -45,6 +45,14 @@ module ConsoleRunner =
     let reportAll status =
         status |> reportFilteredBy (fun _ -> true)
 
+    let reportOnlyResults status =
+        let isFinished (s:ExecutionStatus) =
+            match s with
+            | Finished(_) -> true
+            | _ -> false
+
+        status |> reportFilteredBy isFinished
+
     let reportFailure status =
         let isFalure (s:ExecutionStatus) =
             match s with
@@ -95,6 +103,9 @@ module ConsoleRunner =
                 
     let runAndReportAll testAssemblyLocation =
         runAndReport reportAll testAssemblyLocation
+
+    let runAndReportResults testAssemblyLocation =
+        runAndReport reportOnlyResults testAssemblyLocation
 
     let runAndReportFailure testAssemblyLocation =
         runAndReport reportFailure testAssemblyLocation

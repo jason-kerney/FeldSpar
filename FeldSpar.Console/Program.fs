@@ -9,11 +9,15 @@ open FeldSpar.Framework.Verification.ApprovalsSupport
 open ApprovalTests
 open Nessos.UnionArgParser
 
+[<AutoOpen>]
+module Extras =    
+    let vebosityLevels = ["Max"; "Results"; "Errors"]
+
+
 type CommandArguments =
     | [<Mandatory>][<AltCommandLine("--a")>]Test_Assembly of string
     | [<AltCommandLine("--r")>]Report_Location of string
-    | [<AltCommandLine("--v")>]Verbose
-    | [<AltCommandLine("--ve")>]Verbose_Errors
+    | [<AltCommandLine("--v")>]Verbosity of string
     | [<AltCommandLine("--al")>]Auto_Loop
     | [<AltCommandLine("--p")>]Pause
 with
@@ -22,13 +26,20 @@ with
             match s with
             | Report_Location _ -> "This flag indicates that a JSON report is to be generated at the given location"
             | Test_Assembly _ -> "This is the location of the test library. It can be a *.dll or a *.exe file"
-            | Verbose -> "This prints to the console all events while running."
-            | Verbose_Errors -> "This prints only failing tests to console. It is ignored if \"verbose\" is used."
+            | Verbosity _ -> sprintf "This sets the verbosity level for the run. Possible levels are: %A" vebosityLevels
             | Auto_Loop -> "This makes the command contiuously run executing on every compile."
             | Pause -> "This makes the console wait for key press inorder to exit. This is automaticly in effect if \"auto-loop\" is used"
 
 type Launcher () =
     inherit MarshalByRefObject ()
+
+    let compareVerbosity (verbosity:string) =
+        let verbosity = verbosity.ToUpper()
+        vebosityLevels 
+            |> List.map (fun s -> s.ToUpper()) 
+            |> List.exists (fun v -> v = verbosity)
+
+
 
     let runTests savePath runner tests =
         printfn "Running Tests"
@@ -59,9 +70,27 @@ type Launcher () =
 
                 a
 
+            let verbosityCheck a = 
+                if compareVerbosity a
+                then
+                    let a = a.ToUpper()
+                    if a = "MAX" then runAndReportAll
+                    elif a = "RESULTS" then runAndReportResults
+                    elif a = "ERRORS" then runAndReportFailure
+                    else runAndReportNone
+                else
+                    failwith (sprintf "verbosity must be one of: %A" vebosityLevels)
+
+
             let pause = args.Contains (<@ Pause @>) || args.Contains (<@ Auto_Loop @>)
 
             let tests = args.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation )
+
+            let runner = 
+                if args.Contains(<@ Verbosity @>)
+                then
+                    args.PostProcessResult(<@ Verbosity @>, verbosityCheck)
+                else runAndReportNone
 
             let savePath =
                 let saveJSONReport = args.Contains <@ Report_Location @>
@@ -82,13 +111,6 @@ type Launcher () =
                     Some(fileInfo.FullName)
                 else
                     None
-
-            let runner = 
-                if args.Contains <@ Verbose @>
-                then runAndReportAll
-                elif args.Contains <@ Verbose_Errors @>
-                then runAndReportFailure
-                else runAndReportNone
 
             let autoLoop = args.Contains <@ Auto_Loop @> 
             if autoLoop 
