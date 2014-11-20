@@ -6,6 +6,8 @@ module Example =
     open FeldSpar.Framework.Verification.Checks
     open FeldSpar.Console.Helpers.Data
 
+    let Fail = Test(fun _ -> failwith "not a real error")
+
     let FizzBuzzer v = 
         match v with
         | fizzBuzz when fizzBuzz % 15 = 0 -> "FizzBuzz"
