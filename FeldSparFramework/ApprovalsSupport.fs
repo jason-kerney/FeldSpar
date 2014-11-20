@@ -94,7 +94,9 @@ module ApprovalsSupport =
 
     let getReporter (env : TestEnvironment)= 
         match env.Reporters with
-        | [] -> QuietReporter() :> IApprovalFailureReporter
+        | [] -> 
+            printfn "Default Quiet Reporter"
+            QuietReporter() :> IApprovalFailureReporter
         | reporters -> reporters |> buildReporter
 
     let addReporter<'a when 'a :> IApprovalFailureReporter> (env:TestEnvironment) =
@@ -126,5 +128,7 @@ module ApprovalsSupport =
 
     let unWrapReporter findReporterResult =
         match findReporterResult with
-        | FoundReporter(reporter) -> reporter
+        | FoundReporter(reporter) -> 
+            printfn "Found Reporter '%A'" reporter
+            reporter
         | _ -> createReporter<ApprovalTests.Reporters.QuietReporter> ()

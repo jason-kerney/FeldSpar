@@ -24,7 +24,6 @@ module Data =
         })
 
     let runTest description assemblyPath template = 
-            printfn "\t\tLoading '%s'" (testFeldSparAssembly.Location) 
             let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description assemblyPath testFeldSparAssembly
             test()
 
