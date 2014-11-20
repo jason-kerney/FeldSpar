@@ -93,7 +93,7 @@ module BuildingOfTestsTests =
                                                 sprintf "%s -> %s" description resultString
                                               )
 
-                let result = String.Join(Environment.NewLine, results) + Environment.NewLine
+                let result = String.Join("\n", results) + "\n"
 
                 result |> checkAgainstStringStandard env
             )
@@ -109,7 +109,7 @@ module BuildingOfTestsTests =
                                                             let pad = arry.Length.ToString ()
                                                             let pad = pad.Length
                                                             let ns = ns.PadLeft(pad, '0')
-                                                            (sprintf "%sTest[%s] is (%s)%s" acc ns head System.Environment.NewLine, cnt + 1) |> append tail
+                                                            (sprintf "%sTest[%s] is (%s)%s" acc ns head "\n", cnt + 1) |> append tail
 
                                                     ("", 0) |> append arry
                                                 )

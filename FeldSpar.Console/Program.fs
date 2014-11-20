@@ -38,7 +38,7 @@ type Launcher () =
         | Some(path) ->
             let jsonFeldSpar = testsFeldSpar |> List.map buildOutputReport |> List.map JSONFormat
 
-            IO.File.WriteAllText(path, jsonFeldSpar |> List.reduce (fun a b -> a + Environment.NewLine + b))
+            IO.File.WriteAllText(path, jsonFeldSpar |> List.reduce (fun a b -> a + "\n" + b))
         | _ -> ()
 
         printfn "Done!"

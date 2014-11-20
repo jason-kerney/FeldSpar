@@ -16,7 +16,7 @@ module TestSummaryUtilities =
         summaries |> reduceTo filterSuccesses
 
     let JSONFormat (value:OutputReport) =
-        let spacer = "\r\n\t"
+        let spacer = "\n\t"
         let joinSpacer = sprintf ",%s\t" spacer
 
         let successes = 
@@ -30,7 +30,7 @@ module TestSummaryUtilities =
                 let failMsg = 
                     match failureType with
                     | GeneralFailure(msg)     -> sprintf "General Failure ('%s')" msg
-                    | ExceptionFailure(ex)    -> sprintf "Exception Thrown:\r\n%A" ex
+                    | ExceptionFailure(ex)    -> sprintf "Exception Thrown:\n%A" ex
                     | ExpectationFailure(msg) -> sprintf "Expectation Not Met ('%s')" msg
                     | Ignored(msg)            -> sprintf "Ignored ('%s')" msg
                     | StandardNotMet          -> "Standard was not Met"
@@ -41,5 +41,5 @@ module TestSummaryUtilities =
             )
             |> joinWith joinSpacer
 
-        let jsonString = sprintf "{%s\"Assembly Name\" : \"%s\" %s\"Failures\" : [\r\n\t\t%s\r\n\t],%s\"Successes\" : [\r\n\t\t%s\r\n\t]\r\n}\r\n" spacer (value.Name) spacer failures spacer successes
+        let jsonString = sprintf "{%s\"Assembly Name\" : \"%s\" %s\"Failures\" : [\n\t\t%s\n\t],%s\"Successes\" : [\n\t\t%s\n\t]\n}\n" spacer (value.Name) spacer failures spacer successes
         jsonString

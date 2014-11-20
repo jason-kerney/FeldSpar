@@ -98,7 +98,7 @@ module Example =
 
                                             sprintf "%s: %s" strNum fizzed
                                           )
-                              |> fun results -> System.Environment.NewLine + System.String.Join(System.Environment.NewLine, results) + System.Environment.NewLine
+                              |> fun results -> "\n" + System.String.Join("\n", results) + "\n"
                                     
                 numbers |> checkAgainstStandardObjectAsString env
             )

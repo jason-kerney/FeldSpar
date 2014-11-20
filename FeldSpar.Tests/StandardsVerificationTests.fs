@@ -20,7 +20,7 @@ module StandardsVerificationTests =
                             Name = "Steven";
                             Age = 38;
                             Dojo = ("Too Cool For School", TooCool)
-                        }) System.Environment.NewLine
+                        }) "\n"
 
                 verify
                     {

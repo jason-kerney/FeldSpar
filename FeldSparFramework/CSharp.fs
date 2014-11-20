@@ -266,10 +266,10 @@ type TestAssemblyModel (path) as this =
     let convert (result:TestResult) = 
         match result with
         | Success -> (TestStatus.Success, String.Empty)
-        | Failure(GeneralFailure(msg)) -> (TestStatus.Failure, "General Failure" + Environment.NewLine + msg)
-        | Failure(ExpectationFailure(msg)) -> (TestStatus.Failure, "Expectation Not Met" + Environment.NewLine + msg)
+        | Failure(GeneralFailure(msg)) -> (TestStatus.Failure, "General Failure" + "\n" + msg)
+        | Failure(ExpectationFailure(msg)) -> (TestStatus.Failure, "Expectation Not Met" + "\n" + msg)
         | Failure(ExceptionFailure(ex)) -> (TestStatus.Failure, ex.ToString())
-        | Failure(Ignored(msg)) -> (TestStatus.Ignored, "Ignored:" + Environment.NewLine + msg)
+        | Failure(Ignored(msg)) -> (TestStatus.Ignored, "Ignored:" + "\n" + msg)
         | Failure(StandardNotMet) -> (TestStatus.Failure, "Gold Standard not met, check the comparison or configure comparison")
     
     do

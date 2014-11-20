@@ -88,7 +88,7 @@ module Checks =
         let result =
             results
             |> Seq.map converter
-            |> joinWith Environment.NewLine
+            |> joinWith "\n"
 
         result |> checkAgainstStringStandard env
 
@@ -96,7 +96,7 @@ module Checks =
         let result =
             results
             |> Seq.map (fun o -> o.ToString())
-            |> joinWith Environment.NewLine
+            |> joinWith "\n"
 
         result |> checkAgainstStringStandard env
 

@@ -63,7 +63,7 @@ module ConsoleRunner =
                                 fun result ->
                                     let s = ""
                                     let sep = s.PadLeft(24, '_')
-                                    result + Environment.NewLine + sep + Environment.NewLine
+                                    result + "\n" + sep + "\n"
                             )
 
     let runAndReport reporter testAssemblyLocation = 

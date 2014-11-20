@@ -24,7 +24,7 @@ module Basic =
         let getValue v =
             if System.String.IsNullOrWhiteSpace v
             then ""
-            else sprintf "%s%s" v Environment.NewLine
+            else sprintf "%s%s" v "\n"
 
         let printResult result = 
             match result with
