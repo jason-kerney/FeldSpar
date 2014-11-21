@@ -19,6 +19,7 @@ type CommandArguments =
     | [<AltCommandLine("--r")>]Report_Location of string
     | [<AltCommandLine("--v")>]Verbosity of string
     | [<AltCommandLine("--al")>]Auto_Loop
+    | [<AltCommandLine("--r")>]UseReporters
     | [<AltCommandLine("--p")>]Pause
 with
     interface IArgParserTemplate with
@@ -28,6 +29,7 @@ with
             | Test_Assembly _ -> "This is the location of the test library. It can be a *.dll or a *.exe file"
             | Verbosity _ -> sprintf "This sets the verbosity level for the run. Possible levels are: %A" vebosityLevels
             | Auto_Loop -> "This makes the command contiuously run executing on every compile."
+            | UseReporters _ -> "This enables the use of reporters configured in the test"
             | Pause -> "This makes the console wait for key press inorder to exit. This is automaticly in effect if \"auto-loop\" is used"
 
 type Launcher () =
@@ -62,6 +64,8 @@ type Launcher () =
 
             let args = parser.Parse(args)
 
+            let ignoreConfig = args.Contains(<@ UseReporters @>) |> not
+
             let assebmlyValidation a =
                 let ext = IO.Path.GetExtension a
                 if not ([".exe"; ".dll"] |> List.exists (fun e -> e = ext)) then failwith "invalid file extension must be *.dll or *.exe"
@@ -74,11 +78,11 @@ type Launcher () =
                 if compareVerbosity a
                 then
                     let a = a.ToUpper()
-                    if a = "MAX" then (runAndReportAll true)
-                    elif a = "RESULTS" then (runAndReportResults false)
-                    elif a = "ERRORS" then (runAndReportFailure true)
-                    elif a = "DETAIL" then (runAndReportNone true)
-                    else (runAndReportNone false)
+                    if a = "MAX" then (runAndReportAll ignoreConfig true)
+                    elif a = "RESULTS" then (runAndReportResults ignoreConfig false)
+                    elif a = "ERRORS" then (runAndReportFailure ignoreConfig true)
+                    elif a = "DETAIL" then (runAndReportNone ignoreConfig true)
+                    else (runAndReportNone ignoreConfig false)
                 else
                     failwith (sprintf "verbosity must be one of: %A" vebosityLevels)
 
@@ -91,7 +95,7 @@ type Launcher () =
                 if args.Contains(<@ Verbosity @>)
                 then
                     args.PostProcessResult(<@ Verbosity @>, verbosityCheck)
-                else (runAndReportNone false)
+                else (runAndReportNone ignoreConfig false)
 
             let savePath =
                 let saveJSONReport = args.Contains <@ Report_Location @>

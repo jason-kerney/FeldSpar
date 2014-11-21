@@ -83,9 +83,9 @@ module ConsoleRunner =
                                     result + "\n" + sep + "\n"
                             )
 
-    let runAndReport reporter showDetails testAssemblyLocation = 
+    let runAndReport ignoreAssemblyConfiguration reporter showDetails testAssemblyLocation = 
         let name = testAssemblyLocation |> IO.Path.GetFileName
-        let tests = testAssemblyLocation |> runTestsAndReport reporter
+        let tests = testAssemblyLocation |> runTestsAndReport ignoreAssemblyConfiguration reporter
         
         let failedTests = tests
                             |> reduceToFailures 
@@ -103,14 +103,14 @@ module ConsoleRunner =
         (name, tests)
         
                 
-    let runAndReportAll showDetails testAssemblyLocation =
-        runAndReport reportAll showDetails testAssemblyLocation
+    let runAndReportAll ignoreAssemblyConfiguration showDetails testAssemblyLocation =
+        runAndReport ignoreAssemblyConfiguration reportAll showDetails testAssemblyLocation
 
-    let runAndReportResults showDetails testAssemblyLocation =
-        runAndReport reportOnlyResults showDetails testAssemblyLocation
+    let runAndReportResults ignoreAssemblyConfiguration showDetails testAssemblyLocation =
+        runAndReport ignoreAssemblyConfiguration reportOnlyResults showDetails testAssemblyLocation
 
-    let runAndReportFailure showDetails testAssemblyLocation =
-        runAndReport reportFailure showDetails testAssemblyLocation
+    let runAndReportFailure ignoreAssemblyConfiguration showDetails testAssemblyLocation =
+        runAndReport ignoreAssemblyConfiguration reportFailure showDetails testAssemblyLocation
 
-    let runAndReportNone showDetails testAssemblyLocation =
-        runAndReport reportNone showDetails testAssemblyLocation
+    let runAndReportNone ignoreAssemblyConfiguration showDetails testAssemblyLocation =
+        runAndReport ignoreAssemblyConfiguration reportNone showDetails testAssemblyLocation

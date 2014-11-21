@@ -12,12 +12,12 @@ module Data =
         Config(fun () -> 
         { 
             Reporters = [
-                            //fun _ -> 
-                            //        Searching
-                            //            |> findFirstReporter<Reporters.DiffReporter>
-                            //            |> findFirstReporter<Reporters.WinMergeReporter>
-                            //            |> findFirstReporter<Reporters.NotepadLauncher>
-                            //            |> unWrapReporter
+                            fun _ -> 
+                                    Searching
+                                        |> findFirstReporter<Reporters.DiffReporter>
+                                        |> findFirstReporter<Reporters.WinMergeReporter>
+                                        |> findFirstReporter<Reporters.NotepadLauncher>
+                                        |> unWrapReporter
                                             
                             fun _ -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;
                         ]

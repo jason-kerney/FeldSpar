@@ -59,10 +59,10 @@ type Engine () =
     member this.TestFinished = testCompletedEvent.Publish
 
     member this.FindTests (path:string) =
-        path |> doWork findTestsAndReport
+        path |> doWork (findTestsAndReport false)
 
     member this.RunTests (path:string) =
-        path |> doWork runTestsAndReport
+        path |> doWork (runTestsAndReport false)
 
 type TestStatus = 
     | None = 0

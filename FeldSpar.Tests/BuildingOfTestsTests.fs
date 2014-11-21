@@ -99,7 +99,7 @@ module BuildingOfTestsTests =
             )
 
     let ``Find All Tests through Reflection`` = 
-        ITest((fun env ->
+        Test((fun env ->
                 let join : string list -> string = (fun (arry) -> 
                                                     let rec append (value: string list) (acc, cnt) =
                                                         match value with
@@ -114,7 +114,7 @@ module BuildingOfTestsTests =
                                                     ("", 0) |> append arry
                                                 )
 
-                let testTemplatesa = findTests (env.AssemblyPath) |> Seq.sortBy(fun (description, _) -> description) |> Seq.map(fun (description, _) -> "(" + description + ")")
+                let testTemplatesa = findTests true (env.AssemblyPath) |> Seq.sortBy(fun (description, _) -> description) |> Seq.map(fun (description, _) -> "(" + description + ")")
                 let testTemplatesb = testTemplatesa |> Seq.toList
                 let testTemplates = testTemplatesb |> join
 
