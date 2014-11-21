@@ -82,6 +82,7 @@ Target "Default" (fun _ ->
 
 Target "Nuget" (fun _ ->
     Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSparFramework\FeldSpar.Framework.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.InterOpWpfEngine\FeldSpar.InterOpWpfEngine.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
     Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.Console\FeldSpar.Console.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
     Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\FeldSparGui.csproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
 )

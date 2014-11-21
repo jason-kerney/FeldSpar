@@ -3,13 +3,13 @@
   <metadata>
     <id>$id$</id>
     <version>$version$</version>
-    <title>$title$</title>
+    <title>API for FeldSpar GUI Test Runner</title>
     <authors>R. Jason Kerney</authors>
     <owners>R. Jason Kerney</owners>
     <licenseUrl>https://github.com/jason-kerney/FeldSpar/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/jason-kerney/FeldSpar</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A library to make it easyer to build GUI runners for FeldSpar</description>
+    <description>A library to make it easier to build GUI runners for FeldSpar in CLR languages</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>F# FSharp C# VB.NET Unit Test Testing</tags>

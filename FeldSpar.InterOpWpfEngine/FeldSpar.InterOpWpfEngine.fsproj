@@ -33,6 +33,9 @@
     <DocumentationFile>bin\Release\FeldSpar.InterOpWpfEngine.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
+    <VisualStudioVersion>12.0</VisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
   <Choose>
@@ -51,6 +54,7 @@
   <ItemGroup>
     <Compile Include="CSharp.fs" />
     <Content Include="packages.config" />
+    <Compile Include="AssemblyInfo.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ApprovalTests">
