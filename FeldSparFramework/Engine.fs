@@ -116,27 +116,27 @@ module Runner =
 
     let private findStaticProperties (t:Type) = t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static)
 
-    let findConfiguration (assemblyPath:string) = 
-        
-        //let getTests (assemblyPath:string) = 
+    let findConfiguration ignoreAssemblyConfig (assemblyPath:string) = 
         let assembly = assemblyPath |> IO.File.ReadAllBytes |> Assembly.Load
-        let configs = assembly.GetExportedTypes()
-                        |> List.ofSeq
-                        |> List.map findStaticProperties
-                        |> List.toSeq
-                        |> Array.concat
-                        |> Array.filter(fun p -> p.PropertyType = typeof<Configuration>)
+        let empty = { Assembly = assembly; Config = Some(Config(fun () -> emptyGlobal)) }
 
-        if configs.Length = 0
-        then { Assembly = assembly; Config = Some(Config(fun () -> emptyGlobal)) }
-        elif configs.Length = 1
-        then
-            let config = configs.[0] |> (fun p -> p.GetValue (null) :?> Configuration)
-            { Assembly = assembly; Config = Some(config) }
+        if ignoreAssemblyConfig then empty
         else
-            { Assembly = assembly; Config =  None}
+            let configs = assembly.GetExportedTypes()
+                            |> List.ofSeq
+                            |> List.map findStaticProperties
+                            |> List.toSeq
+                            |> Array.concat
+                            |> Array.filter(fun p -> p.PropertyType = typeof<Configuration>)
 
-        //executeInNewDomain assemblyPath assemblyPath "findConfiguration" getTests
+            if configs.Length = 0
+            then empty
+            elif configs.Length = 1
+            then
+                let config = configs.[0] |> (fun p -> p.GetValue (null) :?> Configuration)
+                { Assembly = assembly; Config = Some(config) }
+            else
+                { Assembly = assembly; Config =  None}
 
     let private findTestProperties (filter : PropertyInfo -> bool) (assembly:Reflection.Assembly) (assemblyPath:string) = 
         assembly.GetExportedTypes()
@@ -232,15 +232,15 @@ module Runner =
             (assembly, getConfig(), mapper)
         | { Assembly = assembly; Config = None } -> (assembly, emptyGlobal, mapper)
 
-    let findTestsAndReport report (assemblyPath:string) = 
-        let (assembly, config, mapper) = assemblyPath |> findConfiguration |> getMapper |> determinEnvironmentAndMapping 
+    let findTestsAndReport ignoreAssemblyConfig report (assemblyPath:string) = 
+        let (assembly, config, mapper) = assemblyPath |> findConfiguration ignoreAssemblyConfig |> getMapper |> determinEnvironmentAndMapping 
 
         assemblyPath |> getTestsWith mapper config report assembly
 
 
-    let runTestsAndReport report (assemblyPath:string) = 
+    let runTestsAndReport ignoreAssemblyConfig report (assemblyPath:string) = 
         assemblyPath 
-        |> findTestsAndReport report 
+        |> findTestsAndReport ignoreAssemblyConfig report 
         |> List.map(
             fun (_, test) -> 
                 let result = test()
@@ -248,11 +248,11 @@ module Runner =
                 result
             )
 
-    let runTestsAndReportWith report (assemblyPath:string) = 
-        assemblyPath |> runTestsAndReport report
+    let runTestsAndReportWith ignoreAssemblyConfig report (assemblyPath:string) = 
+        assemblyPath |> runTestsAndReport ignoreAssemblyConfig report
 
-    let findTests (assemblyPath:string) =  assemblyPath |> findTestsAndReport ignore
+    let findTests ignoreAssemblyConfig (assemblyPath:string) =  assemblyPath |> findTestsAndReport ignoreAssemblyConfig ignore
 
-    let runTests (assemblyPath:string) = assemblyPath |> runTestsAndReport ignore
+    let runTests ignoreAssemblyConfig (assemblyPath:string) = assemblyPath |> runTestsAndReport ignoreAssemblyConfig ignore
 
-    let runTestsWith (assemblyPath : string) = assemblyPath |> runTestsAndReport ignore
+    let runTestsWith ignoreAssemblyConfig (assemblyPath : string) = assemblyPath |> runTestsAndReport ignoreAssemblyConfig ignore
