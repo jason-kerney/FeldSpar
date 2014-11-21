@@ -19,7 +19,7 @@ type CommandArguments =
     | [<AltCommandLine("--r")>]Report_Location of string
     | [<AltCommandLine("--v")>]Verbosity of string
     | [<AltCommandLine("--al")>]Auto_Loop
-    | [<AltCommandLine("--r")>]UseReporters
+    | [<AltCommandLine("--ur")>]UseReporters
     | [<AltCommandLine("--p")>]Pause
 with
     interface IArgParserTemplate with
