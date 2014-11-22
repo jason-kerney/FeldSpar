@@ -1,5 +1,5 @@
 using System.Windows.Media;
-using FeldSpar.ClrInterop;
+using FeldSpar.ClrInterop.ViewModels;
 
 namespace FeldSparGuiCSharp.StyleConstants
 {

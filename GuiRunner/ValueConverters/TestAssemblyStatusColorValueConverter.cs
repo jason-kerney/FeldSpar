@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
-using FeldSpar.ClrInterop;
+using FeldSpar.ClrInterop.ViewModels;
 using FeldSparGuiCSharp.StyleConstants;
-using FeldSparGuiCSharp.VeiwModels;
 
 namespace FeldSparGuiCSharp.ValueConverters
 {

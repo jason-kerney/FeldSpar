@@ -86,7 +86,6 @@
     <Compile Include="ValueConverters\TestAssemblyStatusColorValueConverter.cs" />
     <Compile Include="ValueConverters\TestStatusColorValueConverter.cs" />
     <Compile Include="ValueConverters\TestStatusToFontWeightConverter.cs" />
-    <Compile Include="VeiwModels\TestsMainModel.cs" />
     <Page Include="TestAssembliesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -150,6 +149,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="VeiwModels\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,6 +1,5 @@
 ﻿using System.Windows;
-using FeldSpar.ClrInterop;
-using FeldSparGuiCSharp.VeiwModels;
+using FeldSpar.ClrInterop.ViewModels;
 
 namespace FeldSparGuiCSharp
 {

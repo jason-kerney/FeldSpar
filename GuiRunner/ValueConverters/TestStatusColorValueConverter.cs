@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using FeldSpar.ClrInterop;
+using FeldSpar.ClrInterop.ViewModels;
 using FeldSparGuiCSharp.StyleConstants;
-using FeldSparGuiCSharp.VeiwModels;
 
 namespace FeldSparGuiCSharp.ValueConverters
 {
