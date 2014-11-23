@@ -20,6 +20,8 @@ module Data =
                                         |> unWrapReporter
                                             
                             fun _ -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;
+
+                            fun _ -> Reporters.QuietReporter() :> Core.IApprovalFailureReporter;
                         ]
         })
 

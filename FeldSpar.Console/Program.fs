@@ -32,31 +32,48 @@ with
             | UseReporters _ -> "This enables the use of reporters configured in the test"
             | Pause -> "This makes the console wait for key press inorder to exit. This is automaticly in effect if \"auto-loop\" is used"
 
-type Launcher () =
-    inherit MarshalByRefObject ()
-
+[<AutoOpen>]
+module Processors = 
     let compareVerbosity (verbosity:string) =
         let verbosity = verbosity.ToUpper()
         vebosityLevels 
             |> List.map (fun s -> s.ToUpper()) 
             |> List.exists (fun v -> v = verbosity)
 
+    let fileWriter path text = IO.File.WriteAllText(path, text)
 
+    let saveResults (saver:string -> string -> unit) (path:string) testSummaries =
+        let jsonFeldSpar = testSummaries |> List.map buildOutputReport |> List.map JSONFormat
+    
+        saver path (jsonFeldSpar |> List.reduce (fun a b -> a + "\n" + b))
 
-    let runTests savePath runner tests =
-        printfn "Running Tests"
-
-        let testsFeldSpar = tests |> List.map runner
+    let maybeSaveResults (savePath:string option) saver (testSummaries:(string * #seq<ExecutionSummary>) list) =
         match savePath with
         | Some(path) ->
-            let jsonFeldSpar = testsFeldSpar |> List.map buildOutputReport |> List.map JSONFormat
-
-            IO.File.WriteAllText(path, jsonFeldSpar |> List.reduce (fun a b -> a + "\n" + b))
+            saver path testSummaries
         | _ -> ()
 
-        printfn "Done!"
+    let runTestsAndSaveResults (saver:string -> string -> unit) savePath (runner:string -> string * #seq<ExecutionSummary>) (tests:string list) = 
+        let testSummaries = tests |> List.map runner
 
-        testsFeldSpar
+        maybeSaveResults savePath (saveResults saver) testSummaries
+
+        testSummaries
+
+    let processWithReport processor report =
+        report "Running Tests"
+    
+        let testsFeldSpar = processor ()
+    
+        report "Done!"
+    
+        testsFeldSpar       
+
+    let runTests savePath runner tests =
+        processWithReport (fun () -> runTestsAndSaveResults fileWriter savePath runner tests) (printfn "%s") 
+
+type Launcher () =
+    inherit MarshalByRefObject ()
 
     let run args =
         try
@@ -89,7 +106,7 @@ type Launcher () =
 
             let pause = args.Contains (<@ Pause @>) || args.Contains (<@ Auto_Loop @>)
 
-            let tests = args.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation )
+            let testAssemblyPaths = args.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation )
 
             let runner = 
                 if args.Contains(<@ Verbosity @>)
@@ -120,7 +137,7 @@ type Launcher () =
             let autoLoop = args.Contains <@ Auto_Loop @> 
             if autoLoop 
             then
-                let paths = tests
+                let paths = testAssemblyPaths
                 
                 for path in paths do
                     let fileName = IO.Path.GetFileName path
@@ -140,7 +157,7 @@ type Launcher () =
 
                     watcherA.EnableRaisingEvents <- true
 
-            let results = runTests savePath runner tests |> List.collect(fun (_, r) -> r)
+            let results = runTests savePath runner testAssemblyPaths |> List.collect(fun (_, r) -> r)
 
             if pause then Console.ReadKey true |> ignore
             
