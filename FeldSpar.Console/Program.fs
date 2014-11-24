@@ -70,20 +70,19 @@ module Processors =
         | _ -> ()
 
     /// <summary>
-    /// Runs tests and saves results if path is given
+    /// Runs tests, saves the test result and returns the test result
     /// </summary>
-    /// <param name="saver">The method of saving test results</param>
-    /// <param name="savePath">The possible path to save the results. If they are None no save is perfromed.</param>
-    /// <param name="runner">the code that runs the tests</param>
-    /// <param name="tests">The assemblies to seach for test cases.</param>
-    let runTestsAndSaveResults (saver:string -> string -> unit) savePath (runner:string -> string * #seq<ExecutionSummary>) (tests:string list) = 
-        let testSummaries = tests |> List.map runner
+    /// <param name="saver">A call that enables saving of results</param>
+    /// <param name="runner">The Call that takes an assembly path and runs all tests contained in the assembly</param>
+    /// <param name="testAssemblyPath">The path to a test assembly</param>
+    let runTestsAndSaveResults (saver:(string * #seq<ExecutionSummary>) list -> unit) (runner:string -> string * #seq<ExecutionSummary>) (testAssemblyPath:string list) = 
+        let testSummaries = testAssemblyPath |> List.map runner
 
-        maybeSaveResults savePath (saveResults saver) testSummaries
+        saver testSummaries
 
         testSummaries
 
-    let processWithReport processor report =
+    let processWithReport report processor =
         report "Running Tests"
     
         let testsFeldSpar = processor ()
@@ -93,7 +92,11 @@ module Processors =
         testsFeldSpar       
 
     let runTests savePath runner tests =
-        processWithReport (fun () -> runTestsAndSaveResults fileWriter savePath runner tests) (printfn "%s") 
+        let saver = maybeSaveResults savePath (saveResults fileWriter)
+        let processor = (fun () -> runTestsAndSaveResults saver runner tests)
+        let reporter = (printfn "%s")
+
+        processWithReport reporter processor
 
 type Launcher () =
     inherit MarshalByRefObject ()

@@ -1,6 +1,7 @@
 ﻿namespace FeldSpar.Console.Tests
 open FeldSpar.Console.Helpers.Data
 open FeldSpar.Framework
+open FeldSpar.Framework.Verification
 open FeldSpar.Framework.Verification.ChecksClean
 open FeldSpar.Framework.TestSummaryUtilities
 open FeldSpar.Framework.Engine
@@ -8,22 +9,28 @@ open FeldSpar.Console
 open System.Text
 
 module ConsoleTests = 
+    let summary1 = 
+        ("My Summary 1", 
+            ([ 
+                { TestDescription = "Fake test 3"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(GeneralFailure("this is a failing test")); };
+                { TestDescription = "Fake test 1"; TestCanonicalizedName = "Fake_Test"; TestResults = Success; };
+                { TestDescription = "Fake test 2"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(Ignored("this is an ignored test")); };
+            ] |> Seq.ofList)
+        )
+
+    let summary2 =
+        ("My Summary 2", 
+            ([ 
+                { TestDescription = "Faker test 3"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(GeneralFailure("this is a failing test")); };
+                { TestDescription = "Faker test 1"; TestCanonicalizedName = "Fake_Test"; TestResults = Success; };
+                { TestDescription = "Faker test 2"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(Ignored("this is an ignored test")); };
+            ] |> Seq.ofList)
+        )
+
     let testSummaries = 
         [
-            ("My Summary 1", 
-                ([ 
-                    { TestDescription = "Fake test 3"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(GeneralFailure("this is a failing test")); };
-                    { TestDescription = "Fake test 1"; TestCanonicalizedName = "Fake_Test"; TestResults = Success; };
-                    { TestDescription = "Fake test 2"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(Ignored("this is an ignored test")); };
-                ] |> Seq.ofList)
-            );
-            ("My Summary 2", 
-                ([ 
-                    { TestDescription = "Faker test 3"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(GeneralFailure("this is a failing test")); };
-                    { TestDescription = "Faker test 1"; TestCanonicalizedName = "Fake_Test"; TestResults = Success; };
-                    { TestDescription = "Faker test 2"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(Ignored("this is an ignored test")); };
-                ] |> Seq.ofList)
-            );
+            summary1;
+            summary2;
         ]
 
     let ``Test all Verbosity levels`` = 
@@ -86,6 +93,29 @@ module ConsoleTests =
                 maybeSaveResults path saver test
                 
                 !result |> checkAgainstStringStandardCleaned env
+        )
+
+    let ``runTestsAndSaveResults runs the tests, saves the test results, and returns the test results`` =
+        Test(
+            fun env ->
+                let sb = new StringBuilder()
+                let saver:(string * #seq<ExecutionSummary>) list -> unit = 
+                    fun results -> sb.Append(sprintf "%A\n" results) |> ignore
+                let runner = 
+                    fun assembly -> 
+                        sb.Append(sprintf "Running: %s\n" assembly) |> ignore
+                        summary1
+                
+                let assemblyPath = [@"My:\Assmembly\Path"]
+
+                let results = runTestsAndSaveResults saver runner assemblyPath
+
+                verify 
+                    {
+                        let! r = sb.ToString() |> checkAgainstStringStandardCleaned env
+                        let! r = results |> expectsToBe [summary1] "%A <> %A"
+                        return Success
+                    }
         )
 
     

@@ -11,7 +11,7 @@ module BaseTests =
                 let startingPoints = [(0, 1); (1, 1)]
                 let endingPoints = [(2, 1); (0, 1)]
                 PathFinding.Framework.BuildGrid diminsions startingPoints endingPoints
-                ignoreWith "not done"
+                ``Not Yet Implemented``
             )
 
     let ``Simple Pathfinding`` = 
@@ -25,5 +25,5 @@ module BaseTests =
                 //  1,1
                 //  2,1
                 //  3,1
-                ignoreWith "not done"
+                ``Not Yet Implemented``
             )
