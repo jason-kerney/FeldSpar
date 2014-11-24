@@ -42,6 +42,12 @@ module Processors =
 
     let fileWriter path text = IO.File.WriteAllText(path, text)
 
+    /// <summary>
+    /// This uses a save funtion to save the testsSummaries as JSON
+    /// </summary>
+    /// <param name="saver">The function that saves the summaries path -> data -> unit</param>
+    /// <param name="path">The path to which the summaries should be saved</param>
+    /// <param name="testSummaries">the test results to save</param>
     let saveResults (saver:string -> string -> unit) (path:string) testSummaries =
         let jsonFeldSpar = testSummaries |> List.map buildOutputReport |> List.map JSONFormat
     
