@@ -55,4 +55,18 @@ module ConsoleTests =
                 sb.ToString() |> checkAgainstStringStandard env
         )
 
+    let ``maybeSaveResults dose not call saver if no path is given`` =
+        Test(
+            fun _ ->
+                let result = ref Success
+                let saver : string -> (string * 'a list) list -> unit =
+                    fun _ _ -> result := Failure(GeneralFailure("Should not have called saver"))
+
+                let path : string option = None
+
+                maybeSaveResults path saver []
+
+                !result
+        )
+
     

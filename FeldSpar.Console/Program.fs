@@ -34,6 +34,10 @@ with
 
 [<AutoOpen>]
 module Processors = 
+    /// <summary>
+    /// compares a sting to determin if it is a valid verbosity level. This comparison is case insensitive
+    /// </summary>
+    /// <param name="verbosity">the string to compare</param>
     let compareVerbosity (verbosity:string) =
         let verbosity = verbosity.ToUpper()
         vebosityLevels 
@@ -47,12 +51,18 @@ module Processors =
     /// </summary>
     /// <param name="saver">The function that saves the summaries path -> data -> unit</param>
     /// <param name="path">The path to which the summaries should be saved</param>
-    /// <param name="testSummaries">the test results to save</param>
+    /// <param name="testSummaries">the list test results to save by assembly name</param>
     let saveResults (saver:string -> string -> unit) (path:string) testSummaries =
         let jsonFeldSpar = testSummaries |> List.map buildOutputReport |> List.map JSONFormat
     
         saver path (jsonFeldSpar |> List.reduce (fun a b -> a + "\n" + b))
 
+    /// <summary>
+    /// Saves test summary if path is provided
+    /// </summary>
+    /// <param name="savePath">the path to save to, this function does nothing if is is none</param>
+    /// <param name="saver">the method to call to save the summaries path -> testSummaries -> unit</param>
+    /// <param name="testSummaries">the list test results to save by assembly name</param>
     let maybeSaveResults (savePath:string option) saver (testSummaries:(string * #seq<ExecutionSummary>) list) =
         match savePath with
         | Some(path) ->
