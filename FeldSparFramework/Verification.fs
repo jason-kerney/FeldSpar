@@ -46,11 +46,10 @@ module Checks =
     /// Tests a given value to determine if it is equal to the given value
     /// </summary>
     /// <param name="expected">the value that is expected</param>
-    /// <param name="message">the message to return on failure</param>
     /// <param name="actual">the value being tested</param>
     /// <returns>Success if both are equal otherwise an Failure of type ExpectationFailure</returns>
-    let expectsToBe expected message actual =
-        (fun a b -> a = b) |> expectationCheck expected message actual
+    let expectsToBe expected actual =
+        (fun a b -> a = b) |> expectationCheck actual "%A expected to be %A" expected
 
     /// <summary>
     /// Tests a given value to determine if it is not equal to the given value
@@ -69,7 +68,7 @@ module Checks =
     /// <param name="actual">The boolean being tested</param>
     /// <returns>Success if value is true otherwise an Failure of type ExpectationFailure</returns>
     let expectsToBeTrue message actual =
-        actual |> expectsToBe true message
+        actual |> expectsToBe true
 
     /// <summary>
     /// Tests a given boolean to determine if it is false
@@ -78,7 +77,7 @@ module Checks =
     /// <param name="actual">The boolean being tested</param>
     /// <returns>Success if value is false otherwise an Failure of type ExpectationFailure</returns>
     let expectsToBeFalse message actual =
-        actual |> expectsToBe false message
+        actual |> expectsToBe false
 
     /// <summary>
     /// Tests a given value to determine if it is null
@@ -87,7 +86,7 @@ module Checks =
     /// <param name="actual">The value being tested</param>
     /// <returns>Success if value is null otherwise an Failure of type ExpectationFailure</returns>
     let isNull message actual =
-        actual |> expectsToBe null message
+        actual |> expectsToBe null
 
     /// <summary>
     /// Tests a given value to determine if it is not null
@@ -96,7 +95,7 @@ module Checks =
     /// <param name="actual">The value being tested</param>
     /// <returns>Success if value is not null otherwise an Failure of type ExpectationFailure</returns>  
     let isNotNull message actual =
-        actual |> expectsNotToBe null message
+        actual |> expectsNotToBe null
 
     /// <summary>
     /// Gold standard testing. Compares the given string against a saved file to determine if they match.

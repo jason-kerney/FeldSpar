@@ -15,7 +15,7 @@ module ExploritoryTests =
                             let v1 = n ** 2.0
                             let result = v1 / n
 
-                            result |> expectsToBe n "(%f <> %f)"
+                            result |> expectsToBe n
             )
         }
           
@@ -50,7 +50,7 @@ module ExploritoryTests =
                                     | v when v % 3 = 0 -> "Fizz"
                                     | v -> v.ToString()
 
-                                result |> expectsToBe expected "did not convert n correctly. Expected \"%s\" but got \"%s\""
+                                result |> expectsToBe expected
                             )
                     }
             })

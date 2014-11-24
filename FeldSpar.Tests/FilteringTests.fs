@@ -29,8 +29,8 @@ module FilteringTests =
 
                 verify
                     {
-                        let! correctNumberOfFailures = (filterResult |> List.length) |> expectsToBe 2 "Incorrect number of test results after filtering expected %d but got %d"
-                        let! noSuccessFound = (filteredAndPassing |> List.length) |> expectsToBe 0 "Incorrect number of passing tests found. Expected %d after filtering but got %d"
+                        let! correctNumberOfFailures = (filterResult |> List.length) |> expectsToBe 2 |> addMessage "Incorrect number of test results after filtering"
+                        let! noSuccessFound = (filteredAndPassing |> List.length) |> expectsToBe 0 |> addMessage "Incorrect number of passing tests found."
                         return Success
                     }
             ))

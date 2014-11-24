@@ -113,7 +113,7 @@ module ConsoleTests =
                 verify 
                     {
                         let! r = sb.ToString() |> checkAgainstStringStandardCleaned env
-                        let! r = results |> expectsToBe [summary1] "%A <> %A"
+                        let! r = results |> expectsToBe [summary1]
                         return Success
                     }
         )

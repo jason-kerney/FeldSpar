@@ -14,7 +14,7 @@ module ExpectationTests =
             fun _ ->
                 let result = "some" |> expectsNotToBe "some" "%s = %s"
 
-                result |> expectsToBe (Failure(ExpectationFailure("some = some"))) "%A <> %A"
+                result |> expectsToBe (Failure(ExpectationFailure("some = some")))
         )
 
     let ``isNull succeeds if null`` =

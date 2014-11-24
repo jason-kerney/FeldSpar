@@ -15,12 +15,12 @@ module Example =
 
     let ``Fizz Buzzer returns 1 when given a one`` =
         Test(fun env ->
-                1 |> FizzBuzzer |> expectsToBe "1" "FizzBuzzer did not return '%s' instead it returned '%s'"
+                1 |> FizzBuzzer |> expectsToBe "1"
             )
 
     let ``Fizz Buzzer returns Fizz when given 3`` =
         Test(fun env -> 
-                3 |> FizzBuzzer |> expectsToBe "Fizz" "FizzBuzzer did not return '%s' instead it returned '%s'"
+                3 |> FizzBuzzer |> expectsToBe "Fizz"
             )
 
     let ``Fizz Buzzer returns 'Fizz' for multiples of 3 up to 10`` =
@@ -33,8 +33,8 @@ module Example =
 
                 verify
                     {
-                        let! correctNumbers = numbers |> Seq.length |> expectsToBe 3 "incorrect number of numbers. Expected %d got %d"
-                        let! correctFizzes = fizzCount |> Seq.length |> expectsToBe 3 "incorrectly converted numbers to Fizz. Got %d Fizzes but expected %d"
+                        let! correctNumbers = numbers |> Seq.length |> expectsToBe 3 |> addMessage "incorrect number of numbers"
+                        let! correctFizzes = fizzCount |> Seq.length |> expectsToBe 3 |> addMessage "incorrectly converted numbers to Fizz."
                         return Success
                     }
             )
@@ -43,7 +43,7 @@ module Example =
         Test(fun env ->
                 let result = 5 |> FizzBuzzer
 
-                result |> expectsToBe "Buzz" "5 should have been turned into '%s' but instead got '%s'"
+                result |> expectsToBe "Buzz" |> addMessage "5 should have been turned into 'Buzz'"
             )
 
     let ``Fizz Buzzer returns 'Buzz' for all multiples of 5 up to 10`` =
@@ -56,8 +56,8 @@ module Example =
 
                 verify
                     {
-                        let! correctNumbers = numbers |> Seq.length |> expectsToBe 2 "incorrect number of numbers. Expected %d got %d"
-                        let! correctFizzes = buzzCount |> Seq.length |> expectsToBe 2 "incorrectly converted numbers to Buzz. Got %d Fizzes but expected %d"
+                        let! correctNumbers = numbers |> Seq.length |> expectsToBe 2 |> addMessage "incorrect number of numbers."
+                        let! correctFizzes = buzzCount |> Seq.length |> expectsToBe 2 |> addMessage "incorrectly converted numbers to Buzz."
                         return Success
                     }
             )
@@ -66,7 +66,7 @@ module Example =
         Test(fun env -> 
                 let result = 15 |> FizzBuzzer
 
-                result |> expectsToBe "FizzBuzz" "15 was expected to be turned into '%s' but instead was turned into '%s'"
+                result |> expectsToBe "FizzBuzz"
             )
 
     let ``Fizz Buzzer returns 'FizzBuzz' for all numbers that are multiples of 3 and 5 up to 32`` =
@@ -79,11 +79,11 @@ module Example =
 
                 verify
                     {
-                        let! correctNumbers = numbers |> Seq.length |> expectsToBe 2 "incorrect number of numbers. Expected %d got %d"
-                        let! correctFizzBuzzes = fizzBuzzCount |> Seq.length |> expectsToBe 2 "incorrectly converted numbers to FizzBuzz. Got %d FizzBuzzes but expected %d"
+                        let! correctNumbers = numbers |> Seq.length |> expectsToBe 2 |> addMessage "incorrect number of numbers"
+                        let! correctFizzBuzzes = fizzBuzzCount |> Seq.length |> expectsToBe 2 |> addMessage "incorrectly converted numbers to FizzBuzz."
                         return Success
                     }
-            )//*)
+            )
 
     let ``Fizz Buzzer returns the correct Fizz Buzz or FizzBuzz for every number up to 500`` =
         Test(fun env ->

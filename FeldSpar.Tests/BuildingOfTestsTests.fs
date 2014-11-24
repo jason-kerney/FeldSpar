@@ -33,7 +33,7 @@ module BuildingOfTestsTests =
                     { 
                         TestDescription = "Summary Four"; 
                         TestCanonicalizedName = "SummaryThree";
-                        TestResults = 5 |> expectsToBe 4 "%d <> %d";
+                        TestResults = 5 |> expectsToBe 4;
                     };
                 ])
 
@@ -64,7 +64,7 @@ module BuildingOfTestsTests =
                     { 
                         TestDescription = "Summary Four"; 
                         TestCanonicalizedName = "SummaryThree";
-                        TestResults = 5 |> expectsToBe 4 "%d <> %d";
+                        TestResults = 5 |> expectsToBe 4;
                     };
                 ])
 
@@ -77,9 +77,9 @@ module BuildingOfTestsTests =
                 let theory = Theory({
                                         Data = seq { for i in 1..4 do yield i};
                                         Base = {
-                                                       UnitDescription = (fun n -> sprintf "testing %d" n);
-                                                       UnitTest = (fun n _ -> (n % 2) |> expectsToBe 0 "number was not even. n mod 2 = %d when it should have been n mod 2 = %d")
-                                                    }
+                                                  UnitDescription = (fun n -> sprintf "testing %d" n);
+                                                  UnitTest = fun n _ -> (n % 2) |> expectsToBe 0 |> addMessage (sprintf "Number was not even 2 mod %d <> 0" n)
+                                               }
                                     })
 
                 let results =  "testing theory"
@@ -140,8 +140,8 @@ module BuildingOfTestsTests =
 
                 verify
                     {
-                        let! desriptionIsCorrect = resultSummary.TestDescription |> expectsToBe failDescription "Incorrect description expected '%s' but got '%s'"
-                        let! testFailedCorrectly = resultSummary.TestResults |> expectsToBe (failResult "Expected Failure") "Test did not fail correctly expected %A but got %A"
+                        let! desriptionIsCorrect = resultSummary.TestDescription |> expectsToBe failDescription
+                        let! testFailedCorrectly = resultSummary.TestResults |> expectsToBe (failResult "Expected Failure") |> addMessage "Test did not fail correctly expected"
                         return Success
                     }
             ))
@@ -168,7 +168,7 @@ module BuildingOfTestsTests =
                 let ``Can0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~`` = 
                     Test((fun env ->
                             let actual = env.CanonicalizedName
-                            actual |> expectsToBe expected "Name was not set correctly. Expected '%s' but got '%s'"
+                            actual |> expectsToBe expected
                         ))
 
                 verify
