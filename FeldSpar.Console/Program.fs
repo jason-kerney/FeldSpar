@@ -69,6 +69,13 @@ module Processors =
             saver path testSummaries
         | _ -> ()
 
+    /// <summary>
+    /// Runs tests and saves results if path is given
+    /// </summary>
+    /// <param name="saver">The method of saving test results</param>
+    /// <param name="savePath">The possible path to save the results. If they are None no save is perfromed.</param>
+    /// <param name="runner">the code that runs the tests</param>
+    /// <param name="tests">The assemblies to seach for test cases.</param>
     let runTestsAndSaveResults (saver:string -> string -> unit) savePath (runner:string -> string * #seq<ExecutionSummary>) (tests:string list) = 
         let testSummaries = tests |> List.map runner
 
