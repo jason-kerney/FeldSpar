@@ -6,12 +6,10 @@ open FeldSpar.Framework
 open FeldSpar.Framework.TestResultUtilities
 open FeldSpar.Framework.TestSummaryUtilities
 open ApprovalTests.Core
+open FeldSpar.Framework.Verification.ChecksClean
 
 [<AutoOpen>]
 module Checks =
-    let removeCarageReturns (s:string) =
-        s.Replace("\r\n", "\n").Replace('\r', '\n')
-
     /// <summary>
     /// Tests a boolean for true
     /// </summary>
@@ -100,26 +98,6 @@ module Checks =
     let isNotNull message actual =
         actual |> expectsNotToBe null message
 
-    let private checkStandardsAndReport env (reporter:IApprovalFailureReporter) (approver:IApprovalApprover) =
-        if(approver.Approve ())
-        then
-            do approver.CleanUpAfterSucess(reporter) 
-            Success
-        else 
-            do approver.ReportFailure (reporter)
-                                                                
-            match reporter with
-            | :? IReporterWithApprovalPower as approvalReporter -> 
-                if approvalReporter.ApprovedWhenReported ()
-                then do approver.CleanUpAfterSucess(reporter)
-            | _ -> ()
-
-            Failure(StandardNotMet)
-
-    let private checkAgainstStandard env (approver:IApprovalApprover) =
-        let reporter = getReporter env
-        checkStandardsAndReport env reporter approver
-
     /// <summary>
     /// Gold standard testing. Compares the given string against a saved file to determine if they match.
     /// </summary>
@@ -127,8 +105,7 @@ module Checks =
     /// <param name="test">The string being tested</param>
     /// <returns>Success if the string matches the file otherwise an Failure of type StandardNotMet</returns>  
     let checkAgainstStringStandard env test =
-        let approver = getStringFileApprover env test
-        checkAgainstStandard env approver
+        checkAgainstStringStandardWithCleaner env cleanNothing test
 
     /// <summary>
     /// Gold standard testing. Compares the given object against a saved file to determine if they match by calling 'ToString' on the object.
@@ -137,7 +114,7 @@ module Checks =
     /// <param name="test">The string being tested</param>
     /// <returns>Success if the string matches the file otherwise an Failure of type StandardNotMet</returns>  
     let checkAgainstStandardObjectAsString env test =
-        checkAgainstStringStandard env (sprintf "%A" test)
+        checkAgainstStandardObjectAsStringWithCleaner env cleanNothing test
 
     /// <summary>
     /// Gold standard testing. Compares the given binary array against a saved binary file to determine if they match.
@@ -170,12 +147,7 @@ module Checks =
     /// <param name="converter">A method of converting an item to a string</param>
     /// <param name="tests">The sequence of items being tested</param>
     let checkAllAgainstStandardBy env (converter:'a -> string) (tests:'a seq) =
-        let result =
-            tests
-            |> Seq.map converter
-            |> joinWith "\n"
-
-        result |> checkAgainstStringStandard env
+        checkAllAgainstStandardWithCleanerBy env converter cleanNothing tests
 
     /// <summary>
     /// Gold standard testing. Compares the given items against a saved binary file to determine if they match by calling 'ToSting' on each item.
@@ -183,7 +155,7 @@ module Checks =
     /// <param name="env">Information about the current test environment and current test.</param>
     /// <param name="tests">The sequence of items being tested</param>
     let checkAllAgainstStandard env (tests:'a seq) =
-        checkAllAgainstStandardBy env (fun item -> item.ToString()) tests
+        checkAllAgainstStandardWithCleaner env cleanNothing tests
 
     type Validation () =
         member this.Bind(testResult, f) = 

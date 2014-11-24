@@ -1,7 +1,7 @@
 ﻿namespace FeldSpar.Console.Tests
 open FeldSpar.Console.Helpers.Data
 open FeldSpar.Framework
-open FeldSpar.Framework.Verification
+open FeldSpar.Framework.Verification.ChecksClean
 open FeldSpar.Framework.TestSummaryUtilities
 open FeldSpar.Framework.Engine
 open FeldSpar.Console
@@ -29,7 +29,7 @@ module ConsoleTests =
     let ``Test all Verbosity levels`` = 
         Test(
             fun env -> 
-                vebosityLevels |> checkAllAgainstStandard env
+                vebosityLevels |> checkAllAgainstStandardCleaned env
         )
 
     let ``Compare Verbosity only excepts specific modifiers`` =
@@ -39,7 +39,7 @@ module ConsoleTests =
                 let max = (values |> List.map (fun f -> f.Length) |> List.max) + 1
                 let results = values |> List.map (fun f -> sprintf "'%s'%s%s a verbosity setting" f (String.replicate (max - (f.Length)) " ") (match compareVerbosity f with true -> "is" | false -> "isn't"))
 
-                results |> checkAllAgainstStandard env
+                results |> checkAllAgainstStandardCleaned env
         )
 
     let ``saveResults calls a saver after converting results to JSON`` =
@@ -52,7 +52,7 @@ module ConsoleTests =
                 let path = @"Path:\Somewhere"
 
                 saveResults saver path testSummaries
-                sb.ToString() |> checkAgainstStringStandard env
+                sb.ToString() |> checkAgainstStringStandardCleaned env
         )
 
     let ``maybeSaveResults dose not call saver if no path is given`` =
@@ -85,7 +85,7 @@ module ConsoleTests =
                 
                 maybeSaveResults path saver test
                 
-                !result |> checkAgainstStringStandard env
+                !result |> checkAgainstStringStandardCleaned env
         )
 
     

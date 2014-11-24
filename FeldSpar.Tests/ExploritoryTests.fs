@@ -3,6 +3,7 @@ open FeldSpar.Console.Helpers.Data
 open FeldSpar.Framework
 open FeldSpar.Framework.Engine
 open FeldSpar.Framework.Verification
+open FeldSpar.Framework.Verification.ChecksClean
 open FeldSpar.Framework.Verification.ApprovalsSupport
 open System
 
@@ -72,21 +73,23 @@ module ExploritoryTests =
 
                 let env = env |> addReporter<ApprovalTests.Reporters.ClipboardReporter>
 
-                result |> checkAgainstStandardObjectAsString env
+                result |> checkAgainstStandardObjectAsCleanedString env
             )
 
     let ``Combinatory Gold Standard Testing`` =
-        Test(fun env ->
-            let names = ["Tom"; "Jane"; "Tarzan"; "Stephanie"]
-            let amounts = [11; 2; 5;]
-            let items = ["pears";"earrings";"cups"]
+        Test
+            (
+                fun env ->
+                    let names = ["Tom"; "Jane"; "Tarzan"; "Stephanie"]
+                    let amounts = [11; 2; 5;]
+                    let items = ["pears";"earrings";"cups"]
 
-            let createSentence item amount name = sprintf "%s has %d %s" name amount item
+                    let createSentence item amount name = sprintf "%s has %d %s" name amount item
 
-            createSentence
-                |> calledWithEachOfThese items
-                |> andAlsoEachOfThese amounts
-                |> andAlsoEachOfThese names
-                |> checkAllAgainstStandard env
-        )
+                    createSentence
+                        |> calledWithEachOfThese items
+                        |> andAlsoEachOfThese amounts
+                        |> andAlsoEachOfThese names
+                        |> checkAllAgainstStandardCleaned env
+            )
 

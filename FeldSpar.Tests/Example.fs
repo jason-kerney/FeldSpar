@@ -3,7 +3,7 @@
 module Example =
     open FeldSpar.Framework
     open FeldSpar.Framework.Verification
-    open FeldSpar.Framework.Verification.Checks
+    open FeldSpar.Framework.Verification.ChecksClean
     open FeldSpar.Console.Helpers.Data
 
     let FizzBuzzer v = 
@@ -97,6 +97,7 @@ module Example =
                                             sprintf "%s: %s" strNum fizzed
                                           )
                               |> fun results -> "\n" + System.String.Join("\n", results) + "\n"
+                              |> fun s -> s.Trim() + "\n"
                                     
-                numbers |> checkAgainstStandardObjectAsString env
+                numbers |> checkAgainstStringStandardCleaned env
             )

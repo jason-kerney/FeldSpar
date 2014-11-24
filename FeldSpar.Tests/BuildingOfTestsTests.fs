@@ -6,6 +6,7 @@ open FeldSpar.Framework
 open FeldSpar.Framework.TestSummaryUtilities
 open FeldSpar.Framework.Engine
 open FeldSpar.Framework.Verification
+open FeldSpar.Framework.Verification.ChecksClean
 open FeldSpar.Framework.Verification.ApprovalsSupport
 
 module BuildingOfTestsTests =
@@ -37,7 +38,7 @@ module BuildingOfTestsTests =
                 ])
 
             let report = summaries |> buildOutputReport
-            report |> checkAgainstStandardObjectAsString env
+            report |> checkAgainstStandardObjectAsCleanedString env
         )
 
     let ``Report exports to JSON`` =
@@ -68,7 +69,7 @@ module BuildingOfTestsTests =
                 ])
 
             let report = summaries |> buildOutputReport |> FeldSpar.Framework.TestSummaryUtilities.JSONFormat
-            report |> checkAgainstStringStandard env
+            report |> checkAgainstStringStandardCleaned env
         )
 
     let ``Can Create multiple Tests From one Theory Test`` =
@@ -95,7 +96,7 @@ module BuildingOfTestsTests =
 
                 let result = String.Join("\n", results) + "\n"
 
-                result |> checkAgainstStringStandard env
+                result |> checkAgainstStringStandardCleaned env
             )
 
     let ``Find All Tests through Reflection`` = 
@@ -120,7 +121,7 @@ module BuildingOfTestsTests =
 
                 verify
                     {
-                        let! testsMeetStandards = testTemplates |> checkAgainstStringStandard env 
+                        let! testsMeetStandards = testTemplates |> checkAgainstStringStandardCleaned env 
                         return Success
                     }
             ))
@@ -203,7 +204,7 @@ module BuildingOfTestsTests =
 
                 verify
                     {
-                        let! meetsStandard = (cleaned) |> checkAgainstStringStandard env
+                        let! meetsStandard = (cleaned) |> checkAgainstStringStandardCleaned env
                         return Success
                     }
             ))
