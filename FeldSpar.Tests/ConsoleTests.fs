@@ -8,6 +8,24 @@ open FeldSpar.Console
 open System.Text
 
 module ConsoleTests = 
+    let testSummaries = 
+        [
+            ("My Summary 1", 
+                ([ 
+                    { TestDescription = "Fake test 3"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(GeneralFailure("this is a failing test")); };
+                    { TestDescription = "Fake test 1"; TestCanonicalizedName = "Fake_Test"; TestResults = Success; };
+                    { TestDescription = "Fake test 2"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(Ignored("this is an ignored test")); };
+                ] |> Seq.ofList)
+            );
+            ("My Summary 2", 
+                ([ 
+                    { TestDescription = "Faker test 3"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(GeneralFailure("this is a failing test")); };
+                    { TestDescription = "Faker test 1"; TestCanonicalizedName = "Fake_Test"; TestResults = Success; };
+                    { TestDescription = "Faker test 2"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(Ignored("this is an ignored test")); };
+                ] |> Seq.ofList)
+            );
+        ]
+
     let ``Test all Verbosity levels`` = 
         Test(
             fun env -> 
@@ -31,24 +49,6 @@ module ConsoleTests =
                 let saver : string -> string -> unit =
                     fun path data -> sb.Append(sprintf "Path: '%s'\nValues ->\n%s" path data) |> ignore
 
-                let testSummaries = 
-                    [
-                        ("My Summary 1", 
-                            ([ 
-                                { TestDescription = "Fake test 3"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(GeneralFailure("this is a failing test")); };
-                                { TestDescription = "Fake test 1"; TestCanonicalizedName = "Fake_Test"; TestResults = Success; };
-                                { TestDescription = "Fake test 2"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(Ignored("this is an ignored test")); };
-                            ] |> Seq.ofList)
-                        );
-                        ("My Summary 2", 
-                            ([ 
-                                { TestDescription = "Faker test 3"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(GeneralFailure("this is a failing test")); };
-                                { TestDescription = "Faker test 1"; TestCanonicalizedName = "Fake_Test"; TestResults = Success; };
-                                { TestDescription = "Faker test 2"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(Ignored("this is an ignored test")); };
-                            ] |> Seq.ofList)
-                        );
-                    ]
-
                 let path = @"Path:\Somewhere"
 
                 saveResults saver path testSummaries
@@ -67,6 +67,25 @@ module ConsoleTests =
                 maybeSaveResults path saver []
 
                 !result
+        )
+
+    let ``maybeSaveResults dose call saver if path is given`` =
+        Test(
+            fun env ->
+                let result = ref ""
+                let saver : string -> (string * 'a list) list -> unit = 
+                    fun path results -> 
+                        let r = (sprintf "'%s'\n%A" path results)
+                        result := r
+                
+                let path = Some("My:\Path")
+                
+                let test = 
+                    testSummaries |> List.map (fun (assembly, summaries) -> (assembly, summaries |> List.ofSeq))
+                
+                maybeSaveResults path saver test
+                
+                !result |> checkAgainstStringStandard env
         )
 
     
