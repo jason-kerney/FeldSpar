@@ -48,53 +48,48 @@ module Checks =
     /// <param name="expected">the value that is expected</param>
     /// <param name="actual">the value being tested</param>
     /// <returns>Success if both are equal otherwise an Failure of type ExpectationFailure</returns>
-    let expectsToBe expected actual =
+    let expectsToBe (expected:'a) (actual:'a) =
         (fun a b -> a = b) |> expectationCheck actual "%A expected to be %A" expected
 
     /// <summary>
     /// Tests a given value to determine if it is not equal to the given value
     /// </summary>
     /// <param name="expected">the value that is not expected</param>
-    /// <param name="message">the message to return on failure</param>
     /// <param name="actual">the value being tested</param>
     /// <returns>Success if both are not equal otherwise an Failure of type ExpectationFailure</returns>
-    let expectsNotToBe expected message actual =
-        (fun a b -> a <> b) |> expectationCheck  expected message actual
+    let expectsNotToBe expected actual =
+        (fun a b -> a <> b) |> expectationCheck  expected "%A expected not to be %A" actual
 
     /// <summary>
     /// Tests a given boolean to determine if it is true
     /// </summary>
-    /// <param name="message">the message to return on failure</param>
     /// <param name="actual">The boolean being tested</param>
     /// <returns>Success if value is true otherwise an Failure of type ExpectationFailure</returns>
-    let expectsToBeTrue message actual =
+    let expectsToBeTrue actual =
         actual |> expectsToBe true
 
     /// <summary>
     /// Tests a given boolean to determine if it is false
     /// </summary>
-    /// <param name="message">the message to return on failure</param>
     /// <param name="actual">The boolean being tested</param>
     /// <returns>Success if value is false otherwise an Failure of type ExpectationFailure</returns>
-    let expectsToBeFalse message actual =
+    let expectsToBeFalse actual =
         actual |> expectsToBe false
 
     /// <summary>
     /// Tests a given value to determine if it is null
     /// </summary>
-    /// <param name="message">the message to return on failure</param>
     /// <param name="actual">The value being tested</param>
     /// <returns>Success if value is null otherwise an Failure of type ExpectationFailure</returns>
-    let isNull message actual =
+    let isNull actual =
         actual |> expectsToBe null
 
     /// <summary>
     /// Tests a given value to determine if it is not null
     /// </summary>
-    /// <param name="message">the message to return on failure</param>
     /// <param name="actual">The value being tested</param>
     /// <returns>Success if value is not null otherwise an Failure of type ExpectationFailure</returns>  
-    let isNotNull message actual =
+    let isNotNull actual =
         actual |> expectsNotToBe null
 
     /// <summary>

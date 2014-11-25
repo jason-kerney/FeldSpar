@@ -6,56 +6,56 @@ module ExpectationTests =
     let ``expectsNotToBe will succeed for "5" expectsNotToBe "6"`` =
         Test(
             fun _ ->
-                "5" |> expectsNotToBe "6" "'%s' was not suposed to be '%s'"
+                "5" |> expectsNotToBe "6"
         )
 
     let ``expectsNotToBe fails if equal`` =
         Test(
             fun _ ->
-                let result = "some" |> expectsNotToBe "some" "%s = %s"
+                let result = "some" |> expectsNotToBe "some"
 
-                result |> expectsToBe (Failure(ExpectationFailure("some = some")))
+                result |> expectsToBe (Failure(ExpectationFailure("\"some\" expected not to be \"some\"")))
         )
 
     let ``isNull succeeds if null`` =
         Test(
             fun _ ->
-                null |> isNull "%A not %A"
+                null |> isNull
         )
 
     let ``isNull fails if nof null`` =
         Test(
             fun _ ->
-                let result = "" |> isNull "'%A' is not '%A'"
+                let result = "" |> isNull
 
-                result |> expectsNotToBe Success "%A should not be %A"
+                result |> expectsNotToBe Success
         )
 
     let ``expectsToBeTrue passes when true`` =
         Test(
             fun _ ->
-                true |> expectsToBeTrue "%b is not %b"
+                true |> expectsToBeTrue
         )
 
 
     let ``expectsToBeTrue fails when false`` =
         Test(
             fun _ ->
-                let result = false |> expectsToBeTrue "%b is not %b"
-                result |> expectsNotToBe Success "false should not be true '%A' = '%A'"
+                let result = false |> expectsToBeTrue
+                result |> expectsNotToBe Success
         )
 
     let ``expectsToBeFalse passes when false`` =
         Test(
             fun _ ->
-                false |> expectsToBeFalse "%b is not %b"
+                false |> expectsToBeFalse
         )
 
 
     let ``expectsToBeFalse fails when true`` =
         Test(
             fun _ ->
-                let result = true |> expectsToBeFalse "%b is not %b"
-                result |> expectsNotToBe Success "true should not be false '%A' = '%A'"
+                let result = true |> expectsToBeFalse
+                result |> expectsNotToBe Success
         )
 
