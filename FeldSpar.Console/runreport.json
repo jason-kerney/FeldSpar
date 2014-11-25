@@ -1,7 +1,6 @@
 {
 	"Assembly Name" : "FeldSpar.Tests.dll" 
 	"Failures" : [
-		{ "Can Create multiple Tests From one Theory Test" : "Standard was not Met" },
 		{ "This is an ignored test" : "Ignored ('Compile Ignored')" }
 	],
 	"Successes" : [
@@ -9,6 +8,7 @@
 		"A test to check verification",
 		"An exception thrown in a test should report exception failure",
 		"Can Build Report from Execution Summaries",
+		"Can Create multiple Tests From one Theory Test",
 		"Combinatory Gold Standard Testing",
 		"Compare Verbosity only excepts specific modifiers",
 		"Find All Tests through Reflection",

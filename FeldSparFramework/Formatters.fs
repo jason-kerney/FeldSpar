@@ -29,10 +29,12 @@ module Basic =
         let printResult result = 
             let prefix = "\t\t"
             match result with
-            | Success -> sprintf "\t\t%A" result
-            | Failure(ExpectationFailure(m)) ->
-                sprintf "%sExpectation Failure: %s" prefix m
-            | Failure(t) -> sprintf "\t\t%A" t
+            | Success -> sprintf "\%s%A" prefix result
+            | Failure(ExpectationFailure(m)) -> sprintf "%sExpectation Failure: %s" prefix m
+            | Failure(GeneralFailure(m)) -> sprintf "%sGeneral Failure: %s" prefix m
+            | Failure(ExceptionFailure(ex)) -> sprintf "%sException Failure: %A" prefix ex
+            | Failure(Ignored(m)) -> sprintf "%sIgnored: %s" prefix m
+            | Failure(StandardNotMet) -> sprintf "%sResult did not meet standards" prefix
 
         let resultsMessages = result.TestResults |> printResult 
 
