@@ -44,7 +44,7 @@ module ConsoleTests =
             fun env ->
                 let values = ["Max"; "Results"; "Errors"; "Detail"; "maxx"; "max"; "results"; "errors"; "detail"; "MAX"; "RESULTS"; "ERRORS"; "DETAIL"]
                 let max = (values |> List.map (fun f -> f.Length) |> List.max) + 1
-                let results = values |> List.map (fun f -> sprintf "'%s'%s%s a verbosity setting" f (String.replicate (max - (f.Length)) " ") (match compareVerbosity f with true -> "is" | false -> "isn't"))
+                let results = values |> List.map (fun value -> sprintf "'%s'%s%s a verbosity setting" value (String.replicate (max - (value.Length)) " ") (match compareVerbosity value with true -> "is" | false -> "isn't"))
 
                 results |> checkAllAgainstStandardCleaned env
         )

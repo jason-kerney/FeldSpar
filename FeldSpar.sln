@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.Framework", "FeldSparFramework\FeldSpar.Framework.fsproj", "{AD56B1EE-515D-40D2-8217-4B4335C0A37B}"
 EndProject
@@ -23,7 +23,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PathFindindTests", "PathFin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeldSparGui", "GuiRunner\FeldSparGui.csproj", "{1CB4C291-BE55-496C-B32C-638DA258A486}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.InterOpWpfEngine", "FeldSpar.InterOpWpfEngine\FeldSpar.InterOpWpfEngine.fsproj", "{1AA77874-54D1-4094-9C72-5F4D0F8DF64F}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.Api.Engine", "FeldSpar.InterOpWpfEngine\FeldSpar.Api.Engine.fsproj", "{1AA77874-54D1-4094-9C72-5F4D0F8DF64F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

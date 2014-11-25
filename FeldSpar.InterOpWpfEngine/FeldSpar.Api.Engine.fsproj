@@ -11,7 +11,7 @@
     <AssemblyName>FeldSpar.InterOpWpfEngine</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
-    <Name>FeldSpar.InterOpWpfEngine</Name>
+    <Name>FeldSpar.Api.Engine</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

@@ -1,4 +1,4 @@
-﻿namespace FeldSpar.ClrInterop
+﻿namespace FeldSpar.Api.Engine.ClrInterop
 open System
 open FeldSpar.Framework
 open FeldSpar.Framework.Engine
@@ -66,7 +66,7 @@ type Engine () =
         path |> doWork (runTestsAndReport false)
 
 
-namespace FeldSpar.ClrInterop.ViewModels
+namespace FeldSpar.Api.Engine.ClrInterop.ViewModels
 open System
 open FeldSpar.Framework
 open FeldSpar.Framework.Engine
@@ -77,7 +77,7 @@ open System.Collections.Generic
 open System.IO
 open System.Windows.Input
 open System.Collections.Specialized
-open FeldSpar.ClrInterop
+open FeldSpar.Api.Engine.ClrInterop
 
 type TestStatus = 
     | None = 0
@@ -207,46 +207,69 @@ type TestDetailModel () =
     let mutable assemblyName = ""
     let mutable parent :ITestAssemblyModel = Defaults.emptyTestAssemblyModel
 
-    member this.Name
-        with get () = name
-        and set value = name <- value
-
-    member this.Status
-        with get () = status
-        and set value = status <- value
-
-    member this.FailDetail
-        with get () = failDetail
-        and set value = failDetail <- value
-
-    member this.AssemblyName
-        with get () = assemblyName
-        and set value = assemblyName <- value
-
-    member this.Parent
-        with get () = parent
-        and set value = parent <- value
+    member this.ITestDetailModel 
+        with get () = this :> ITestDetailModel
     
     interface ITestDetailModel with
         member this.Name
             with get () = name
-            and set value = name <- value
+            and set value = 
+                if name <> value
+                then 
+                    name <- value
+                    this.OnPropertyChanged("Name")
 
         member this.Status
             with get () = status
-            and set value = status <- value
+            and set value = 
+                if status <> value
+                then
+                    status <- value
+                    this.OnPropertyChanged("Status")
 
         member this.FailDetail
             with get () = failDetail
-            and set value = failDetail <- value
+            and set value = 
+                if failDetail <> value 
+                then 
+                    failDetail <- value
+                    this.OnPropertyChanged("FailDetail")
 
         member this.AssemblyName
             with get () = assemblyName
-            and set value = assemblyName <- value
+            and set value = 
+                if assemblyName <> value
+                then
+                    assemblyName <- value
+                    this.OnPropertyChanged("AssemblyName")
 
         member this.Parent
             with get () = parent
-            and set value = parent <- value
+            and set value = 
+                if value <> parent
+                then
+                    parent <- value
+                    this.OnPropertyChanged("Parent")
+
+    member this.Name
+        with get () = this.ITestDetailModel.Name
+        and set value = this.ITestDetailModel.Name <- value
+
+    member this.Status
+        with get () = this.ITestDetailModel.Status
+        and set value = this.ITestDetailModel.Status <- value
+
+    member this.FailDetail
+        with get () = this.ITestDetailModel.FailDetail
+        and set value = this.ITestDetailModel.FailDetail <- value
+
+    member this.AssemblyName
+        with get () = this.ITestDetailModel.AssemblyName
+        and set value = this.ITestDetailModel.AssemblyName <- value
+
+    member this.Parent
+        with get () = this.ITestDetailModel.Parent
+        and set value = this.ITestDetailModel.Parent <- value
 
 type TestAssemblyModel (path) as this =
     inherit PropertyNotifyBase ()
@@ -386,13 +409,39 @@ type TestAssemblyModel (path) as this =
         member this.ToggleVisibilityCommand 
             with get () =
                 new DelegateCommand(fun ignored -> this.ToggleVisibility(ignored)) :> ICommand
+
+    member this.IsVisible
+        with get () = this.ITestAssemblyModel.IsVisible
+        and set value = this.ITestAssemblyModel.IsVisible <- value
+
+    member this.IsRunning
+        with get () = this.ITestAssemblyModel.IsRunning
+        and set value = this.ITestAssemblyModel.IsRunning <- value
+
+    member this.Name with get () = this.ITestAssemblyModel.Name
+
+    member this.AssemblyPath with get () = this.ITestAssemblyModel.AssemblyPath
+
+    member this.Tests with get () = this.ITestAssemblyModel.Tests
+
+    member this.Results with get () = this.ITestAssemblyModel.Results
+
+    member this.Run _ = 
+        async {
+            this.ITestAssemblyModel.Run null
+        } |> Async.Start
+
+    member this.RunCommand 
+        with get () = this.ITestAssemblyModel.RunCommand
+
+    member this.ToggleVisibilityCommand 
+        with get () = this.ITestAssemblyModel.ToggleVisibilityCommand
                 
 type TestsMainModel () as this =
     inherit PropertyNotifyBase()
 
     let mutable assemblies = new ObservableCollection<ITestAssemblyModel>()
     let mutable isRunning = false
-    let mutable description = String.Empty
     let mutable selected : ITestDetailModel = Defaults.emptyTestDetailModel
 
     do
@@ -487,7 +536,8 @@ type TestsMainModel () as this =
                     this.OnPropertyChanged("IsRunning")
 
         member this.Description
-            with get () = description
+            with get () = 
+                selected.Name + "\n\n" + selected.FailDetail
 
         member this.Selected
             with get () = selected
@@ -496,6 +546,7 @@ type TestsMainModel () as this =
                 then
                     selected <- value
                     this.OnPropertyChanged("Selected")
+                    this.OnPropertyChanged("Description")
 
         member this.Results
             with get () = this.GetTestItems (fun (a:ITestAssemblyModel) -> a.Results :> TestResult seq) |> Seq.toArray

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
-using FeldSpar.ClrInterop.ViewModels;
+using FeldSpar.Api.Engine.ClrInterop.ViewModels;
 
 namespace FeldSparGuiCSharp.ValueConverters
 {
