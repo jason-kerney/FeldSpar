@@ -75,6 +75,7 @@
     <Content Include="Test_that_shuffle_works_correctly.approved.txt" />
     <Content Include="Can_Build_Report_from_Execution_Summaries.approved.txt" />
     <Content Include="Report_exports_to_JSON.approved.txt" />
+    <Content Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ApprovalTests">
