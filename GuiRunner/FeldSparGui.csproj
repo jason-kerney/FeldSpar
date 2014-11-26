@@ -124,9 +124,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FeldSpar.InterOpWpfEngine\FeldSpar.Api.Engine.fsproj">
+    <ProjectReference Include="..\FeldSpar.InterOpWpfEngine\FeldSpar.GuiApi.Engine.fsproj">
       <Project>{1aa77874-54d1-4094-9c72-5f4d0f8df64f}</Project>
-      <Name>FeldSpar.Api.Engine</Name>
+      <Name>FeldSpar.GuiApi.Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\FeldSparFramework\FeldSpar.Framework.fsproj">
       <Project>{ad56b1ee-515d-40d2-8217-4b4335c0a37b}</Project>
