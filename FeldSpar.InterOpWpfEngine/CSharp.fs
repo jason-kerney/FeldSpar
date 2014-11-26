@@ -10,24 +10,37 @@ open System.IO
 open System.Windows.Input
 open System.Collections.Specialized
 
+/// <summary>
+/// A class to pass data with test events
+/// </summary>
 type TestEventArgs (name:string) =
     inherit EventArgs ()
 
+    /// <summary>
+    /// The name of the test that raised the event
+    /// </summary>
     member this.Name 
         with get () = name
 
+/// <summary>
+/// A class to pass data when a test finishes
+/// </summary>
 type TestCompeteEventArgs (name:string, result:TestResult) =
     inherit TestEventArgs (name)
 
+    /// <summary>
+    /// The result of the test
+    /// </summary>
     member this.TestResult 
         with get () = result
 
+/// <summary>
+/// A class to wrap execution of tests
+/// </summary>
 type Engine () = 
     let foundEvent = new Event<TestEventArgs>()
     let runningEvent = new Event<TestEventArgs>()
     let testCompletedEvent = new Event<TestCompeteEventArgs>()
-    let runningItems = new System.Collections.Generic.List<string>()
-    let finnishedItems = new System.Collections.Generic.List<string * TestResult>()
 
     let found name = 
         foundEvent.Trigger(TestEventArgs(name))
@@ -50,18 +63,35 @@ type Engine () =
         path |> work report |> ignore
         
 
+    /// <summary>
+    /// Event Raised when a test is found. Finding happens twice. Once when executing a find and once when running the tests
+    /// </summary>
     [<CLIEvent>]
     member this.TestFound = foundEvent.Publish
 
+    /// <summary>
+    /// Event is raised when a test starts running
+    /// </summary>
     [<CLIEvent>]
     member this.TestRunning = runningEvent.Publish
 
+    /// <summary>
+    /// Event is raised when a test finishes running
+    /// </summary>
     [<CLIEvent>]
     member this.TestFinished = testCompletedEvent.Publish
 
+    /// <summary>
+    /// Looks for tests in assembly
+    /// </summary>
+    /// <param name="path">the path of the assembly used to look for tests</param>
     member this.FindTests (path:string) =
         path |> doWork (findTestsAndReport false)
 
+    /// <summary>
+    /// Finds and runs all tests in a given assembly
+    /// </summary>
+    /// <param name="path"></param>
     member this.RunTests (path:string) =
         path |> doWork (runTestsAndReport false)
 
@@ -79,6 +109,9 @@ open System.Windows.Input
 open System.Collections.Specialized
 open FeldSpar.Api.Engine.ClrInterop
 
+/// <summary>
+/// The Status of the current test
+/// </summary>
 type TestStatus = 
     | None = 0
     | Running = 1
@@ -86,6 +119,9 @@ type TestStatus =
     | Failure = 3
     | Ignored = 4
 
+/// <summary>
+/// Base class used to fire Property Notified events
+/// </summary>
 type PropertyNotifyBase () =
     let notify = new Event<_, _>()
 
@@ -93,39 +129,130 @@ type PropertyNotifyBase () =
         [<CLIEvent>]
         member this.PropertyChanged = notify.Publish
 
+    /// <summary>
+    /// Used to raise property changed.
+    /// </summary>
+    /// <param name="propertyName">The name of the property to raise the event for</param>
     abstract member OnPropertyChanged : string -> unit
+
+    /// <summary>
+    /// Used to raise property changed.
+    /// </summary>
+    /// <param name="propertyName">The name of the property to raise the event for</param>
     default this.OnPropertyChanged ([<CallerMemberName>]propertyName:string) =
         notify.Trigger(this, new PropertyChangedEventArgs(propertyName))
 
+    /// <summary>
+    /// Used to raise property changed.
+    /// </summary>
     member this.OnPropertyChanged () = this.OnPropertyChanged(null)
 
+/// <summary>
+/// The Details of a test
+/// </summary>
 type ITestDetailModel = 
+    /// <summary>
+    /// The name of the test
+    /// </summary>
     abstract member Name : string with get, set
+    /// <summary>
+    /// The Status of the test
+    /// </summary>
     abstract member Status : TestStatus with get, set
+    /// <summary>
+    /// If the test failed, this is the information about the failure
+    /// </summary>
     abstract member FailDetail : string with get, set
+    /// <summary>
+    /// The name of the assembly that contained the test
+    /// </summary>
     abstract member AssemblyName : string with get, set
+    /// <summary>
+    /// The information about the assembly that contains this test
+    /// </summary>
     abstract member Parent : ITestAssemblyModel with get, set
 
+/// <summary>
+/// Information about a test assembly
+/// </summary>
 and ITestAssemblyModel =
+    /// <summary>
+    /// The evet that is raised if the assembly file is deleted
+    /// </summary>
     [<CLIEvent>]abstract member DeletedFile : IEvent<EventHandler, EventArgs>
+    /// <summary>
+    /// Whether or not this information should be availible for display
+    /// </summary>
     abstract member IsVisible : bool with get, set
+    /// <summary>
+    /// Whether or not tests from this assembly are running
+    /// </summary>
     abstract member IsRunning : bool with get, set
+    /// <summary>
+    /// The file name of this test Assembly
+    /// </summary>
     abstract member Name : string with get
+    /// <summary>
+    /// The path of the file for this assembly
+    /// </summary>
     abstract member AssemblyPath : string with get
+    /// <summary>
+    /// The tests that were found within this assembly
+    /// </summary>
     abstract member Tests : ObservableCollection<ITestDetailModel> with get
+    /// <summary>
+    /// The results from all the executed tests
+    /// </summary>
     abstract member Results : ObservableCollection<TestResult> with get
+    /// <summary>
+    /// The ICommand used to run the tests
+    /// </summary>
     abstract member RunCommand : System.Windows.Input.ICommand with get
+    /// <summary>
+    /// The ICommand that is used to change the visibility of this assembly
+    /// </summary>
     abstract member ToggleVisibilityCommand : System.Windows.Input.ICommand with get
+    /// <summary>
+    /// This runs the tests
+    /// </summary>
+    /// <param name="ignored">this parameter is not used, but nessesary for the ICommand</param>
     abstract member Run : obj -> unit
 
+/// <summary>
+/// This is the main model used to control and display tests
+/// </summary>
 type ITestsMainModel =
+    /// <summary>
+    /// Indicates if the test is running.
+    /// </summary>
     abstract IsRunning : bool with get, set
+    /// <summary>
+    /// The currently selected test's fail description
+    /// </summary>
     abstract Description : string with get
+    /// <summary>
+    /// The currently selected test
+    /// </summary>
     abstract Selected : ITestDetailModel with get, set
+    /// <summary>
+    /// The test assemblies that are contained in the system
+    /// </summary>
     abstract Assemblies : System.Collections.ObjectModel.ObservableCollection<ITestAssemblyModel> with get, set
+    /// <summary>
+    /// The results of all tests
+    /// </summary>
     abstract Results : TestResult array with get
+    /// <summary>
+    /// All tests
+    /// </summary>
     abstract Tests : ITestDetailModel array with get
+    /// <summary>
+    /// The ICommand used to run all tests
+    /// </summary>
     abstract RunCommand : System.Windows.Input.ICommand with get
+    /// <summary>
+    /// The ICommant used to add test assemblies
+    /// </summary>
     abstract AddCommand : System.Windows.Input.ICommand with get
 
 module Defaults =
@@ -177,8 +304,10 @@ module Defaults =
                 and set value = ()
         }
 
-// Thank you:
-// http://wpftutorial.net/DelegateCommand.html
+/// <summary>
+/// An implementation of ICommand for use in WPF
+/// Thank you: http://wpftutorial.net/DelegateCommand.html
+/// </summary>
 type DelegateCommand (execute:Action<obj>, canExecute:Predicate<obj>) =
     let notify = new Event<_, _>()
 
@@ -198,6 +327,9 @@ type DelegateCommand (execute:Action<obj>, canExecute:Predicate<obj>) =
 
     member this.RaiseCanExecuteChanged () = notify.Trigger(this, EventArgs.Empty)
 
+/// <summary>
+/// Implementation Class representing the information of a test
+/// </summary>
 type TestDetailModel () =
     inherit PropertyNotifyBase ()
 
@@ -207,6 +339,9 @@ type TestDetailModel () =
     let mutable assemblyName = ""
     let mutable parent :ITestAssemblyModel = Defaults.emptyTestAssemblyModel
 
+    /// <summary>
+    /// A Shortcut to prevent the need to cast
+    /// </summary>
     member this.ITestDetailModel 
         with get () = this :> ITestDetailModel
     
@@ -251,26 +386,44 @@ type TestDetailModel () =
                     parent <- value
                     this.OnPropertyChanged("Parent")
 
+    /// <summary>
+    /// The name of the test
+    /// </summary>
     member this.Name
         with get () = this.ITestDetailModel.Name
         and set value = this.ITestDetailModel.Name <- value
 
+    /// <summary>
+    /// The execution status of the test
+    /// </summary>
     member this.Status
         with get () = this.ITestDetailModel.Status
         and set value = this.ITestDetailModel.Status <- value
 
+    /// <summary>
+    /// If this test failed, then this is the detail of the failure.
+    /// </summary>
     member this.FailDetail
         with get () = this.ITestDetailModel.FailDetail
         and set value = this.ITestDetailModel.FailDetail <- value
 
+    /// <summary>
+    /// The file name of the test assembly
+    /// </summary>
     member this.AssemblyName
         with get () = this.ITestDetailModel.AssemblyName
         and set value = this.ITestDetailModel.AssemblyName <- value
 
+    /// <summary>
+    /// The test assembly information that contains this test
+    /// </summary>
     member this.Parent
         with get () = this.ITestDetailModel.Parent
         and set value = this.ITestDetailModel.Parent <- value
 
+/// <summary>
+/// The information about a test assembly
+/// </summary>
 type TestAssemblyModel (path) as this =
     inherit PropertyNotifyBase ()
 
@@ -353,8 +506,15 @@ type TestAssemblyModel (path) as this =
 
         engine.FindTests(assemblyPath)
 
-    member private this.ITestAssemblyModel = this :> ITestAssemblyModel
+    /// <summary>
+    /// A shortcut method to prevent the need for casting
+    /// </summary>
+    member this.ITestAssemblyModel = this :> ITestAssemblyModel
 
+    /// <summary>
+    /// A method for changing whether or not this assembly is supposed to be visible
+    /// </summary>
+    /// <param name="ignored">This parmater is ignored but needed to uphold contract for ICommand</param>
     member this.ToggleVisibility _ =
         this.ITestAssemblyModel.IsVisible <- not this.ITestAssemblyModel.IsVisible
 
@@ -410,30 +570,58 @@ type TestAssemblyModel (path) as this =
             with get () =
                 new DelegateCommand(fun ignored -> this.ToggleVisibility(ignored)) :> ICommand
 
+    /// <summary>
+    /// Whether or not this assembly should be visible
+    /// </summary>
     member this.IsVisible
         with get () = this.ITestAssemblyModel.IsVisible
         and set value = this.ITestAssemblyModel.IsVisible <- value
 
+    /// <summary>
+    /// Whether or not any tests in this assembly are running
+    /// </summary>
     member this.IsRunning
         with get () = this.ITestAssemblyModel.IsRunning
         and set value = this.ITestAssemblyModel.IsRunning <- value
 
+    /// <summary>
+    /// The file name of this assembly
+    /// </summary>
     member this.Name with get () = this.ITestAssemblyModel.Name
 
+    /// <summary>
+    /// The path of this assembly
+    /// </summary>
     member this.AssemblyPath with get () = this.ITestAssemblyModel.AssemblyPath
 
+    /// <summary>
+    /// The tests found within this assembly
+    /// </summary>
     member this.Tests with get () = this.ITestAssemblyModel.Tests
 
+    /// <summary>
+    /// The results of all tests
+    /// </summary>
     member this.Results with get () = this.ITestAssemblyModel.Results
 
+    /// <summary>
+    /// An asyncronous method to run tests.
+    /// </summary>
+    /// <param name="ignored">this parameter is not used but required to fullfil the ICommand contract</param>
     member this.Run _ = 
         async {
             this.ITestAssemblyModel.Run null
         } |> Async.Start
 
+    /// <summary>
+    /// The ICommand used to run the tests
+    /// </summary>
     member this.RunCommand 
         with get () = this.ITestAssemblyModel.RunCommand
 
+    /// <summary>
+    /// The ICommand used to toggle if this assembly should be visible
+    /// </summary>
     member this.ToggleVisibilityCommand 
         with get () = this.ITestAssemblyModel.ToggleVisibilityCommand
                 
