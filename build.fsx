@@ -52,7 +52,7 @@ Target "BuildConsole" (fun _ ->
 )
 
 Target "BuildGui" (fun _ ->
-    build "./FSharpWpf/" releaseDir buildDir "BuildGui-Output:" "*.fsproj"
+    build "./FSharpWpf/" releaseDir buildDir "BuildGui-Output:" fSharpProjects
 )
 
 Target "BuildTest" (fun _ ->
@@ -81,10 +81,10 @@ Target "Default" (fun _ ->
 )
 
 Target "Nuget" (fun _ ->
-    Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSparFramework\FeldSpar.Framework.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
-    Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.InterOpWpfEngine\FeldSpar.GuiApi.Engine.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
-    Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.Console\FeldSpar.Console.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
-    Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\FSharpWpf\FSharpWpf.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack ..\FeldSparFramework\FeldSpar.Framework.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack ..\FeldSpar.InterOpWpfEngine\FeldSpar.GuiApi.Engine.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack ..\FeldSpar.Console\FeldSpar.Console.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack ..\FSharpWpf\FSharpWpf.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
 )
 
 Target "LocalDeploy" (fun _ ->
@@ -100,6 +100,8 @@ Target "LocalDeploy" (fun _ ->
             |> FileSystemHelper.filesInDir
             |> Array.map (fun fi -> fi.FullName)
             |> Array.iter (printfn "LocalDeploy-Output: %s")
+    
+    printfn "%A" (System.DateTime.Now)
 )
 
 // Dependencies

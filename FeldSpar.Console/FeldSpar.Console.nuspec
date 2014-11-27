@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package >
+<package xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <metadata>
     <id>$id$</id>
     <version>$version$</version>
@@ -14,4 +14,8 @@
     <copyright>Copyright 2014</copyright>
     <tags>F#, FSharp, F-Sharp, Unit Testing, Unit Tests, Runner</tags>
   </metadata>
+  <files>
+    <file src="bin\Release\FeldSpar.Console.exe.config" target="Content" />
+    <file src="tools\install.ps1" target="tools" />
+  </files>
 </package>
