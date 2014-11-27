@@ -55,7 +55,7 @@ module ApprovalsSupport =
         result.Read(data, 0, data.Length) |> ignore
         getBinaryFileWriter extentionWithoutDot data
 
-    let private getNamer (env:TestEnvironment) = 
+    let getPath (env:TestEnvironment) =
         let trace = System.Diagnostics.StackTrace(true)
 
         let (|GetFileName|_|) (frame:System.Diagnostics.StackFrame) =
@@ -74,7 +74,11 @@ module ApprovalsSupport =
 
             | _::tail -> find tail
 
-        let path = find (trace.GetFrames () |> Seq.toList)
+        find (trace.GetFrames () |> Seq.toList)
+
+    let private getNamer (env:TestEnvironment) = 
+
+        let path = getPath env
 
         {  new IApprovalNamer with
             member this.SourcePath with get () = path

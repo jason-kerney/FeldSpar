@@ -33,7 +33,7 @@ module TestSummaryUtilities =
                     | ExceptionFailure(ex)    -> sprintf "Exception Thrown:\n%A" ex
                     | ExpectationFailure(msg) -> sprintf "Expectation Not Met ('%s')" msg
                     | Ignored(msg)            -> sprintf "Ignored ('%s')" msg
-                    | StandardNotMet          -> "Standard was not Met"
+                    | StandardNotMet(path)    -> sprintf "Standard was not Met at %A" path
 
                 let failMsg = failMsg.Replace("\"", "'")
 

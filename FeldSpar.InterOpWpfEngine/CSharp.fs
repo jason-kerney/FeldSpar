@@ -461,7 +461,7 @@ type TestAssemblyModel (path) as this =
         | Failure(ExpectationFailure(msg)) -> (TestStatus.Failure, "Expectation Not Met" + "\n" + msg)
         | Failure(ExceptionFailure(ex)) -> (TestStatus.Failure, ex.ToString())
         | Failure(Ignored(msg)) -> (TestStatus.Ignored, "Ignored:" + "\n" + msg)
-        | Failure(StandardNotMet) -> (TestStatus.Failure, "Gold Standard not met, check the comparison or configure comparison")
+        | Failure(StandardNotMet(path)) -> (TestStatus.Failure, sprintf "Gold Standard not met, check the comparison or configure comparison at %A" path)
     
     do
         engine.TestFound.Add

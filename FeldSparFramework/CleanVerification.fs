@@ -13,7 +13,7 @@ module ChecksClean =
 
     let cleanNothing item = item
 
-    let checkStandardsAndReport env (reporter:IApprovalFailureReporter) (approver:IApprovalApprover) =
+    let checkStandardsAndReport (env:TestEnvironment) (reporter:IApprovalFailureReporter) (approver:IApprovalApprover) =
         if(approver.Approve ())
         then
             do approver.CleanUpAfterSucess(reporter) 
@@ -27,7 +27,7 @@ module ChecksClean =
                 then do approver.CleanUpAfterSucess(reporter)
             | _ -> ()
 
-            Failure(StandardNotMet)
+            Failure(StandardNotMet((getPath env) + env.CanonicalizedName + ".approved"))
 
     let checkAgainstStandard env (approver:IApprovalApprover) =
         let reporter = getReporter env

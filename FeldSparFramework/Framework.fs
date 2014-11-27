@@ -7,7 +7,7 @@ type FailureType =
     | ExpectationFailure of string
     | ExceptionFailure of Exception
     | Ignored of String
-    | StandardNotMet
+    | StandardNotMet of String
 
 type TestResult =
     | Success
@@ -76,7 +76,8 @@ type Theory<'a> =
 module Utilities =
     let getMessage result = 
         match result with
-        | Success | Failure(StandardNotMet) -> String.Empty
+        | Success -> String.Empty
+        | Failure(StandardNotMet(m)) -> m
         | Failure(GeneralFailure(m)) -> m
         | Failure(ExceptionFailure(ex)) -> sprintf "%A" ex
         | Failure(ExpectationFailure(m)) -> m
@@ -84,7 +85,7 @@ module Utilities =
 
     let addMessage message result = 
         match result with
-        | Success | Failure(StandardNotMet) | Failure(ExceptionFailure(_)) -> result
+        | Success | Failure(StandardNotMet(_)) | Failure(ExceptionFailure(_)) -> result
         | Failure(failType) ->
             let msg = message + "\n" + (result |> getMessage )
             let fail = 
@@ -93,7 +94,7 @@ module Utilities =
                 | ExpectationFailure(_) -> ExpectationFailure(msg)
                 | ExceptionFailure(ex) -> ExceptionFailure(ex)
                 | Ignored(_) -> Ignored(msg)
-                | StandardNotMet -> StandardNotMet
+                | StandardNotMet(path) -> StandardNotMet(path)
 
             Failure(fail)
             

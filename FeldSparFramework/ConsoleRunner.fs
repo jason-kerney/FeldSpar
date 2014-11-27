@@ -35,7 +35,7 @@ module ConsoleRunner =
             | Failure(ExpectationFailure(_)) -> display "Expectation Failure"
             | Failure(ExceptionFailure(_)) -> display "Exception Failure"
             | Failure(GeneralFailure(_)) -> display "General Failure"
-            | Failure(StandardNotMet) -> display "Standard not met Failure"
+            | Failure(StandardNotMet(_)) -> display "Standard not met Failure"
 
         Console.ForegroundColor <- oColor
 

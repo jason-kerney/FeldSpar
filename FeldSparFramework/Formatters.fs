@@ -34,7 +34,7 @@ module Basic =
             | Failure(GeneralFailure(m)) -> sprintf "%sGeneral Failure: %s" prefix m
             | Failure(ExceptionFailure(ex)) -> sprintf "%sException Failure: %A" prefix ex
             | Failure(Ignored(m)) -> sprintf "%sIgnored: %s" prefix m
-            | Failure(StandardNotMet) -> sprintf "%sResult did not meet standards" prefix
+            | Failure(StandardNotMet(path)) -> sprintf "%sResult did not meet standards at %A" prefix path
 
         let resultsMessages = result.TestResults |> printResult 
 
