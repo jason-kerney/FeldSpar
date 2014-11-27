@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>FeldSpar Test Runner</title>
+    <authors>R. Jason Kerney</authors>
+    <owners>R. Jason Kerney</owners>
+    <licenseUrl>https://github.com/jason-kerney/FeldSpar/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/jason-kerney/FeldSpar</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A test runner for the FeldSpar testing framework</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2014</copyright>
+    <tags>F#, FSharp, F-Sharp, Unit Testing, Unit Tests, Runner</tags>
+  </metadata>
+</package>

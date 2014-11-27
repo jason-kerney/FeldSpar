@@ -52,7 +52,7 @@ Target "BuildConsole" (fun _ ->
 )
 
 Target "BuildGui" (fun _ ->
-    build "./GuiRunner/" releaseDir buildDir "BuildGui-Output:" "*.csproj"
+    build "./FSharpWpf/" releaseDir buildDir "BuildGui-Output:" "*.fsproj"
 )
 
 Target "BuildTest" (fun _ ->
@@ -82,9 +82,9 @@ Target "Default" (fun _ ->
 
 Target "Nuget" (fun _ ->
     Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSparFramework\FeldSpar.Framework.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
-    Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.InterOpWpfEngine\FeldSpar.InterOpWpfEngine.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.InterOpWpfEngine\FeldSpar.GuiApi.Engine.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
     Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.Console\FeldSpar.Console.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
-    Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\GuiRunner\FeldSparGui.csproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack C:\Users\Jason\Documents\GitHub\FeldSpar\FSharpWpf\FSharpWpf.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
 )
 
 Target "LocalDeploy" (fun _ ->
