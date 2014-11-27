@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/jason-kerney/FeldSpar</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Allows the running of FeldSpar tests using the console</description>
-    <releaseNotes></releaseNotes>
+    <releaseNotes>Changed command line options to allow for multiple levels of verbosity</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>F#, FSharp, F-Sharp, Unit Testing, Unit Tests, Runner</tags>
   </metadata>

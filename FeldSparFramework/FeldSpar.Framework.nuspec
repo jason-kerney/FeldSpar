@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/jason-kerney/FeldSpar</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An opinionated fully functional testing framework for F#</description>
-    <releaseNotes></releaseNotes>
+    <releaseNotes>Changed the way expectations work. They no longer use a message. Instead if you want an additional failure message please use withFailComment</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>F#, FSharp, F-Sharp, Unit Testing, Unit Tests</tags>
   </metadata>
