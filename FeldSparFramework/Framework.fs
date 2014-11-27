@@ -74,6 +74,11 @@ type IgnoredTest = | ITest of (TestEnvironment -> TestResult)
 /// A type to allow the dynamic loading of configuration if it is used
 /// </summary>
 type Configuration = | Config of (unit -> AssemblyConfiguration)
+type RunConfiguration = 
+    {
+        Assembly: Reflection.Assembly;
+        Config: Configuration option;
+    }
 
 /// <summary>
 /// Data representing a therory or parameterized test.
