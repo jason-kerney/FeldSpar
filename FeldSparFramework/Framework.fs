@@ -83,11 +83,11 @@ module Utilities =
         | Failure(ExpectationFailure(m)) -> m
         | Failure(Ignored(m)) -> m
 
-    let addMessage message result = 
+    let withFailComment comment result = 
         match result with
         | Success | Failure(StandardNotMet(_)) | Failure(ExceptionFailure(_)) -> result
         | Failure(failType) ->
-            let msg = message + "\n" + (result |> getMessage )
+            let msg = comment + "\n" + (result |> getMessage )
             let fail = 
                 match failType with
                 | GeneralFailure(_) -> GeneralFailure(msg)

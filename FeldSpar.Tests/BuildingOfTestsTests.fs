@@ -78,7 +78,7 @@ module BuildingOfTestsTests =
                                         Data = seq { for i in 1..4 do yield i};
                                         Base = {
                                                   UnitDescription = (fun n -> sprintf "testing %d" n);
-                                                  UnitTest = fun n _ -> (n % 2) |> expectsToBe 0 |> addMessage (sprintf "Number was not even 2 mod %d <> 0" n)
+                                                  UnitTest = fun n _ -> (n % 2) |> expectsToBe 0 |> withFailComment (sprintf "Number was not even 2 mod %d <> 0" n)
                                                }
                                     })
 
@@ -141,7 +141,7 @@ module BuildingOfTestsTests =
                 verify
                     {
                         let! desriptionIsCorrect = resultSummary.TestDescription |> expectsToBe failDescription
-                        let! testFailedCorrectly = resultSummary.TestResults |> expectsToBe (failResult "Expected Failure") |> addMessage "Test did not fail correctly expected"
+                        let! testFailedCorrectly = resultSummary.TestResults |> expectsToBe (failResult "Expected Failure") |> withFailComment "Test did not fail correctly expected"
                         return Success
                     }
             ))

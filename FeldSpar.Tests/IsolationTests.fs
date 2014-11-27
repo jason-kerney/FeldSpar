@@ -27,7 +27,7 @@ module IsolationTests =
 
                             let actual = changer.X
 
-                            actual |> expectsToBe expected |> addMessage "changer did not increment correctly"
+                            actual |> expectsToBe expected |> withFailComment "changer did not increment correctly"
                         ))
 
                 let ``Second test to test isolation`` = 
@@ -37,7 +37,7 @@ module IsolationTests =
 
                             let actual = changer.X
 
-                            actual |> expectsToBe expected |> addMessage "changer did not increment correctly expected"
+                            actual |> expectsToBe expected |> withFailComment "changer did not increment correctly expected"
                         ))
 
                 let results = [("First test to test isolation", ``First test to test isolation``); ("Second test to test isolation", ``Second test to test isolation``)] |> runAsTests (env.AssemblyPath)
@@ -48,7 +48,7 @@ module IsolationTests =
                 verify
                     {
                         let! testsWhereIsolatedFromEachother = isolatedResults |> isTrue (GeneralFailure("tests failed to manipulate the changer correctly or in isolation"))
-                        let! testsWhereIsolatedFromMain = mainActual |> expectsToBe mainExpected |> addMessage "tests did not run in isolation."
+                        let! testsWhereIsolatedFromMain = mainActual |> expectsToBe mainExpected |> withFailComment "tests did not run in isolation."
                         return Success
                     }
             ))

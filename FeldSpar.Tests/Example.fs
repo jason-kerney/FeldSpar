@@ -33,8 +33,8 @@ module Example =
 
                 verify
                     {
-                        let! correctNumbers = numbers |> Seq.length |> expectsToBe 3 |> addMessage "incorrect number of numbers"
-                        let! correctFizzes = fizzCount |> Seq.length |> expectsToBe 3 |> addMessage "incorrectly converted numbers to Fizz."
+                        let! correctNumbers = numbers |> Seq.length |> expectsToBe 3 |> withFailComment "incorrect number of numbers"
+                        let! correctFizzes = fizzCount |> Seq.length |> expectsToBe 3 |> withFailComment "incorrectly converted numbers to Fizz."
                         return Success
                     }
             )
@@ -43,7 +43,7 @@ module Example =
         Test(fun env ->
                 let result = 5 |> FizzBuzzer
 
-                result |> expectsToBe "Buzz" |> addMessage "5 should have been turned into 'Buzz'"
+                result |> expectsToBe "Buzz" |> withFailComment "5 should have been turned into 'Buzz'"
             )
 
     let ``Fizz Buzzer returns 'Buzz' for all multiples of 5 up to 10`` =
@@ -56,8 +56,8 @@ module Example =
 
                 verify
                     {
-                        let! correctNumbers = numbers |> Seq.length |> expectsToBe 2 |> addMessage "incorrect number of numbers."
-                        let! correctFizzes = buzzCount |> Seq.length |> expectsToBe 2 |> addMessage "incorrectly converted numbers to Buzz."
+                        let! correctNumbers = numbers |> Seq.length |> expectsToBe 2 |> withFailComment "incorrect number of numbers."
+                        let! correctFizzes = buzzCount |> Seq.length |> expectsToBe 2 |> withFailComment "incorrectly converted numbers to Buzz."
                         return Success
                     }
             )
@@ -79,8 +79,8 @@ module Example =
 
                 verify
                     {
-                        let! correctNumbers = numbers |> Seq.length |> expectsToBe 2 |> addMessage "incorrect number of numbers"
-                        let! correctFizzBuzzes = fizzBuzzCount |> Seq.length |> expectsToBe 2 |> addMessage "incorrectly converted numbers to FizzBuzz."
+                        let! correctNumbers = numbers |> Seq.length |> expectsToBe 2 |> withFailComment "incorrect number of numbers"
+                        let! correctFizzBuzzes = fizzBuzzCount |> Seq.length |> expectsToBe 2 |> withFailComment "incorrectly converted numbers to FizzBuzz."
                         return Success
                     }
             )
