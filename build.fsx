@@ -101,6 +101,18 @@ Target "LocalDeploy" (fun _ ->
             |> Array.map (fun fi -> fi.FullName)
             |> Array.iter (printfn "LocalDeploy-Output: %s")
     
+
+    use file = System.IO.File.Create(deployDir + "push.txt")
+    let writer = new System.IO.StreamWriter(file)
+
+    FileSystemHelper.directoryInfo nugetDeployDir
+        |> FileSystemHelper.filesInDir
+        |> Array.filter (fun fi -> fi.Extension = ".nupkg")
+        |> Array.map (fun fi -> fi.FullName)
+        |> Array.iter (fun name -> writer.WriteLine(sprintf "nuget push %A" name))
+
+    writer.Close()
+
     printfn "%A" (System.DateTime.Now)
 )
 
