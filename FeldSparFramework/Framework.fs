@@ -52,7 +52,7 @@ type AssemblyConfiguration =
 /// </summary>
 type TestEnvironment =
     {
-        Name:string;
+        TestName:string;
         CanonicalizedName : string;
         RootPath : string;
         Assembly : Reflection.Assembly;

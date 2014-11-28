@@ -4,16 +4,25 @@ open FeldSpar.Framework
 open FeldSpar.Framework.Formatters
 open System.Reflection
 
+/// <summary>
+/// A type that carries information about a test durring execution reporting
+/// </summary>
 type ExecutionToken =
     {
         Name: string;
     }
 
+/// <summary>
+/// A type used to report the status of a test durring execution
+/// </summary>
 type ExecutionStatus =
     | Found of ExecutionToken
     | Running of ExecutionToken
     | Finished of ExecutionToken * TestResult
     
+/// <summary>
+/// Information about the configuration of an assembly
+/// </summary>
 type RunConfiguration = 
     {
         Assembly: Reflection.Assembly;
@@ -53,7 +62,7 @@ module Runner =
         finally
             AppDomain.Unload(appDomain)
 
-    let private createEnvironment (env : AssemblyConfiguration) assemblyPath assembly name = 
+    let private createEnvironment (env : AssemblyConfiguration) assemblyPath assembly testName = 
         let rec getSourcePath path = 
             let p = System.IO.DirectoryInfo(path)
 
@@ -66,8 +75,8 @@ module Runner =
         let path = assemblyPath |> IO.Path.GetDirectoryName |> getSourcePath
             
         { 
-            Name = name;
-            CanonicalizedName = name |> Formatters.Basic.CanonicalizeString;
+            TestName = testName;
+            CanonicalizedName = testName |> Formatters.Basic.CanonicalizeString;
             RootPath = path;
             Assembly = assembly;
             AssemblyPath = assemblyPath;
@@ -75,16 +84,25 @@ module Runner =
         }
 
     let private fileFoundReport (env:TestEnvironment) report =
-        Found({Name = env.Name; }) |> report 
+        Found({Name = env.TestName; }) |> report 
 
     let private fileRunningReport (env:TestEnvironment) report =
-        Running({Name = env.Name; }) |> report 
+        Running({Name = env.TestName; }) |> report 
 
     let private fileFinishedReport name report (result:TestResult) =
         Finished({Name = name; }, result) |> report 
 
-    let createTestFromTemplate (globalEnv : AssemblyConfiguration) (report : ExecutionStatus -> unit ) name assemblyPath assembly (Test(template)) =
-        let env = name |> createEnvironment globalEnv assemblyPath assembly
+    /// <summary>
+    /// Creates an executable unit test from a template type
+    /// </summary>
+    /// <param name="globalEnv">Information about the current executing environment for the test assembly</param>
+    /// <param name="report">a way to report progress as the test executes</param>
+    /// <param name="testName">the name of the test</param>
+    /// <param name="assemblyPath">the path of the test assembly</param>
+    /// <param name="assembly">the test assembly</param>
+    /// <param name="template">the template to use  to create an executable unit test</param>
+    let createTestFromTemplate (globalEnv : AssemblyConfiguration) (report : ExecutionStatus -> unit ) testName assemblyPath assembly (Test(template)) =
+        let env = testName |> createEnvironment globalEnv assemblyPath assembly
 
         report |> fileFoundReport env
 
@@ -93,7 +111,7 @@ module Runner =
                                                     try
                                                         let result = 
                                                             {
-                                                                TestDescription = env.Name;
+                                                                TestDescription = env.TestName;
                                                                 TestCanonicalizedName = env.CanonicalizedName;
                                                                 TestResults = template env;
                                                             }
@@ -103,7 +121,7 @@ module Runner =
                                                     | e -> 
                                                         let result = 
                                                             {
-                                                                TestDescription = env.Name;
+                                                                TestDescription = env.TestName;
                                                                 TestCanonicalizedName = env.CanonicalizedName;
                                                                 TestResults = Failure(ExceptionFailure(e));
                                                             }
@@ -112,15 +130,24 @@ module Runner =
                                                 )
 
                             fileRunningReport env report
-                            testingCode |> executeInNewDomain () env.AssemblyPath env.Name
+                            testingCode |> executeInNewDomain () env.AssemblyPath env.TestName
                         )
                         
-        (name, testCase)
+        (testName, testCase)
         
-    let reportResults results = Basic.reportResults results
+    /// <summary>
+    /// Converts Execution summaries to strings for reporting on
+    /// </summary>
+    /// <param name="results">the execution summaries to report</param>
+    let reportResults results = Basic.printResults results
 
     let private findStaticProperties (t:Type) = t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static)
 
+    /// <summary>
+    /// Finds the configuration object for a test assembly. This object is used to set up reporters for gold standard testing.
+    /// </summary>
+    /// <param name="ignoreAssemblyConfig">is used to bypass the use of the configuration object</param>
+    /// <param name="assemblyPath">the path of the test assembly</param>
     let findConfiguration ignoreAssemblyConfig (assemblyPath:string) = 
         let assembly = assemblyPath |> IO.File.ReadAllBytes |> Assembly.Load
         let empty = { Assembly = assembly; Config = Some(Config(fun () -> emptyGlobal)) }
@@ -151,13 +178,26 @@ module Runner =
             |> Array.concat
             |> Array.filter filter
 
+    /// <summary>
+    /// Takes all test templates and converts them to executable unit tests 
+    /// </summary>
+    /// <param name="environment">The configuration information for the assembly</param>
+    /// <param name="report">a way to report progress of any test</param>
+    /// <param name="assemblyPath">the path to the test assembly</param>
+    /// <param name="assembly">the test assembly</param>
+    /// <param name="tests">the test templates to convert</param>
     let buildTestPlan (environment : AssemblyConfiguration) report assemblyPath assembly (tests:(string * Test)[]) =
         tests
             |> Array.map(fun (name, test) -> test |> createTestFromTemplate environment report name assemblyPath assembly)
             |> Array.toList
 
-    let shuffle<'a> (list: 'a []) (getRandom: (int * int) -> int) =
-        let arr = list
+    /// <summary>
+    /// A way to randomize an array
+    /// </summary>
+    /// <param name="items">the array to randomize</param>
+    /// <param name="getRandom">a random number generator that takes (low range * high range) and returns a number between them, inclusively</param>
+    let shuffle<'a> (items: 'a []) (getRandom: (int * int) -> int) =
+        let arr = items
 
         let rec shuffle pt =
             if pt >= arr.Length
@@ -198,6 +238,10 @@ module Runner =
             |> shuffleTests
             |> buildTestPlan environment report assemblyPath assembly
 
+    /// <summary>
+    /// Converts theory a theory template into an array of test templates
+    /// </summary>
+    /// <param name="baseName">The name of the theory template being converted</param>
     let convertTheoryToTests (Theory({Data = data; Base = {UnitDescription = getUnitDescription; UnitTest = testTemplate}})) baseName =
         data
             |> Seq.map(fun datum -> (datum, datum |> testTemplate))
@@ -205,7 +249,8 @@ module Runner =
             |> Seq.toArray
 
     let private getTestsFromPropery (prop:PropertyInfo) =
-        let mi = typeof<Theory<_>>.Assembly.GetExportedTypes() 
+        let converterForTheoryTestsMethodInfo = 
+            typeof<Theory<_>>.Assembly.GetExportedTypes() 
                     |> Seq.map(fun t -> t.GetMethods ()) 
                     |> Seq.concat 
                     |> Seq.filter (fun m -> m.Name = "convertTheoryToTests") 
@@ -216,9 +261,9 @@ module Runner =
             | t when t = typeof<IgnoredTest> -> [|(prop.Name, Test(fun _ -> ignoreWith "Compile Ignored"))|]
             | t when t |> isTheory -> 
                 let g = t.GetGenericArguments() 
-                let genericC = mi.MakeGenericMethod(g)
+                let converterForTheoryTests = converterForTheoryTestsMethodInfo.MakeGenericMethod(g)
 
-                genericC.Invoke(null, [|prop.GetValue(null); prop.Name|]) :?> (string * Test)[]
+                converterForTheoryTests.Invoke(null, [|prop.GetValue(null); prop.Name|]) :?> (string * Test)[]
             | _ -> raise (ArgumentException("Incorrect property found by engine"))
             
     let private getConfigurationError (prop:PropertyInfo) =
@@ -237,12 +282,23 @@ module Runner =
             (assembly, getConfig(), mapper)
         | { Assembly = assembly; Config = None } -> (assembly, emptyGlobal, mapper)
 
+    /// <summary>
+    /// Searches test assembly for tests and reports as it finds them.
+    /// </summary>
+    /// <param name="ignoreAssemblyConfig">Ured if you do not want gold standard testing reporters</param>
+    /// <param name="report">Used to report when a test is found</param>
+    /// <param name="assemblyPath">the path of the assembly</param>
     let findTestsAndReport ignoreAssemblyConfig report (assemblyPath:string) = 
         let (assembly, config, mapper) = assemblyPath |> findConfiguration ignoreAssemblyConfig |> getMapper |> determinEnvironmentAndMapping 
 
         assemblyPath |> getTestsWith mapper config report assembly
 
-
+    /// <summary>
+    /// Searches test assembly for tests and runs them. It then reports as it finds them, runs, them, and they complete.
+    /// </summary>
+    /// <param name="ignoreAssemblyConfig">Ured if you do not want gold standard testing reporters</param>
+    /// <param name="report">Used to report when a test is found</param>
+    /// <param name="assemblyPath">the path of the assembly</param>
     let runTestsAndReport ignoreAssemblyConfig report (assemblyPath:string) = 
         assemblyPath 
         |> findTestsAndReport ignoreAssemblyConfig report 
@@ -253,11 +309,16 @@ module Runner =
                 result
             )
 
-    let runTestsAndReportWith ignoreAssemblyConfig report (assemblyPath:string) = 
-        assemblyPath |> runTestsAndReport ignoreAssemblyConfig report
-
+    /// <summary>
+    /// Searches test assembly for tests
+    /// </summary>
+    /// <param name="ignoreAssemblyConfig">Ured if you do not want gold standard testing reporters</param>
+    /// <param name="assemblyPath">the path of the assembly</param>
     let findTests ignoreAssemblyConfig (assemblyPath:string) =  assemblyPath |> findTestsAndReport ignoreAssemblyConfig ignore
 
+    /// <summary>
+    /// Searches test assembly for tests and runs them.
+    /// </summary>
+    /// <param name="ignoreAssemblyConfig">Ured if you do not want gold standard testing reporters</param>
+    /// <param name="assemblyPath">the path of the assembly</param>
     let runTests ignoreAssemblyConfig (assemblyPath:string) = assemblyPath |> runTestsAndReport ignoreAssemblyConfig ignore
-
-    let runTestsWith ignoreAssemblyConfig (assemblyPath : string) = assemblyPath |> runTestsAndReport ignoreAssemblyConfig ignore

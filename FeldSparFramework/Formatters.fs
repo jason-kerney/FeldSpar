@@ -3,6 +3,10 @@ open System
 open FeldSpar.Framework
 
 module Basic =
+    /// <summary>
+    /// Converts a string into a string that is ok for a file name
+    /// </summary>
+    /// <param name="value">the string to convert</param>
     let CanonicalizeString (value:string) =
         let toString : char seq -> string = Seq.map string >> String.concat ""
         let cannicalized = value 
@@ -20,25 +24,32 @@ module Basic =
                                         )
         (cannicalized |> toString).Trim()
 
-    let reportResult (result : ExecutionSummary) =
-        let getValue v =
-            if System.String.IsNullOrWhiteSpace v
-            then ""
-            else sprintf "%s%s" v "\n"
+    /// <summary>
+    /// Converts a TestResult into a freindly string
+    /// </summary>
+    /// <param name="prefix">something to appent to the front of the string.</param>
+    /// <param name="result">The result to convert</param>
+    let printResult prefix result =
+        match result with
+        | Success -> sprintf "\%s%A" prefix result
+        | Failure(ExpectationFailure(m)) -> sprintf "%sExpectation Failure: %s" prefix m
+        | Failure(GeneralFailure(m)) -> sprintf "%sGeneral Failure: %s" prefix m
+        | Failure(ExceptionFailure(ex)) -> sprintf "%sException Failure: %A" prefix ex
+        | Failure(Ignored(m)) -> sprintf "%sIgnored: %s" prefix m
+        | Failure(StandardNotMet(path)) -> sprintf "%sResult did not meet standards at %A" prefix path
 
-        let printResult result = 
-            let prefix = "\t\t"
-            match result with
-            | Success -> sprintf "\%s%A" prefix result
-            | Failure(ExpectationFailure(m)) -> sprintf "%sExpectation Failure: %s" prefix m
-            | Failure(GeneralFailure(m)) -> sprintf "%sGeneral Failure: %s" prefix m
-            | Failure(ExceptionFailure(ex)) -> sprintf "%sException Failure: %A" prefix ex
-            | Failure(Ignored(m)) -> sprintf "%sIgnored: %s" prefix m
-            | Failure(StandardNotMet(path)) -> sprintf "%sResult did not meet standards at %A" prefix path
-
-        let resultsMessages = result.TestResults |> printResult 
+    /// <summary>
+    /// Converts an ExecutionSummary into a friendlystring
+    /// </summary>
+    /// <param name="result">the execution summary to convert</param>
+    let printExecutionSummary (result : ExecutionSummary) =
+        let resultsMessages = result.TestResults |> printResult "\t\t"
 
         sprintf "\t%s\t%s" result.TestDescription resultsMessages
 
-    let reportResults results =
-        results |> Seq.map reportResult
+    /// <summary>
+    /// Maps all Execution summaries to a friendly string
+    /// </summary>
+    /// <param name="results">the results to convert</param>
+    let printResults results =
+        results |> Seq.map printExecutionSummary
