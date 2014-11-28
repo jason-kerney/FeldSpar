@@ -1,21 +1,21 @@
 ﻿'My:\Path'
 [("My Summary 1",
-  [{TestDescription = "Fake test 3";
+  [{TestName = "Fake test 3";
     TestCanonicalizedName = "Fake_Test";
     TestResults = Failure (GeneralFailure "this is a failing test");};
-   {TestDescription = "Fake test 1";
+   {TestName = "Fake test 1";
     TestCanonicalizedName = "Fake_Test";
     TestResults = Success;};
-   {TestDescription = "Fake test 2";
+   {TestName = "Fake test 2";
     TestCanonicalizedName = "Fake_Test";
     TestResults = Failure (Ignored "this is an ignored test");}]);
  ("My Summary 2",
-  [{TestDescription = "Faker test 3";
+  [{TestName = "Faker test 3";
     TestCanonicalizedName = "Fake_Test";
     TestResults = Failure (GeneralFailure "this is a failing test");};
-   {TestDescription = "Faker test 1";
+   {TestName = "Faker test 1";
     TestCanonicalizedName = "Fake_Test";
     TestResults = Success;};
-   {TestDescription = "Faker test 2";
+   {TestName = "Faker test 2";
     TestCanonicalizedName = "Fake_Test";
     TestResults = Failure (Ignored "this is an ignored test");}])]
