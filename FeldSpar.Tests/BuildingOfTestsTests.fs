@@ -16,22 +16,22 @@ module BuildingOfTestsTests =
                 "internal tests",
                 [
                     { 
-                        TestDescription = "Summary One"; 
+                        TestName = "Summary One"; 
                         TestCanonicalizedName = "SummaryOne";
                         TestResults = Success;
                     };
                     { 
-                        TestDescription = "Summary Two"; 
+                        TestName = "Summary Two"; 
                         TestCanonicalizedName = "SummaryTwo";
                         TestResults = Failure(GeneralFailure("Something unknown happened"));
                     };
                     { 
-                        TestDescription = "Summary Three"; 
+                        TestName = "Summary Three"; 
                         TestCanonicalizedName = "SummaryThree";
                         TestResults = Success;
                     };
                     { 
-                        TestDescription = "Summary Four"; 
+                        TestName = "Summary Four"; 
                         TestCanonicalizedName = "SummaryThree";
                         TestResults = 5 |> expectsToBe 4;
                     };
@@ -47,22 +47,22 @@ module BuildingOfTestsTests =
                 "internal tests",
                 [
                     { 
-                        TestDescription = "Summary One"; 
+                        TestName = "Summary One"; 
                         TestCanonicalizedName = "SummaryOne";
                         TestResults = Success;
                     };
                     { 
-                        TestDescription = "Summary Two"; 
+                        TestName = "Summary Two"; 
                         TestCanonicalizedName = "SummaryTwo";
                         TestResults = Failure(GeneralFailure("Something unknown happened"));
                     };
                     { 
-                        TestDescription = "Summary Three"; 
+                        TestName = "Summary Three"; 
                         TestCanonicalizedName = "SummaryThree";
                         TestResults = Success;
                     };
                     { 
-                        TestDescription = "Summary Four"; 
+                        TestName = "Summary Four"; 
                         TestCanonicalizedName = "SummaryThree";
                         TestResults = 5 |> expectsToBe 4;
                     };
@@ -128,19 +128,19 @@ module BuildingOfTestsTests =
 
     let ``Test that a failing test shows as a failure`` = 
         Test((fun env ->
-                let failDescription = "A Test That will fail"
+                let failingTestName = "A Test That will fail"
                 let ``A Test That will fail`` = 
-                    Test((fun env -> failResult "Expected Failure"))
+                    Test((fun _ -> failResult "Expected Failure"))
 
-                let config : AssemblyConfiguration = { Reporters = []}
+                let tstEnv = createEnvironment { Reporters = []} (env.AssemblyPath) (Data.testFeldSparAssembly) failingTestName
 
                 let resultSummary = 
-                    let _, test = ``A Test That will fail`` |> createTestFromTemplate config ignore failDescription (env.AssemblyPath) (Data.testFeldSparAssembly)
+                    let _, test = ``A Test That will fail`` |> createTestFromTemplate tstEnv ignore
                     test()
 
                 verify
                     {
-                        let! desriptionIsCorrect = resultSummary.TestDescription |> expectsToBe failDescription
+                        let! desriptionIsCorrect = resultSummary.TestName |> expectsToBe failingTestName
                         let! testFailedCorrectly = resultSummary.TestResults |> expectsToBe (failResult "Expected Failure") |> withFailComment "Test did not fail correctly expected"
                         return Success
                     }
@@ -189,7 +189,8 @@ module BuildingOfTestsTests =
                 let ex = IndexOutOfRangeException("The exception was out of range")
                 let ``A test that throws an exception`` =  Test((fun env -> raise ex))
 
-                let _, case = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore "A test that throws an exception" (env.AssemblyPath) (Data.testFeldSparAssembly)
+                let testName = "A test that throws an exception"
+                let _, case = ``A test that throws an exception`` |> createTestFromTemplate (createEnvironment { Reporters = [] } (env.AssemblyPath) (env.Assembly) testName) ignore
 
                 let summary = case()
                 let result = summary.TestResults

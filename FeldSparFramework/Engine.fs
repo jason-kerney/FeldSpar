@@ -62,7 +62,14 @@ module Runner =
         finally
             AppDomain.Unload(appDomain)
 
-    let private createEnvironment (env : AssemblyConfiguration) assemblyPath assembly testName = 
+    /// <summary>
+    /// Creates the environment to pass to the test
+    /// </summary>
+    /// <param name="config">A way to load gold standard reporters.</param>
+    /// <param name="assemblyPath">the path to the assembly</param>
+    /// <param name="assembly">the assembly that has the unit tests</param>
+    /// <param name="testName">The name of the test case</param>
+    let createEnvironment (config : AssemblyConfiguration) assemblyPath assembly testName = 
         let rec getSourcePath path = 
             let p = System.IO.DirectoryInfo(path)
 
@@ -80,7 +87,7 @@ module Runner =
             RootPath = path;
             Assembly = assembly;
             AssemblyPath = assemblyPath;
-            Reporters = env.Reporters;
+            Reporters = config.Reporters;
         }
 
     let private fileFoundReport (env:TestEnvironment) report =
@@ -95,23 +102,24 @@ module Runner =
     /// <summary>
     /// Creates an executable unit test from a template type
     /// </summary>
-    /// <param name="globalEnv">Information about the current executing environment for the test assembly</param>
+    /// <param name="env">Information about the current test</param>
     /// <param name="report">a way to report progress as the test executes</param>
-    /// <param name="testName">the name of the test</param>
-    /// <param name="assemblyPath">the path of the test assembly</param>
-    /// <param name="assembly">the test assembly</param>
     /// <param name="template">the template to use  to create an executable unit test</param>
-    let createTestFromTemplate (globalEnv : AssemblyConfiguration) (report : ExecutionStatus -> unit ) testName assemblyPath assembly (Test(template)) =
-        let env = testName |> createEnvironment globalEnv assemblyPath assembly
+    #if DEBUG
+    #else
+    [<DebuggerStepThrough()>]
+    #endif
+    let createTestFromTemplate (env:TestEnvironment) (report : ExecutionStatus -> unit) (Test(template)) =
 
         report |> fileFoundReport env
 
         let testCase = (fun() -> 
                             let testingCode = (fun () ->
+                                                    //System.Diagnostics.Debugger.Launch() |> ignore
                                                     try
                                                         let result = 
                                                             {
-                                                                TestDescription = env.TestName;
+                                                                TestName = env.TestName;
                                                                 TestCanonicalizedName = env.CanonicalizedName;
                                                                 TestResults = template env;
                                                             }
@@ -121,7 +129,7 @@ module Runner =
                                                     | e -> 
                                                         let result = 
                                                             {
-                                                                TestDescription = env.TestName;
+                                                                TestName = env.TestName;
                                                                 TestCanonicalizedName = env.CanonicalizedName;
                                                                 TestResults = Failure(ExceptionFailure(e));
                                                             }
@@ -133,7 +141,7 @@ module Runner =
                             testingCode |> executeInNewDomain () env.AssemblyPath env.TestName
                         )
                         
-        (testName, testCase)
+        (env.TestName, testCase)
         
     /// <summary>
     /// Converts Execution summaries to strings for reporting on
@@ -181,14 +189,13 @@ module Runner =
     /// <summary>
     /// Takes all test templates and converts them to executable unit tests 
     /// </summary>
-    /// <param name="environment">The configuration information for the assembly</param>
+    /// <param name="createTestEnvironment">A way to create test a environment for a test</param>
     /// <param name="report">a way to report progress of any test</param>
-    /// <param name="assemblyPath">the path to the test assembly</param>
-    /// <param name="assembly">the test assembly</param>
     /// <param name="tests">the test templates to convert</param>
-    let buildTestPlan (environment : AssemblyConfiguration) report assemblyPath assembly (tests:(string * Test)[]) =
+    let buildTestPlan createTestEnvironment report (tests:(string * Test)[]) =
         tests
-            |> Array.map(fun (name, test) -> test |> createTestFromTemplate environment report name assemblyPath assembly)
+            |> Array.map(fun (name, test) -> (name |> createTestEnvironment, test))
+            |> Array.map(fun (env, test) -> test |> createTestFromTemplate env report)
             |> Array.toList
 
     /// <summary>
@@ -220,7 +227,7 @@ module Runner =
     let private isTheory (t:Type) =
         t.IsGenericType && (t.GetGenericTypeDefinition()) = (typeof<Theory<_>>.GetGenericTypeDefinition())
 
-    let private getTestsWith (map:PropertyInfo -> (string * Test)[]) (environment : AssemblyConfiguration) report assembly (assemblyPath:string) = 
+    let private getTestsWith (map:PropertyInfo -> (string * Test)[]) (config : AssemblyConfiguration) report assembly (assemblyPath:string) = 
         let filter (prop:PropertyInfo) = 
             match prop.PropertyType with
             | t when t = typeof<Test> -> true
@@ -236,7 +243,7 @@ module Runner =
 
         tests
             |> shuffleTests
-            |> buildTestPlan environment report assemblyPath assembly
+            |> buildTestPlan (createEnvironment config assemblyPath assembly) report
 
     /// <summary>
     /// Converts theory a theory template into an array of test templates
@@ -305,7 +312,7 @@ module Runner =
         |> List.map(
             fun (_, test) -> 
                 let result = test()
-                result.TestResults |> fileFinishedReport result.TestDescription report
+                result.TestResults |> fileFinishedReport result.TestName report
                 result
             )
 

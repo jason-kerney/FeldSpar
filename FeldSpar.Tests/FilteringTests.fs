@@ -14,7 +14,7 @@ module FilteringTests =
                 let successFul = 
                         testResults 
                         |> Seq.filter (fun r ->  r.TestResults = Success) 
-                        |> Seq.map (fun r -> r.TestDescription) 
+                        |> Seq.map (fun r -> r.TestName) 
                         |> Seq.sort
                         |> Seq.toList
 
@@ -23,7 +23,7 @@ module FilteringTests =
                 let filteredAndPassing = 
                         filterResult 
                         |> Seq.filter (fun r -> r.TestResults = Success)
-                        |> Seq.map (fun r -> r.TestDescription)
+                        |> Seq.map (fun r -> r.TestName)
                         |> Seq.sort
                         |> Seq.toList
 
