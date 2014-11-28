@@ -14,6 +14,11 @@ type ExecutionStatus =
     | Running of ExecutionToken
     | Finished of ExecutionToken * TestResult
     
+type RunConfiguration = 
+    {
+        Assembly: Reflection.Assembly;
+        Config: Configuration option;
+    }
 
 [<AutoOpen>]
 module Runner =
