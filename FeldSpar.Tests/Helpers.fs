@@ -25,12 +25,12 @@ module Data =
                         ]
         })
 
-    let runTest testName assemblyPath template = 
-            let _, test = template |> createTestFromTemplate (createEnvironment { Reporters = [] } assemblyPath testFeldSparAssembly testName) ignore
+    let runTest template = 
+            let _, test = template |> createTestFromTemplate ignore
             test()
 
-    let runAsTests assemblyPath templates = 
-        templates |> Seq.map (fun (description, template) -> template |> runTest description assemblyPath)
+    let runAsTests templates = 
+        templates |> Seq.map (fun (unitTest) -> unitTest |> runTest)
 
     let filteringSetUp = 
         let hasOnlySuccesses =
