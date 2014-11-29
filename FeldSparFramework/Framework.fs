@@ -74,6 +74,9 @@ type TestEnvironment =
 /// </summary>
 type Test = | Test of (TestEnvironment -> TestResult)
 
+/// <summary>
+/// Template used to build a test plan
+/// </summary>
 type UnitTestTemplate =
     {
         Environment: TestEnvironment;
@@ -115,8 +118,23 @@ type TestTheoryTemplate<'a> =
 type Theory<'a> =
     | Theory of TestTheoryTemplate<'a>
 
+[<Serializable>]
+type IToken = 
+    abstract AssemblyPath: string
+    abstract AssemblyName: string
+    abstract Assembly: Reflection.Assembly
+
+[<Serializable>]
+type RunToken (assemblyPath:string) =
+    interface IToken with
+        member this.AssemblyPath = assemblyPath
+        member this.AssemblyName = IO.Path.GetFileName assemblyPath
+        member this.Assembly = assemblyPath |> IO.File.ReadAllBytes |> Reflection.Assembly.Load
+
 [<AutoOpen>]
 module Utilities =
+    let getRunToken path = RunToken(path) :> IToken
+
     /// <summary>
     /// Gets the failure message from a result or an empty string if success
     /// </summary>
