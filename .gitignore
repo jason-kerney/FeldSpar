@@ -223,6 +223,5 @@ pip-log.txt
 #############
 # FAKE F#
 #############
-_deploy/
-_test/
-_build/
+deploy/
+test/

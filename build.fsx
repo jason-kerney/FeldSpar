@@ -11,9 +11,9 @@ let releaseDir = "bin/Release/"
 
 
 
-let buildDir = "./_build/"
-let testDir = "./_test/"
-let deployDir = "./_deploy/"
+let buildDir = "./build/"
+let testDir = "./test/"
+let deployDir = "./deploy/"
 
 let nugetDeployDir = 
     let t = "C:/Nuget.Local/"
