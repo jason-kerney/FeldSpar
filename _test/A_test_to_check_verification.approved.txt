@@ -1,0 +1,3 @@
+﻿{Name = "Steven";
+ Age = 38;
+ Dojo = ("Too Cool For School", TooCool);}

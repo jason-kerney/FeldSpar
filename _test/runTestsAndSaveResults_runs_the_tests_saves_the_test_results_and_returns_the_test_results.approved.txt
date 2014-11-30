@@ -1,0 +1,11 @@
+﻿Running: My:\Assmembly\Path
+[("My Summary 1",
+  [{TestDescription = "Fake test 3";
+    TestCanonicalizedName = "Fake_Test";
+    TestResults = Failure (GeneralFailure "this is a failing test");};
+   {TestDescription = "Fake test 1";
+    TestCanonicalizedName = "Fake_Test";
+    TestResults = Success;};
+   {TestDescription = "Fake test 2";
+    TestCanonicalizedName = "Fake_Test";
+    TestResults = Failure (Ignored "this is an ignored test");}])]
