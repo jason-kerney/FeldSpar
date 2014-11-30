@@ -170,7 +170,7 @@ module Runner =
             else
                 { Token = token; AssemblyConfiguration =  None}
 
-    let private findTestProperties (filter : PropertyInfo -> bool) (assembly:Reflection.Assembly) (token:IToken) = 
+    let private findTestProperties (filter : PropertyInfo -> bool) (token:IToken) = 
         token.Assembly.GetExportedTypes()
             |> List.ofSeq
             |> List.map findStaticProperties
@@ -229,7 +229,7 @@ module Runner =
 
         let tests = 
             token
-            |> findTestProperties filter token.Assembly
+            |> findTestProperties filter
             |> Array.map map
             |> Array.concat
 
