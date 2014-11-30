@@ -83,9 +83,9 @@ module ConsoleRunner =
                                     result + "\n" + sep + "\n"
                             )
 
-    let runAndReport ignoreAssemblyConfiguration reporter showDetails testAssemblyLocation = 
-        let name = testAssemblyLocation |> IO.Path.GetFileName
-        let tests = testAssemblyLocation |> runTestsAndReport ignoreAssemblyConfiguration reporter
+    let runAndReport ignoreAssemblyConfiguration reporter showDetails (token:IToken) = 
+        let name = token.AssemblyName
+        let tests = token.AssemblyPath |> runTestsAndReport ignoreAssemblyConfiguration reporter
         
         let failedTests = tests
                             |> reduceToFailures 
@@ -103,13 +103,13 @@ module ConsoleRunner =
         (name, tests)
         
     let runAndReportAll ignoreAssemblyConfiguration showDetails (token:IToken) =
-        runAndReport ignoreAssemblyConfiguration reportAll showDetails token.AssemblyPath
+        runAndReport ignoreAssemblyConfiguration reportAll showDetails token
 
     let runAndReportResults ignoreAssemblyConfiguration showDetails (token:IToken) =
-        runAndReport ignoreAssemblyConfiguration reportOnlyResults showDetails token.AssemblyPath
+        runAndReport ignoreAssemblyConfiguration reportOnlyResults showDetails token
 
     let runAndReportFailure ignoreAssemblyConfiguration showDetails (token:IToken) =
-        runAndReport ignoreAssemblyConfiguration reportFailure showDetails token.AssemblyPath
+        runAndReport ignoreAssemblyConfiguration reportFailure showDetails token
 
     let runAndReportNone ignoreAssemblyConfiguration showDetails (token:IToken) =
-        runAndReport ignoreAssemblyConfiguration reportNone showDetails token.AssemblyPath
+        runAndReport ignoreAssemblyConfiguration reportNone showDetails token
