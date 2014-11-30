@@ -1,7 +1,7 @@
-﻿"{AssemblyName = "internal tests";
+﻿"{Name = "internal tests";
  Failures =
-  [|{TestName = "Summary Four";
+  [|{Name = "Summary Four";
      FailureType = ExpectationFailure "5 expected to be 4";};
-    {TestName = "Summary Two";
+    {Name = "Summary Two";
      FailureType = GeneralFailure "Something unknown happened";}|];
  Successes = [|"Summary One"; "Summary Three"|];}"
