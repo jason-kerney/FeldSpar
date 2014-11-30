@@ -7,7 +7,7 @@ open System.Reflection
 /// <summary>
 /// A type that carries information about a test durring execution reporting
 /// </summary>
-type ExecutionToken =
+type ExecutionInformation =
     {
         TestName: string;
     }
@@ -16,9 +16,9 @@ type ExecutionToken =
 /// A type used to report the status of a test durring execution
 /// </summary>
 type ExecutionStatus =
-    | Found of ExecutionToken
-    | Running of ExecutionToken
-    | Finished of ExecutionToken * TestResult
+    | Found of ExecutionInformation
+    | Running of ExecutionInformation
+    | Finished of ExecutionInformation * TestResult
     
 /// <summary>
 /// Information about the configuration of an assembly
