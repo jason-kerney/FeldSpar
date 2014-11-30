@@ -102,15 +102,14 @@ module ConsoleRunner =
 
         (name, tests)
         
-                
-    let runAndReportAll ignoreAssemblyConfiguration showDetails testAssemblyLocation =
-        runAndReport ignoreAssemblyConfiguration reportAll showDetails testAssemblyLocation
+    let runAndReportAll ignoreAssemblyConfiguration showDetails (token:IToken) =
+        runAndReport ignoreAssemblyConfiguration reportAll showDetails token.AssemblyPath
 
-    let runAndReportResults ignoreAssemblyConfiguration showDetails testAssemblyLocation =
-        runAndReport ignoreAssemblyConfiguration reportOnlyResults showDetails testAssemblyLocation
+    let runAndReportResults ignoreAssemblyConfiguration showDetails (token:IToken) =
+        runAndReport ignoreAssemblyConfiguration reportOnlyResults showDetails token.AssemblyPath
 
-    let runAndReportFailure ignoreAssemblyConfiguration showDetails testAssemblyLocation =
-        runAndReport ignoreAssemblyConfiguration reportFailure showDetails testAssemblyLocation
+    let runAndReportFailure ignoreAssemblyConfiguration showDetails (token:IToken) =
+        runAndReport ignoreAssemblyConfiguration reportFailure showDetails token.AssemblyPath
 
-    let runAndReportNone ignoreAssemblyConfiguration showDetails testAssemblyLocation =
-        runAndReport ignoreAssemblyConfiguration reportNone showDetails testAssemblyLocation
+    let runAndReportNone ignoreAssemblyConfiguration showDetails (token:IToken) =
+        runAndReport ignoreAssemblyConfiguration reportNone showDetails token.AssemblyPath

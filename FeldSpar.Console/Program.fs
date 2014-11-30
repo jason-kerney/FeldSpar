@@ -73,10 +73,10 @@ module Processors =
     /// Runs tests, saves the test result and returns the test result
     /// </summary>
     /// <param name="saver">A call that enables saving of results</param>
-    /// <param name="runner">The Call that takes an assembly path and runs all tests contained in the assembly</param>
+    /// <param name="runner">The Call that takes an token and runs all tests contained in the assembly</param>
     /// <param name="tokens">A list of test assembly tokens/param>
-    let runTestsAndSaveResults (saver:(string * #seq<ExecutionSummary>) list -> unit) (runner:string -> string * #seq<ExecutionSummary>) (tokens:IToken list) = 
-        let testSummaries = tokens |> List.map (fun token -> runner token.AssemblyPath)
+    let runTestsAndSaveResults (saver:(string * #seq<ExecutionSummary>) list -> unit) (runner:IToken -> string * #seq<ExecutionSummary>) (tokens:IToken list) = 
+        let testSummaries = tokens |> List.map (fun token -> runner token)
 
         saver testSummaries
 

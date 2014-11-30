@@ -102,17 +102,17 @@ module ConsoleTests =
                 let saver:(string * #seq<ExecutionSummary>) list -> unit = 
                     fun results -> sb.Append(sprintf "%A\n" results) |> ignore
                 let runner = 
-                    fun assembly -> 
-                        sb.Append(sprintf "Running: %s\n" assembly) |> ignore
+                    fun (token:IToken) -> 
+                        sb.Append(sprintf "Running: %s\n" token.AssemblyPath) |> ignore
                         summary1
                 
-                let assemblyPath = [{ new IToken with
+                let token = [{ new IToken with
                                         member this.AssemblyPath = @"My:\Assmembly\Path";
                                         member this.AssemblyName = "";
                                         member this.Assembly = null;
                                     }]
 
-                let results = runTestsAndSaveResults saver runner assemblyPath
+                let results = runTestsAndSaveResults saver runner token
 
                 verify 
                     {
