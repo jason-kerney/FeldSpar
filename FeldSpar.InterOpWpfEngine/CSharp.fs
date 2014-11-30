@@ -59,8 +59,8 @@ type Engine () =
 
         ()
 
-    let doWork (work:(ExecutionStatus -> unit) -> string -> _) (token:IToken) =
-        token.AssemblyPath |> work report |> ignore
+    let doWork (work:(ExecutionStatus -> unit) -> IToken -> _) (token:IToken) =
+        token |> work report |> ignore
         
 
     /// <summary>

@@ -288,20 +288,20 @@ module Runner =
     /// </summary>
     /// <param name="ignoreAssemblyConfig">Ured if you do not want gold standard testing reporters</param>
     /// <param name="report">Used to report when a test is found</param>
-    /// <param name="assemblyPath">the path of the assembly</param>
-    let findTestsAndReport ignoreAssemblyConfig report (assemblyPath:string) = 
-        let (assembly, config, mapper) = assemblyPath |> findConfiguration ignoreAssemblyConfig |> getMapper |> determinEnvironmentAndMapping 
+    /// <param name="token">the token representing the test assembly</param>
+    let findTestsAndReport ignoreAssemblyConfig report (token:IToken) = 
+        let (assembly, config, mapper) = token.AssemblyPath |> findConfiguration ignoreAssemblyConfig |> getMapper |> determinEnvironmentAndMapping 
 
-        assemblyPath |> getTestsWith mapper config report assembly
+        token.AssemblyPath |> getTestsWith mapper config report assembly
 
     /// <summary>
     /// Searches test assembly for tests and runs them. It then reports as it finds them, runs, them, and they complete.
     /// </summary>
     /// <param name="ignoreAssemblyConfig">Ured if you do not want gold standard testing reporters</param>
     /// <param name="report">Used to report when a test is found</param>
-    /// <param name="assemblyPath">the path of the assembly</param>
-    let runTestsAndReport ignoreAssemblyConfig report (assemblyPath:string) = 
-        assemblyPath 
+    /// <param name="token">the token for the test assembly</param>
+    let runTestsAndReport ignoreAssemblyConfig report (token:IToken) = 
+        token 
         |> findTestsAndReport ignoreAssemblyConfig report 
         |> List.map(
             fun (_, test) -> 
@@ -315,11 +315,11 @@ module Runner =
     /// </summary>
     /// <param name="ignoreAssemblyConfig">Ured if you do not want gold standard testing reporters</param>
     /// <param name="assemblyPath">the path of the assembly</param>
-    let findTests ignoreAssemblyConfig (assemblyPath:string) =  assemblyPath |> findTestsAndReport ignoreAssemblyConfig ignore
+    let findTests ignoreAssemblyConfig (assemblyPath:string) =  assemblyPath |> getToken |> findTestsAndReport ignoreAssemblyConfig ignore
 
     /// <summary>
     /// Searches test assembly for tests and runs them.
     /// </summary>
     /// <param name="ignoreAssemblyConfig">Ured if you do not want gold standard testing reporters</param>
     /// <param name="assemblyPath">the path of the assembly</param>
-    let runTests ignoreAssemblyConfig (assemblyPath:string) = assemblyPath |> runTestsAndReport ignoreAssemblyConfig ignore
+    let runTests ignoreAssemblyConfig (assemblyPath:string) = assemblyPath |> getToken |> runTestsAndReport ignoreAssemblyConfig ignore
