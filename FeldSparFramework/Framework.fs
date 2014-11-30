@@ -104,6 +104,7 @@ type IToken =
     abstract AssemblyName: string;
     abstract AssemblyPath: string;
     abstract Assembly: Reflection.Assembly;
+    abstract GetExportedTypes: unit -> Type[];
     
 
 type RunningToken (assemblyPath) =
@@ -111,6 +112,9 @@ type RunningToken (assemblyPath) =
         member this.AssemblyPath = assemblyPath
         member this.AssemblyName = IO.Path.GetFileName assemblyPath
         member this.Assembly = assemblyPath |> IO.File.ReadAllBytes |> Reflection.Assembly.Load
+        member this.GetExportedTypes () = this.IToken.Assembly.GetExportedTypes()
+
+    member this.IToken = this :> IToken
 
 [<AutoOpen>]
 module Utilities =

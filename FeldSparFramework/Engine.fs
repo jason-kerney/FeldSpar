@@ -144,6 +144,14 @@ module Runner =
 
     let private findStaticProperties (t:Type) = t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static)
 
+    let private findTestProperties (filter : PropertyInfo -> bool) (token:IToken) = 
+        token.GetExportedTypes()
+            |> List.ofSeq
+            |> List.map findStaticProperties
+            |> List.toSeq
+            |> Array.concat
+            |> Array.filter filter
+
     /// <summary>
     /// Finds the configuration object for a test assembly. This object is used to set up reporters for gold standard testing.
     /// </summary>
@@ -154,12 +162,7 @@ module Runner =
 
         if ignoreAssemblyConfig then empty
         else
-            let configs = token.Assembly.GetExportedTypes()
-                            |> List.ofSeq
-                            |> List.map findStaticProperties
-                            |> List.toSeq
-                            |> Array.concat
-                            |> Array.filter(fun p -> p.PropertyType = typeof<Configuration>)
+            let configs = token |> findTestProperties (fun p -> p.PropertyType = typeof<Configuration>)
 
             if configs.Length = 0
             then empty
@@ -169,14 +172,6 @@ module Runner =
                 { Token = token; AssemblyConfiguration = Some(config) }
             else
                 { Token = token; AssemblyConfiguration =  None}
-
-    let private findTestProperties (filter : PropertyInfo -> bool) (token:IToken) = 
-        token.Assembly.GetExportedTypes()
-            |> List.ofSeq
-            |> List.map findStaticProperties
-            |> List.toSeq
-            |> Array.concat
-            |> Array.filter filter
 
     /// <summary>
     /// Takes all test templates and converts them to executable unit tests 

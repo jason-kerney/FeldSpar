@@ -110,7 +110,8 @@ module ConsoleTests =
                                         member this.AssemblyPath = @"My:\Assmembly\Path";
                                         member this.AssemblyName = "";
                                         member this.Assembly = null;
-                                    }]
+                                        member this.GetExportedTypes() = null;
+                              }]
 
                 let results = runTestsAndSaveResults saver runner token
 
