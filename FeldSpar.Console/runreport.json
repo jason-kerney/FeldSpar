@@ -69,3 +69,14 @@
 		"saveResults calls a saver after converting results to JSON"
 	]
 }
+
+{
+	"Assembly Name" : "PathFindindTests.dll" 
+	"Failures" : [
+		{ "Simple Pathfinding" : "Ignored ('Test not yet implemented')" },
+		{ "Test Building Grid" : "Ignored ('Test not yet implemented')" }
+	],
+	"Successes" : [
+		
+	]
+}
