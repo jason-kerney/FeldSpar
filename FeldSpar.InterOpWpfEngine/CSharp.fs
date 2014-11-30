@@ -436,7 +436,6 @@ type TestAssemblyModel (path) as this =
     let knownTests = new Dictionary<string, ITestDetailModel>()
     let watcher = new FileSystemWatcher(Path.GetDirectoryName(token.AssemblyPath), "*.*")
 
-    let mutable name = token.AssemblyName
     let mutable isRunning = true
     let mutable isVisible = true
 
@@ -449,7 +448,6 @@ type TestAssemblyModel (path) as this =
         | WatcherChangeTypes.Deleted -> ()
         | WatcherChangeTypes.Renamed -> 
             token <- args.FullPath |> getToken
-            name <- token.AssemblyName
 
             engine.FindTests(token)
         | _ ->
@@ -473,7 +471,7 @@ type TestAssemblyModel (path) as this =
                         let detail = new TestDetailModel()
                         detail.Name <- args.Name
                         detail.Status <- TestStatus.None
-                        detail.AssemblyName <- name
+                        detail.AssemblyName <- token.AssemblyName
                         detail.Parent <- this
 
                         tests.Add detail
@@ -539,7 +537,7 @@ type TestAssemblyModel (path) as this =
                     isRunning <- value
                     this.OnPropertyChanged "IsRunning"
 
-        member this.Name with get () = name
+        member this.Name with get () = token.AssemblyName
 
         member this.AssemblyPath with get () = token.AssemblyPath
 
