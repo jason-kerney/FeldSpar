@@ -1,6 +1,0 @@
-﻿testing theory.testing 1 -> ExpectationFailure "Number was not even 2 mod 1 <> 0
-1 expected to be 0"
-testing theory.testing 2 -> Success
-testing theory.testing 3 -> ExpectationFailure "Number was not even 2 mod 3 <> 0
-1 expected to be 0"
-testing theory.testing 4 -> Success
