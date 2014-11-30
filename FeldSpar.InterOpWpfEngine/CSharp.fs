@@ -84,9 +84,9 @@ type Engine () =
     /// <summary>
     /// Looks for tests in assembly
     /// </summary>
-    /// <param name="path">the path of the assembly used to look for tests</param>
-    member this.FindTests (path:string) =
-        path |> getToken |> doWork (findTestsAndReport false)
+    /// <param name="token">the token for the test assembly</param>
+    member this.FindTests (token:IToken) =
+        token |> doWork (findTestsAndReport false)
 
     /// <summary>
     /// Finds and runs all tests in a given assembly
@@ -436,6 +436,7 @@ type TestAssemblyModel (path) as this =
     let knownTests = new Dictionary<string, ITestDetailModel>()
     let watcher = new FileSystemWatcher(Path.GetDirectoryName(assemblyPath), "*.*")
 
+    let mutable token = assemblyPath |> getToken
     let mutable name = Path.GetFileName(assemblyPath)
     let mutable isRunning = true
     let mutable isVisible = true
@@ -450,9 +451,11 @@ type TestAssemblyModel (path) as this =
         | WatcherChangeTypes.Renamed -> 
             assemblyPath <- args.FullPath
             name <- args.Name
-            engine.FindTests(assemblyPath)
+            token <- assemblyPath |> getToken
+
+            engine.FindTests(token)
         | _ ->
-            engine.FindTests(assemblyPath)
+            engine.FindTests(token)
 
     let convert (result:TestResult) = 
         match result with
@@ -504,7 +507,7 @@ type TestAssemblyModel (path) as this =
 
         watcher.EnableRaisingEvents <- true
 
-        engine.FindTests(assemblyPath)
+        engine.FindTests(token)
 
     /// <summary>
     /// A shortcut method to prevent the need for casting
