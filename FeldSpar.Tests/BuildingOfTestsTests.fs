@@ -186,6 +186,7 @@ module BuildingOfTestsTests =
 
     let ``An exception thrown in a test should report exception failure`` =
         Test((fun env ->
+                let env = { env with CanonicalizedName= env.CanonicalizedName + "." + buildType }
                 let ex = IndexOutOfRangeException("The exception was out of range")
                 let ``A test that throws an exception`` =  Test((fun env -> raise ex))
 

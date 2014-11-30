@@ -102,6 +102,13 @@ type Theory<'a> =
 
 [<AutoOpen>]
 module Utilities =
+    let buildType =
+#if DEBUG
+        "Debug"
+#else
+        "Release"
+#endif
+
     /// <summary>
     /// Gets the failure message from a result or an empty string if success
     /// </summary>
