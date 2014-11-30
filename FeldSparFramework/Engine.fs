@@ -25,7 +25,7 @@ type ExecutionStatus =
 /// </summary>
 type RunConfiguration = 
     {
-        Assembly: Reflection.Assembly;
+        Token: IToken;
         AssemblyConfiguration: Configuration option;
     }
 
@@ -150,12 +150,11 @@ module Runner =
     /// <param name="ignoreAssemblyConfig">is used to bypass the use of the configuration object</param>
     /// <param name="token">the token representing the test Assembly</param>
     let findConfiguration ignoreAssemblyConfig (token:IToken) = 
-        let assembly = token.Assembly
-        let empty = { Assembly = assembly; AssemblyConfiguration = Some(Config(fun () -> emptyGlobal)) }
+        let empty = { Token = token; AssemblyConfiguration = Some(Config(fun () -> emptyGlobal)) }
 
         if ignoreAssemblyConfig then empty
         else
-            let configs = assembly.GetExportedTypes()
+            let configs = token.Assembly.GetExportedTypes()
                             |> List.ofSeq
                             |> List.map findStaticProperties
                             |> List.toSeq
@@ -167,9 +166,9 @@ module Runner =
             elif configs.Length = 1
             then
                 let config = configs.[0] |> (fun p -> p.GetValue (null) :?> Configuration)
-                { Assembly = assembly; AssemblyConfiguration = Some(config) }
+                { Token = token; AssemblyConfiguration = Some(config) }
             else
-                { Assembly = assembly; AssemblyConfiguration =  None}
+                { Token = token; AssemblyConfiguration =  None}
 
     let private findTestProperties (filter : PropertyInfo -> bool) (assembly:Reflection.Assembly) (assemblyPath:string) = 
         assembly.GetExportedTypes()
@@ -274,14 +273,14 @@ module Runner =
 
     let private getMapper (config) =
         match config with
-        | { Assembly = _; AssemblyConfiguration = Some(_) } -> (config, (fun (prop:PropertyInfo) -> getTestsFromPropery prop ))
-        | { Assembly = _; AssemblyConfiguration = None } -> (config, (fun (prop:PropertyInfo) -> getConfigurationError prop ))
+        | { Token = _; AssemblyConfiguration = Some(_) } -> (config, (fun (prop:PropertyInfo) -> getTestsFromPropery prop ))
+        | { Token = _; AssemblyConfiguration = None } -> (config, (fun (prop:PropertyInfo) -> getConfigurationError prop ))
 
     let private determinEnvironmentAndMapping (config, mapper) =
         match config with
-        | { Assembly = assembly; AssemblyConfiguration = Some(Config(getConfig)) } -> 
+        | { Token = assembly; AssemblyConfiguration = Some(Config(getConfig)) } -> 
             (assembly, getConfig(), mapper)
-        | { Assembly = assembly; AssemblyConfiguration = None } -> (assembly, emptyGlobal, mapper)
+        | { Token = assembly; AssemblyConfiguration = None } -> (assembly, emptyGlobal, mapper)
 
     /// <summary>
     /// Searches test assembly for tests and reports as it finds them.
@@ -290,9 +289,9 @@ module Runner =
     /// <param name="report">Used to report when a test is found</param>
     /// <param name="token">the token representing the test assembly</param>
     let findTestsAndReport ignoreAssemblyConfig report (token:IToken) = 
-        let (assembly, config, mapper) = token |> findConfiguration ignoreAssemblyConfig |> getMapper |> determinEnvironmentAndMapping 
+        let (token, config, mapper) = token |> findConfiguration ignoreAssemblyConfig |> getMapper |> determinEnvironmentAndMapping 
 
-        token.AssemblyPath |> getTestsWith mapper config report assembly
+        token.AssemblyPath |> getTestsWith mapper config report token.Assembly
 
     /// <summary>
     /// Searches test assembly for tests and runs them. It then reports as it finds them, runs, them, and they complete.
