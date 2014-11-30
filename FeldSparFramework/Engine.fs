@@ -220,7 +220,7 @@ module Runner =
     let private isTheory (t:Type) =
         t.IsGenericType && (t.GetGenericTypeDefinition()) = (typeof<Theory<_>>.GetGenericTypeDefinition())
 
-    let private getTestsWith (map:PropertyInfo -> (string * Test)[]) (config : AssemblyConfiguration) report assembly (assemblyPath:string) = 
+    let private getTestsWith (map:PropertyInfo -> (string * Test)[]) (config : AssemblyConfiguration) report (token:IToken) = 
         let filter (prop:PropertyInfo) = 
             match prop.PropertyType with
             | t when t = typeof<Test> -> true
@@ -229,14 +229,14 @@ module Runner =
             | _ -> false
 
         let tests = 
-            assemblyPath 
-            |> findTestProperties filter assembly
+            token.AssemblyPath
+            |> findTestProperties filter token.Assembly
             |> Array.map map
             |> Array.concat
 
         tests
             |> shuffleTests
-            |> buildTestPlan config report assemblyPath assembly
+            |> buildTestPlan config report token.AssemblyPath token.Assembly
 
     /// <summary>
     /// Converts theory a theory template into an array of test templates
@@ -278,9 +278,9 @@ module Runner =
 
     let private determinEnvironmentAndMapping (config, mapper) =
         match config with
-        | { Token = assembly; AssemblyConfiguration = Some(Config(getConfig)) } -> 
-            (assembly, getConfig(), mapper)
-        | { Token = assembly; AssemblyConfiguration = None } -> (assembly, emptyGlobal, mapper)
+        | { Token = token; AssemblyConfiguration = Some(Config(getConfig)) } -> 
+            (token, getConfig(), mapper)
+        | { Token = token; AssemblyConfiguration = None } -> (token, emptyGlobal, mapper)
 
     /// <summary>
     /// Searches test assembly for tests and reports as it finds them.
@@ -291,7 +291,7 @@ module Runner =
     let findTestsAndReport ignoreAssemblyConfig report (token:IToken) = 
         let (token, config, mapper) = token |> findConfiguration ignoreAssemblyConfig |> getMapper |> determinEnvironmentAndMapping 
 
-        token.AssemblyPath |> getTestsWith mapper config report token.Assembly
+        token |> getTestsWith mapper config report
 
     /// <summary>
     /// Searches test assembly for tests and runs them. It then reports as it finds them, runs, them, and they complete.
