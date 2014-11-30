@@ -106,7 +106,11 @@ module ConsoleTests =
                         sb.Append(sprintf "Running: %s\n" assembly) |> ignore
                         summary1
                 
-                let assemblyPath = [@"My:\Assmembly\Path"]
+                let assemblyPath = [{ new IToken with
+                                        member this.AssemblyPath = @"My:\Assmembly\Path";
+                                        member this.AssemblyName = "";
+                                        member this.Assembly = null;
+                                    }]
 
                 let results = runTestsAndSaveResults saver runner assemblyPath
 

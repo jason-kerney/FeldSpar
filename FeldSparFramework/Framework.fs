@@ -100,8 +100,29 @@ type TestTheoryTemplate<'a> =
 type Theory<'a> =
     | Theory of TestTheoryTemplate<'a>
 
+type IToken =
+    abstract AssemblyName: string;
+    abstract AssemblyPath: string;
+    abstract Assembly: Reflection.Assembly;
+    
+
+type RunningToken (assemblyPath) =
+    interface IToken with
+        member this.AssemblyPath = assemblyPath
+        member this.AssemblyName = IO.Path.GetFileName assemblyPath
+        member this.Assembly = assemblyPath |> IO.File.ReadAllBytes |> Reflection.Assembly.Load
+
 [<AutoOpen>]
 module Utilities =
+    /// <summary>
+    /// Constructs a token for running tests
+    /// </summary>
+    /// <param name="assemblyPath">The path to a test assembly</param>
+    let getToken assemblyPath = RunningToken(assemblyPath) :> IToken
+
+    /// <summary>
+    /// A way to programaticly know if in release or debug.
+    /// </summary>
     let buildType =
 #if DEBUG
         "Debug"
