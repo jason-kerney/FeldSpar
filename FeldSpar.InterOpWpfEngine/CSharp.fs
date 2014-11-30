@@ -91,9 +91,9 @@ type Engine () =
     /// <summary>
     /// Finds and runs all tests in a given assembly
     /// </summary>
-    /// <param name="path"></param>
-    member this.RunTests (path:string) =
-        path |> getToken |> doWork (runTestsAndReport false)
+    /// <param name="token">the token for the test assembly</param>
+    member this.RunTests (token:IToken) =
+        token |> doWork (runTestsAndReport false)
 
 
 namespace FeldSpar.Api.Engine.ClrInterop.ViewModels
@@ -557,7 +557,7 @@ type TestAssemblyModel (path) as this =
                 for test in tests do
                     test.Status <- TestStatus.None
 
-                let t = new Threading.Tasks.Task<unit>(fun () -> engine.RunTests(assemblyPath))
+                let t = new Threading.Tasks.Task<unit>(fun () -> engine.RunTests(token))
                 t.Start()
                 do! Async.AwaitTask(t)
 
