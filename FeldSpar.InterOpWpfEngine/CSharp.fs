@@ -59,8 +59,8 @@ type Engine () =
 
         ()
 
-    let doWork (work:(ExecutionStatus -> unit) -> string -> _) path =
-        path |> work report |> ignore
+    let doWork (work:(ExecutionStatus -> unit) -> string -> _) (token:IToken) =
+        token.AssemblyPath |> work report |> ignore
         
 
     /// <summary>
@@ -86,14 +86,14 @@ type Engine () =
     /// </summary>
     /// <param name="path">the path of the assembly used to look for tests</param>
     member this.FindTests (path:string) =
-        path |> doWork (findTestsAndReport false)
+        path |> getToken |> doWork (findTestsAndReport false)
 
     /// <summary>
     /// Finds and runs all tests in a given assembly
     /// </summary>
     /// <param name="path"></param>
     member this.RunTests (path:string) =
-        path |> doWork (runTestsAndReport false)
+        path |> getToken |> doWork (runTestsAndReport false)
 
 
 namespace FeldSpar.Api.Engine.ClrInterop.ViewModels
