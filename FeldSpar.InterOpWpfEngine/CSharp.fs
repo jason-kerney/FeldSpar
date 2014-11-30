@@ -429,15 +429,14 @@ type TestAssemblyModel (path) as this =
 
     let deletedFile = new Event<_, _>()
 
-    let mutable assemblyPath = path
+    let mutable token = path |> getToken
     let engine = new Engine()
     let tests = new ObservableCollection<ITestDetailModel>()
     let results = new ObservableCollection<TestResult>()
     let knownTests = new Dictionary<string, ITestDetailModel>()
-    let watcher = new FileSystemWatcher(Path.GetDirectoryName(assemblyPath), "*.*")
+    let watcher = new FileSystemWatcher(Path.GetDirectoryName(token.AssemblyPath), "*.*")
 
-    let mutable token = assemblyPath |> getToken
-    let mutable name = Path.GetFileName(assemblyPath)
+    let mutable name = token.AssemblyName
     let mutable isRunning = true
     let mutable isVisible = true
 
@@ -449,9 +448,8 @@ type TestAssemblyModel (path) as this =
         match args.ChangeType with
         | WatcherChangeTypes.Deleted -> ()
         | WatcherChangeTypes.Renamed -> 
-            assemblyPath <- args.FullPath
-            name <- args.Name
-            token <- assemblyPath |> getToken
+            token <- args.FullPath |> getToken
+            name <- token.AssemblyName
 
             engine.FindTests(token)
         | _ ->
@@ -543,7 +541,7 @@ type TestAssemblyModel (path) as this =
 
         member this.Name with get () = name
 
-        member this.AssemblyPath with get () = assemblyPath
+        member this.AssemblyPath with get () = token.AssemblyPath
 
         member this.Tests with get () = tests
 
