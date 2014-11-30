@@ -1,0 +1,774 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+<assembly><name>FeldSpar.GuiApi.Engine</name></assembly>
+<members>
+<member name="T:AssemblyInfo">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.Engine.remove_TestRunning(Microsoft.FSharp.Control.FSharpHandler{FeldSpar.Api.Engine.ClrInterop.TestEventArgs})">
+ <summary>
+ Event is raised when a test starts running
+ </summary>
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.Engine.remove_TestFound(Microsoft.FSharp.Control.FSharpHandler{FeldSpar.Api.Engine.ClrInterop.TestEventArgs})">
+ <summary>
+ Event Raised when a test is found. Finding happens twice. Once when executing a find and once when running the tests
+ </summary>
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.Engine.remove_TestFinished(Microsoft.FSharp.Control.FSharpHandler{FeldSpar.Api.Engine.ClrInterop.TestCompeteEventArgs})">
+ <summary>
+ Event is raised when a test finishes running
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.Engine.TestRunning">
+ <summary>
+ Event is raised when a test starts running
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.Engine.TestFound">
+ <summary>
+ Event Raised when a test is found. Finding happens twice. Once when executing a find and once when running the tests
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.Engine.TestFinished">
+ <summary>
+ Event is raised when a test finishes running
+ </summary>
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.Engine.add_TestRunning(Microsoft.FSharp.Control.FSharpHandler{FeldSpar.Api.Engine.ClrInterop.TestEventArgs})">
+ <summary>
+ Event is raised when a test starts running
+ </summary>
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.Engine.add_TestFound(Microsoft.FSharp.Control.FSharpHandler{FeldSpar.Api.Engine.ClrInterop.TestEventArgs})">
+ <summary>
+ Event Raised when a test is found. Finding happens twice. Once when executing a find and once when running the tests
+ </summary>
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.Engine.add_TestFinished(Microsoft.FSharp.Control.FSharpHandler{FeldSpar.Api.Engine.ClrInterop.TestCompeteEventArgs})">
+ <summary>
+ Event is raised when a test finishes running
+ </summary>
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.Engine.RunTests(System.String)">
+ <summary>
+ Finds and runs all tests in a given assembly
+ </summary>
+ <param name="path"></param>
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.Engine.FindTests(System.String)">
+ <summary>
+ Looks for tests in assembly
+ </summary>
+ <param name="path">the path of the assembly used to look for tests</param>
+</member>
+<member name="">
+
+</member>
+<member name="T:FeldSpar.Api.Engine.ClrInterop.Engine">
+ <summary>
+ A class to wrap execution of tests
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.TestCompeteEventArgs.TestResult">
+ <summary>
+ The result of the test
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="T:FeldSpar.Api.Engine.ClrInterop.TestCompeteEventArgs">
+ <summary>
+ A class to pass data when a test finishes
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.TestEventArgs.Name">
+ <summary>
+ The name of the test that raised the event
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="T:FeldSpar.Api.Engine.ClrInterop.TestEventArgs">
+ <summary>
+ A class to pass data with test events
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestAssemblyModel.IsVisible(System.Boolean)">
+ <summary>
+ Whether or not this assembly should be visible
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestAssemblyModel.IsRunning(System.Boolean)">
+ <summary>
+ Whether or not any tests in this assembly are running
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestAssemblyModel.ToggleVisibilityCommand">
+ <summary>
+ The ICommand used to toggle if this assembly should be visible
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestAssemblyModel.Tests">
+ <summary>
+ The tests found within this assembly
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestAssemblyModel.RunCommand">
+ <summary>
+ The ICommand used to run the tests
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestAssemblyModel.Results">
+ <summary>
+ The results of all tests
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestAssemblyModel.Name">
+ <summary>
+ The file name of this assembly
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestAssemblyModel.IsVisible">
+ <summary>
+ Whether or not this assembly should be visible
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestAssemblyModel.IsRunning">
+ <summary>
+ Whether or not any tests in this assembly are running
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestAssemblyModel.ITestAssemblyModel">
+ <summary>
+ A shortcut method to prevent the need for casting
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestAssemblyModel.AssemblyPath">
+ <summary>
+ The path of this assembly
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestAssemblyModel.ToggleVisibility``1(``0)">
+ <summary>
+ A method for changing whether or not this assembly is supposed to be visible
+ </summary>
+ <param name="ignored">This parmater is ignored but needed to uphold contract for ICommand</param>
+</member>
+<member name="">
+
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestAssemblyModel.Run``1(``0)">
+ <summary>
+ An asyncronous method to run tests.
+ </summary>
+ <param name="ignored">this parameter is not used but required to fullfil the ICommand contract</param>
+</member>
+<member name="">
+
+</member>
+<member name="T:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestAssemblyModel">
+ <summary>
+ The information about a test assembly
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestDetailModel.Status(FeldSpar.Api.Engine.ClrInterop.ViewModels.TestStatus)">
+ <summary>
+ The execution status of the test
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestDetailModel.Parent(FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel)">
+ <summary>
+ The test assembly information that contains this test
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestDetailModel.Name(System.String)">
+ <summary>
+ The name of the test
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestDetailModel.FailDetail(System.String)">
+ <summary>
+ If this test failed, then this is the detail of the failure.
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestDetailModel.AssemblyName(System.String)">
+ <summary>
+ The file name of the test assembly
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestDetailModel.Status">
+ <summary>
+ The execution status of the test
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestDetailModel.Parent">
+ <summary>
+ The test assembly information that contains this test
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestDetailModel.Name">
+ <summary>
+ The name of the test
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestDetailModel.ITestDetailModel">
+ <summary>
+ A Shortcut to prevent the need to cast
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestDetailModel.FailDetail">
+ <summary>
+ If this test failed, then this is the detail of the failure.
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestDetailModel.AssemblyName">
+ <summary>
+ The file name of the test assembly
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="T:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestDetailModel">
+ <summary>
+ Implementation Class representing the information of a test
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="T:FeldSpar.Api.Engine.ClrInterop.ViewModels.DelegateCommand">
+ <summary>
+ An implementation of ICommand for use in WPF
+ Thank you: http://wpftutorial.net/DelegateCommand.html
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestsMainModel.Selected(FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestDetailModel)">
+ <summary>
+ The currently selected test
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestsMainModel.IsRunning(System.Boolean)">
+ <summary>
+ Indicates if the test is running.
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestsMainModel.Assemblies(System.Collections.ObjectModel.ObservableCollection{FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel})">
+ <summary>
+ The test assemblies that are contained in the system
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestsMainModel.Tests">
+ <summary>
+ All tests
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestsMainModel.Selected">
+ <summary>
+ The currently selected test
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestsMainModel.RunCommand">
+ <summary>
+ The ICommand used to run all tests
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestsMainModel.Results">
+ <summary>
+ The results of all tests
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestsMainModel.IsRunning">
+ <summary>
+ Indicates if the test is running.
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestsMainModel.Description">
+ <summary>
+ The currently selected test's fail description
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestsMainModel.Assemblies">
+ <summary>
+ The test assemblies that are contained in the system
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestsMainModel.AddCommand">
+ <summary>
+ The ICommant used to add test assemblies
+ </summary>
+</member>
+<member name="T:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestsMainModel">
+ <summary>
+ This is the main model used to control and display tests
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel.IsVisible(System.Boolean)">
+ <summary>
+ Whether or not this information should be availible for display
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel.IsRunning(System.Boolean)">
+ <summary>
+ Whether or not tests from this assembly are running
+ </summary>
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel.remove_DeletedFile(System.EventHandler)">
+ <summary>
+ The evet that is raised if the assembly file is deleted
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel.ToggleVisibilityCommand">
+ <summary>
+ The ICommand that is used to change the visibility of this assembly
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel.Tests">
+ <summary>
+ The tests that were found within this assembly
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel.RunCommand">
+ <summary>
+ The ICommand used to run the tests
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel.Results">
+ <summary>
+ The results from all the executed tests
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel.Name">
+ <summary>
+ The file name of this test Assembly
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel.IsVisible">
+ <summary>
+ Whether or not this information should be availible for display
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel.IsRunning">
+ <summary>
+ Whether or not tests from this assembly are running
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel.DeletedFile">
+ <summary>
+ The evet that is raised if the assembly file is deleted
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel.AssemblyPath">
+ <summary>
+ The path of the file for this assembly
+ </summary>
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel.add_DeletedFile(System.EventHandler)">
+ <summary>
+ The evet that is raised if the assembly file is deleted
+ </summary>
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel.Run(System.Object)">
+ <summary>
+ This runs the tests
+ </summary>
+ <param name="ignored">this parameter is not used, but nessesary for the ICommand</param>
+</member>
+<member name="T:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel">
+ <summary>
+ Information about a test assembly
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestDetailModel.Status(FeldSpar.Api.Engine.ClrInterop.ViewModels.TestStatus)">
+ <summary>
+ The Status of the test
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestDetailModel.Parent(FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestAssemblyModel)">
+ <summary>
+ The information about the assembly that contains this test
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestDetailModel.Name(System.String)">
+ <summary>
+ The name of the test
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestDetailModel.FailDetail(System.String)">
+ <summary>
+ If the test failed, this is the information about the failure
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestDetailModel.AssemblyName(System.String)">
+ <summary>
+ The name of the assembly that contained the test
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestDetailModel.Status">
+ <summary>
+ The Status of the test
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestDetailModel.Parent">
+ <summary>
+ The information about the assembly that contains this test
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestDetailModel.Name">
+ <summary>
+ The name of the test
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestDetailModel.FailDetail">
+ <summary>
+ If the test failed, this is the information about the failure
+ </summary>
+</member>
+<member name="P:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestDetailModel.AssemblyName">
+ <summary>
+ The name of the assembly that contained the test
+ </summary>
+</member>
+<member name="T:FeldSpar.Api.Engine.ClrInterop.ViewModels.ITestDetailModel">
+ <summary>
+ The Details of a test
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.ViewModels.PropertyNotifyBase.OnPropertyChanged">
+ <summary>
+ Used to raise property changed.
+ </summary>
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.ViewModels.PropertyNotifyBase.OnPropertyChanged(System.String)">
+ <summary>
+ Used to raise property changed.
+ </summary>
+ <param name="propertyName">The name of the property to raise the event for</param>
+</member>
+<member name="M:FeldSpar.Api.Engine.ClrInterop.ViewModels.PropertyNotifyBase.OnPropertyChanged(System.String)">
+ <summary>
+ Used to raise property changed.
+ </summary>
+ <param name="propertyName">The name of the property to raise the event for</param>
+</member>
+<member name="">
+
+</member>
+<member name="T:FeldSpar.Api.Engine.ClrInterop.ViewModels.PropertyNotifyBase">
+ <summary>
+ Base class used to fire Property Notified events
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="T:FeldSpar.Api.Engine.ClrInterop.ViewModels.TestStatus">
+ <summary>
+ The Status of the current test
+ </summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="T:FeldSpar.Api.Engine.ClrInterop.ViewModels.Defaults">
+
+</member>
+</members>
+</doc>

@@ -1,0 +1,11 @@
+﻿{
+	"Assembly Name" : "internal tests" 
+	"Failures" : [
+		{ "Summary Four" : "Expectation Not Met ('5 expected to be 4')" },
+		{ "Summary Two" : "General Failure ('Something unknown happened')" }
+	],
+	"Successes" : [
+		"Summary One",
+		"Summary Three"
+	]
+}
