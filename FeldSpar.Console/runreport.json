@@ -1,7 +1,8 @@
 {
 	"Assembly Name" : "FeldSpar.Tests.dll" 
 	"Failures" : [
-		{ "This is an ignored test" : "Ignored ('Compile Ignored')" }
+		{ "This is an ignored test" : "Ignored ('Compile Ignored')" },
+		{ "Verify that tests run in isolation" : "Ignored ('Compile Ignored')" }
 	],
 	"Successes" : [
 		"A test that succeeds",
@@ -53,7 +54,6 @@
 		"This is a theory Test.test converts 3 into 'Fizz'",
 		"This is a theory Test.test converts 5 into 'Buzz'",
 		"This is a theory Test.test converts 6 into 'Fizz'",
-		"Verify that tests run in isolation",
 		"expectsNotToBe fails if equal",
 		"expectsNotToBe will succeed for '5' expectsNotToBe '6'",
 		"expectsToBeFalse fails when true",
