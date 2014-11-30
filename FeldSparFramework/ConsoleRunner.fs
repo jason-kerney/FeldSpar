@@ -22,12 +22,12 @@ module ConsoleRunner =
 
         match status with
         | Found(token) -> 
-            printfn "\t\tFound: '%s'" token.Name
+            printfn "\t\tFound: '%s'" token.TestName
         | Running(token) ->
-            printfn "\t\tRunning: '%s'" token.Name
+            printfn "\t\tRunning: '%s'" token.TestName
         | Finished(token, result) -> 
             let display status =
-                printfn "\t\t%s: '%s'" status token.Name
+                printfn "\t\t%s: '%s'" status token.TestName
 
             match result with
             | Success -> display "Success"

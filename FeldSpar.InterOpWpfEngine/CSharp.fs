@@ -53,9 +53,9 @@ type Engine () =
 
     let report (status:ExecutionStatus) =
         match status with
-        | Found(token) -> token.Name |> found
-        | Running(token) -> token.Name |> running
-        | Finished(token, result) -> token.Name |> complete result
+        | Found(token) -> token.TestName |> found
+        | Running(token) -> token.TestName |> running
+        | Finished(token, result) -> token.TestName |> complete result
 
         ()
 

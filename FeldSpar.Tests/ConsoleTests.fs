@@ -12,18 +12,18 @@ module ConsoleTests =
     let summary1 = 
         ("My Summary 1", 
             ([ 
-                { TestDescription = "Fake test 3"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(GeneralFailure("this is a failing test")); };
-                { TestDescription = "Fake test 1"; TestCanonicalizedName = "Fake_Test"; TestResults = Success; };
-                { TestDescription = "Fake test 2"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(Ignored("this is an ignored test")); };
+                { TestName = "Fake test 3"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(GeneralFailure("this is a failing test")); };
+                { TestName = "Fake test 1"; TestCanonicalizedName = "Fake_Test"; TestResults = Success; };
+                { TestName = "Fake test 2"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(Ignored("this is an ignored test")); };
             ] |> Seq.ofList)
         )
 
     let summary2 =
         ("My Summary 2", 
             ([ 
-                { TestDescription = "Faker test 3"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(GeneralFailure("this is a failing test")); };
-                { TestDescription = "Faker test 1"; TestCanonicalizedName = "Fake_Test"; TestResults = Success; };
-                { TestDescription = "Faker test 2"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(Ignored("this is an ignored test")); };
+                { TestName = "Faker test 3"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(GeneralFailure("this is a failing test")); };
+                { TestName = "Faker test 1"; TestCanonicalizedName = "Fake_Test"; TestResults = Success; };
+                { TestName = "Faker test 2"; TestCanonicalizedName = "Fake_Test"; TestResults = Failure(Ignored("this is an ignored test")); };
             ] |> Seq.ofList)
         )
 

@@ -1,13 +1,15 @@
 {
 	"Assembly Name" : "FeldSpar.Tests.dll" 
 	"Failures" : [
-		{ "This is an ignored test" : "Ignored ('Compile Ignored')" }
+		{ "An exception thrown in a test should report exception failure" : "Standard was not Met at 'C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.Tests\An_exception_thrown_in_a_test_should_report_exception_failure.approved'" },
+		{ "Can Build Report from Execution Summaries" : "Standard was not Met at 'C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.Tests\Can_Build_Report_from_Execution_Summaries.approved'" },
+		{ "This is an ignored test" : "Ignored ('Compile Ignored')" },
+		{ "maybeSaveResults dose call saver if path is given" : "Standard was not Met at 'C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.Tests\maybeSaveResults_dose_call_saver_if_path_is_given.approved'" },
+		{ "runTestsAndSaveResults runs the tests, saves the test results, and returns the test results" : "Standard was not Met at 'C:\Users\Jason\Documents\GitHub\FeldSpar\FeldSpar.Tests\runTestsAndSaveResults_runs_the_tests_saves_the_test_results_and_returns_the_test_results.approved'" }
 	],
 	"Successes" : [
 		"A test that succeeds",
 		"A test to check verification",
-		"An exception thrown in a test should report exception failure",
-		"Can Build Report from Execution Summaries",
 		"Can Create multiple Tests From one Theory Test",
 		"Combinatory Gold Standard Testing",
 		"Compare Verbosity only excepts specific modifiers",
@@ -63,20 +65,7 @@
 		"filterByFailures should remove any non failing tests summaries from a collection of result summaries",
 		"isNull fails if nof null",
 		"isNull succeeds if null",
-		"maybeSaveResults dose call saver if path is given",
 		"maybeSaveResults dose not call saver if no path is given",
-		"runTestsAndSaveResults runs the tests, saves the test results, and returns the test results",
 		"saveResults calls a saver after converting results to JSON"
-	]
-}
-
-{
-	"Assembly Name" : "PathFindindTests.dll" 
-	"Failures" : [
-		{ "Simple Pathfinding" : "Ignored ('Test not yet implemented')" },
-		{ "Test Building Grid" : "Ignored ('Test not yet implemented')" }
-	],
-	"Successes" : [
-		
 	]
 }

@@ -16,22 +16,22 @@ module BuildingOfTestsTests =
                 "internal tests",
                 [
                     { 
-                        TestDescription = "Summary One"; 
+                        TestName = "Summary One"; 
                         TestCanonicalizedName = "SummaryOne";
                         TestResults = Success;
                     };
                     { 
-                        TestDescription = "Summary Two"; 
+                        TestName = "Summary Two"; 
                         TestCanonicalizedName = "SummaryTwo";
                         TestResults = Failure(GeneralFailure("Something unknown happened"));
                     };
                     { 
-                        TestDescription = "Summary Three"; 
+                        TestName = "Summary Three"; 
                         TestCanonicalizedName = "SummaryThree";
                         TestResults = Success;
                     };
                     { 
-                        TestDescription = "Summary Four"; 
+                        TestName = "Summary Four"; 
                         TestCanonicalizedName = "SummaryThree";
                         TestResults = 5 |> expectsToBe 4;
                     };
@@ -47,22 +47,22 @@ module BuildingOfTestsTests =
                 "internal tests",
                 [
                     { 
-                        TestDescription = "Summary One"; 
+                        TestName = "Summary One"; 
                         TestCanonicalizedName = "SummaryOne";
                         TestResults = Success;
                     };
                     { 
-                        TestDescription = "Summary Two"; 
+                        TestName = "Summary Two"; 
                         TestCanonicalizedName = "SummaryTwo";
                         TestResults = Failure(GeneralFailure("Something unknown happened"));
                     };
                     { 
-                        TestDescription = "Summary Three"; 
+                        TestName = "Summary Three"; 
                         TestCanonicalizedName = "SummaryThree";
                         TestResults = Success;
                     };
                     { 
-                        TestDescription = "Summary Four"; 
+                        TestName = "Summary Four"; 
                         TestCanonicalizedName = "SummaryThree";
                         TestResults = 5 |> expectsToBe 4;
                     };
@@ -140,7 +140,7 @@ module BuildingOfTestsTests =
 
                 verify
                     {
-                        let! desriptionIsCorrect = resultSummary.TestDescription |> expectsToBe failDescription
+                        let! desriptionIsCorrect = resultSummary.TestName |> expectsToBe failDescription
                         let! testFailedCorrectly = resultSummary.TestResults |> expectsToBe (failResult "Expected Failure") |> withFailComment "Test did not fail correctly expected"
                         return Success
                     }

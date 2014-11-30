@@ -1,0 +1,4 @@
+﻿Max
+Results
+Errors
+Detail

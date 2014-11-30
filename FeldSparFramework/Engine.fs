@@ -9,7 +9,7 @@ open System.Reflection
 /// </summary>
 type ExecutionToken =
     {
-        Name: string;
+        TestName: string;
     }
 
 /// <summary>
@@ -26,12 +26,13 @@ type ExecutionStatus =
 type RunConfiguration = 
     {
         Assembly: Reflection.Assembly;
-        Config: Configuration option;
+        AssemblyConfiguration: Configuration option;
     }
 
 [<AutoOpen>]
 module Runner =
     open System.Diagnostics
+
     type private Executioner<'a, 'b> () =
         inherit System.MarshalByRefObject ()
         member this.Execute (input : 'a) (action : 'a -> 'b) =
@@ -42,7 +43,7 @@ module Runner =
 
     let private emptyGlobal : AssemblyConfiguration = { Reporters = [] }
 
-    let private executeInNewDomain (input : 'a) assemblyPath name (action : 'a -> 'b) =
+    let private executeInNewDomain (input : 'a) assemblyPath testName (action : 'a -> 'b) =
         let appDomain = AppDomain.CreateDomain("AppDomainHelper.ExecuteInNewAppDomain", null, appBasePath = System.IO.Path.GetDirectoryName(assemblyPath), appRelativeSearchPath = System.IO.Path.GetDirectoryName(assemblyPath), shadowCopyFiles = true)
 
         try
@@ -57,12 +58,12 @@ module Runner =
                 sandbox.Execute input action
             with 
             | e when (e.Message.Contains("Unexpected assembly-qualifier in a typename.")) ->
-                raise (ArgumentException(sprintf "``%s`` Failed to load. Test member name may not contain a comma" name))
+                raise (ArgumentException(sprintf "``%s`` Failed to load. Test member name may not contain a comma" testName))
             | e -> raise e
         finally
             AppDomain.Unload(appDomain)
 
-    let private createEnvironment (env : AssemblyConfiguration) assemblyPath assembly testName = 
+    let private createEnvironment (config : AssemblyConfiguration) assemblyPath assembly testName = 
         let rec getSourcePath path = 
             let p = System.IO.DirectoryInfo(path)
 
@@ -80,29 +81,29 @@ module Runner =
             RootPath = path;
             Assembly = assembly;
             AssemblyPath = assemblyPath;
-            Reporters = env.Reporters;
+            Reporters = config.Reporters;
         }
 
     let private fileFoundReport (env:TestEnvironment) report =
-        Found({Name = env.TestName; }) |> report 
+        Found({TestName = env.TestName; }) |> report 
 
     let private fileRunningReport (env:TestEnvironment) report =
-        Running({Name = env.TestName; }) |> report 
+        Running({TestName = env.TestName; }) |> report 
 
-    let private fileFinishedReport name report (result:TestResult) =
-        Finished({Name = name; }, result) |> report 
+    let private fileFinishedReport testName report (result:TestResult) =
+        Finished({TestName = testName; }, result) |> report 
 
     /// <summary>
     /// Creates an executable unit test from a template type
     /// </summary>
-    /// <param name="globalEnv">Information about the current executing environment for the test assembly</param>
+    /// <param name="config">Information about the current executing environment for the test assembly</param>
     /// <param name="report">a way to report progress as the test executes</param>
     /// <param name="testName">the name of the test</param>
     /// <param name="assemblyPath">the path of the test assembly</param>
     /// <param name="assembly">the test assembly</param>
     /// <param name="template">the template to use  to create an executable unit test</param>
-    let createTestFromTemplate (globalEnv : AssemblyConfiguration) (report : ExecutionStatus -> unit ) testName assemblyPath assembly (Test(template)) =
-        let env = testName |> createEnvironment globalEnv assemblyPath assembly
+    let createTestFromTemplate (config : AssemblyConfiguration) (report : ExecutionStatus -> unit ) testName assemblyPath assembly (Test(template)) =
+        let env = testName |> createEnvironment config assemblyPath assembly
 
         report |> fileFoundReport env
 
@@ -111,7 +112,7 @@ module Runner =
                                                     try
                                                         let result = 
                                                             {
-                                                                TestDescription = env.TestName;
+                                                                TestName = env.TestName;
                                                                 TestCanonicalizedName = env.CanonicalizedName;
                                                                 TestResults = template env;
                                                             }
@@ -121,7 +122,7 @@ module Runner =
                                                     | e -> 
                                                         let result = 
                                                             {
-                                                                TestDescription = env.TestName;
+                                                                TestName = env.TestName;
                                                                 TestCanonicalizedName = env.CanonicalizedName;
                                                                 TestResults = Failure(ExceptionFailure(e));
                                                             }
@@ -150,7 +151,7 @@ module Runner =
     /// <param name="assemblyPath">the path of the test assembly</param>
     let findConfiguration ignoreAssemblyConfig (assemblyPath:string) = 
         let assembly = assemblyPath |> IO.File.ReadAllBytes |> Assembly.Load
-        let empty = { Assembly = assembly; Config = Some(Config(fun () -> emptyGlobal)) }
+        let empty = { Assembly = assembly; AssemblyConfiguration = Some(Config(fun () -> emptyGlobal)) }
 
         if ignoreAssemblyConfig then empty
         else
@@ -166,9 +167,9 @@ module Runner =
             elif configs.Length = 1
             then
                 let config = configs.[0] |> (fun p -> p.GetValue (null) :?> Configuration)
-                { Assembly = assembly; Config = Some(config) }
+                { Assembly = assembly; AssemblyConfiguration = Some(config) }
             else
-                { Assembly = assembly; Config =  None}
+                { Assembly = assembly; AssemblyConfiguration =  None}
 
     let private findTestProperties (filter : PropertyInfo -> bool) (assembly:Reflection.Assembly) (assemblyPath:string) = 
         assembly.GetExportedTypes()
@@ -181,14 +182,14 @@ module Runner =
     /// <summary>
     /// Takes all test templates and converts them to executable unit tests 
     /// </summary>
-    /// <param name="environment">The configuration information for the assembly</param>
+    /// <param name="config">The configuration information for the assembly</param>
     /// <param name="report">a way to report progress of any test</param>
     /// <param name="assemblyPath">the path to the test assembly</param>
     /// <param name="assembly">the test assembly</param>
     /// <param name="tests">the test templates to convert</param>
-    let buildTestPlan (environment : AssemblyConfiguration) report assemblyPath assembly (tests:(string * Test)[]) =
+    let buildTestPlan (config : AssemblyConfiguration) report assemblyPath assembly (tests:(string * Test)[]) =
         tests
-            |> Array.map(fun (name, test) -> test |> createTestFromTemplate environment report name assemblyPath assembly)
+            |> Array.map(fun (assemblyName, test) -> test |> createTestFromTemplate config report assemblyName assemblyPath assembly)
             |> Array.toList
 
     /// <summary>
@@ -211,16 +212,16 @@ module Runner =
 
         shuffle 0
 
-    let private shuffleTests (list:(string * Test) []) =
+    let private shuffleTests (tests:(string * Test) []) =
         let rnd = System.Random()
         let getNext = (fun (min, max) -> rnd.Next(min, max))
 
-        shuffle list getNext
+        shuffle tests getNext
     
     let private isTheory (t:Type) =
         t.IsGenericType && (t.GetGenericTypeDefinition()) = (typeof<Theory<_>>.GetGenericTypeDefinition())
 
-    let private getTestsWith (map:PropertyInfo -> (string * Test)[]) (environment : AssemblyConfiguration) report assembly (assemblyPath:string) = 
+    let private getTestsWith (map:PropertyInfo -> (string * Test)[]) (config : AssemblyConfiguration) report assembly (assemblyPath:string) = 
         let filter (prop:PropertyInfo) = 
             match prop.PropertyType with
             | t when t = typeof<Test> -> true
@@ -236,7 +237,7 @@ module Runner =
 
         tests
             |> shuffleTests
-            |> buildTestPlan environment report assemblyPath assembly
+            |> buildTestPlan config report assemblyPath assembly
 
     /// <summary>
     /// Converts theory a theory template into an array of test templates
@@ -268,19 +269,19 @@ module Runner =
             
     let private getConfigurationError (prop:PropertyInfo) =
         [|
-            ( prop.Name, Test(fun env -> ignoreWith "Assembly Can only have one Configuration") )
+            ( prop.Name, Test(fun _ -> ignoreWith "Assembly Can only have one Configuration") )
          |]
 
     let private getMapper (config) =
         match config with
-        | { Assembly = assembly; Config = Some(_) } -> (config, (fun (prop:PropertyInfo) -> getTestsFromPropery prop ))
-        | { Assembly = assembly; Config = None } -> (config, (fun (prop:PropertyInfo) -> getConfigurationError prop ))
+        | { Assembly = _; AssemblyConfiguration = Some(_) } -> (config, (fun (prop:PropertyInfo) -> getTestsFromPropery prop ))
+        | { Assembly = _; AssemblyConfiguration = None } -> (config, (fun (prop:PropertyInfo) -> getConfigurationError prop ))
 
     let private determinEnvironmentAndMapping (config, mapper) =
         match config with
-        | { Assembly = assembly; Config = Some(Config(getConfig)) } -> 
+        | { Assembly = assembly; AssemblyConfiguration = Some(Config(getConfig)) } -> 
             (assembly, getConfig(), mapper)
-        | { Assembly = assembly; Config = None } -> (assembly, emptyGlobal, mapper)
+        | { Assembly = assembly; AssemblyConfiguration = None } -> (assembly, emptyGlobal, mapper)
 
     /// <summary>
     /// Searches test assembly for tests and reports as it finds them.
@@ -305,7 +306,7 @@ module Runner =
         |> List.map(
             fun (_, test) -> 
                 let result = test()
-                result.TestResults |> fileFinishedReport result.TestDescription report
+                result.TestResults |> fileFinishedReport result.TestName report
                 result
             )
 
