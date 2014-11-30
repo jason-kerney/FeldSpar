@@ -91,9 +91,9 @@ module Processors =
     
         testsFeldSpar       
 
-    let runTests savePath runner assemblyPaths =
+    let runTests savePath runner tokens =
         let saver = maybeSaveResults savePath (saveResults fileWriter)
-        let processor = (fun () -> runTestsAndSaveResults saver runner assemblyPaths)
+        let processor = (fun () -> runTestsAndSaveResults saver runner tokens)
         let reporter = (printfn "%s")
 
         processWithReport reporter processor
@@ -132,7 +132,7 @@ type Launcher () =
 
             let pause = args.Contains (<@ Pause @>) || args.Contains (<@ Auto_Loop @>)
 
-            let testAssemblyPaths = args.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation ) |> List.map getToken
+            let tokens = args.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation ) |> List.map getToken
 
             let runner = 
                 if args.Contains(<@ Verbosity @>)
@@ -163,7 +163,7 @@ type Launcher () =
             let autoLoop = args.Contains <@ Auto_Loop @> 
             if autoLoop 
             then
-                let paths = testAssemblyPaths
+                let paths = tokens
                 
                 for token in paths do
                     let fileName = IO.Path.GetFileName token.AssemblyPath
@@ -183,7 +183,7 @@ type Launcher () =
 
                     watcherA.EnableRaisingEvents <- true
 
-            let results = runTests savePath runner testAssemblyPaths |> List.collect(fun (_, r) -> r)
+            let results = runTests savePath runner tokens |> List.collect(fun (_, r) -> r)
 
             if pause then Console.ReadKey true |> ignore
             
