@@ -8,6 +8,13 @@ module Data =
     type internal Marker = interface end
     let testFeldSparAssembly = typeof<Marker>.Assembly
 
+    let testToken = { new IToken with
+                        member this.AssemblyPath = testFeldSparAssembly.Location;
+                        member this.AssemblyName = System.IO.Path.GetFileName this.AssemblyPath;
+                        member this.Assembly = this.AssemblyPath |> System.IO.File.ReadAllBytes |> System.Reflection.Assembly.Load
+                        member this.GetExportedTypes () = this.Assembly.GetExportedTypes()
+                    }
+
     let ``Setup Global Reports`` = 
         Config(fun () -> 
         { 
