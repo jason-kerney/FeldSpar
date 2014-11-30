@@ -74,12 +74,6 @@ type TestEnvironment =
 /// </summary>
 type Test = | Test of (TestEnvironment -> TestResult)
 
-type UnitTestTemplate =
-    {
-        Environment: TestEnvironment;
-        TestTemplate: (TestEnvironment -> TestResult);
-    }
-
 /// <summary>
 /// A type representing an ignored unit test
 /// </summary>

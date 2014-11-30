@@ -16,38 +16,31 @@ module IsolationTests =
                 x
 
     let ``Verify that tests run in isolation`` =
-        ITest((fun _ ->
+        Test((fun env ->
                 let changer = ChangeAble()
                 let mainExpected = changer.X
-                let subExpected = mainExpected + 1
-
-                let creater = createEnvironment { Reporters=[] } testFeldSparAssembly.Location testFeldSparAssembly
-
-                let ``First test to test isolation`` =
-                    {
-                        Environment=creater "First test to test isolation";
-                        TestTemplate = (fun _ ->
-                                do changer.Increment ()
-
-                                let actual = changer.X
-
-                                actual |> expectsToBe subExpected |> withFailComment "changer did not increment correctly"
-                            )
-                    }
-
-                let ``Second test to test isolation`` =
-                    {
-                        Environment=creater "Second test to test isolation";
-                        TestTemplate = (fun _ ->
+                                
+                let ``First test to test isolation`` = 
+                    Test((fun env ->
+                            let expected = 1;
                             do changer.Increment ()
 
                             let actual = changer.X
 
-                            actual |> expectsToBe subExpected |> withFailComment "changer did not increment correctly expected"
-                        )
-                    }
+                            actual |> expectsToBe expected |> withFailComment "changer did not increment correctly"
+                        ))
 
-                let results = [``First test to test isolation``; ``Second test to test isolation``] |> runAsTests
+                let ``Second test to test isolation`` = 
+                    Test((fun env ->
+                            let expected = 1;
+                            do changer.Increment ()
+
+                            let actual = changer.X
+
+                            actual |> expectsToBe expected |> withFailComment "changer did not increment correctly expected"
+                        ))
+
+                let results = [("First test to test isolation", ``First test to test isolation``); ("Second test to test isolation", ``Second test to test isolation``)] |> runAsTests (env.AssemblyPath)
                 let isolatedResults = results |> reduceToFailures |> Seq.isEmpty
 
                 let mainActual = changer.X

@@ -129,19 +129,13 @@ module BuildingOfTestsTests =
     let ``Test that a failing test shows as a failure`` = 
         Test((fun env ->
                 let failingTestName = "A Test That will fail"
-                //let ``A Test That will fail`` = 
-                //    Test((fun _ -> failResult "Expected Failure"))
-
-                //let tstEnv = createEnvironment { Reporters = []} (env.AssemblyPath) (Data.testFeldSparAssembly) failingTestName
-
                 let ``A Test That will fail`` = 
-                    {
-                        Environment=createEnvironment { Reporters = []} (env.AssemblyPath) (Data.testFeldSparAssembly) failingTestName;
-                        TestTemplate=(fun _ -> failResult "Expected Failure");
-                    }
+                    Test((fun _ -> failResult "Expected Failure"))
+
+                let tstEnv = createEnvironment { Reporters = []} (env.AssemblyPath) (Data.testFeldSparAssembly) failingTestName
 
                 let resultSummary = 
-                    let _, test = ``A Test That will fail`` |> createTestFromTemplate ignore
+                    let _, test = ``A Test That will fail`` |> createTestFromTemplate tstEnv ignore
                     test()
 
                 verify
@@ -169,36 +163,50 @@ module BuildingOfTestsTests =
     let ``The environment of a test should canonicalize the description correctly into the name`` =
         Test((fun env ->
                 let testDescription = "Ca@n0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~"
+                let expected = (Formatters.Basic.CanonicalizeString testDescription)
 
-                let underTest = createEnvironment { Reporters=[] } (testFeldSparAssembly.Location) testFeldSparAssembly testDescription
+                let ``Can0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~`` = 
+                    Test((fun env ->
+                            let actual = env.CanonicalizedName
+                            actual |> expectsToBe expected
+                        ))
 
-                underTest.CanonicalizedName |> checkAgainstStringStandardCleaned env
+                verify
+                    {
+                        let! testRanCorrectly =(
+                            [("Can0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~", ``Can0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~``)] 
+                                |> runAsTests (env.AssemblyPath)
+                                |> reduceToFailures
+                                |> Seq.isEmpty 
+                                |> isTrue (ExpectationFailure("test Failed to have correct Name")))
+
+                        return Success
+                    }
             ))
 
     let ``An exception thrown in a test should report exception failure`` =
         Test((fun env ->
                 let ex = IndexOutOfRangeException("The exception was out of range")
+                let ``A test that throws an exception`` =  Test((fun env -> raise ex))
 
                 let testName = "A test that throws an exception"
-
-                let testEnvironment = (createEnvironment { Reporters = [] } (env.AssemblyPath) (env.Assembly) testName)
-
-                let template = { Environment=testEnvironment; TestTemplate=(fun _ -> raise ex) }
-
-                let _, case = template |> createTestFromTemplate ignore
+                let _, case = ``A test that throws an exception`` |> createTestFromTemplate (createEnvironment { Reporters = [] } (env.AssemblyPath) (env.Assembly) testName) ignore
 
                 let summary = case()
                 let result = summary.TestResults
 
-                let regex = System.Text.RegularExpressions.Regex(@"(?<=at FeldSpar\.Console\.Tests\.BuildingOfTestsTests\.template).*\s+.*", Text.RegularExpressions.RegexOptions.Multiline)
+                let regex = System.Text.RegularExpressions.Regex(@"(?<=at FeldSpar\.Console\.Tests\.BuildingOfTestsTests\.A test that throws an exception).*\s+.*", Text.RegularExpressions.RegexOptions.Multiline)
 
                 let resultString = result |> sprintf "%A"
                 let mtch = regex.Match(resultString)
                 let goodLength = mtch.Index + 1
-                //let goodLength = resultString.Length
 
-                let cleaned = resultString.Substring(0, goodLength) + " ..."
+                let cleaned = resultString.Substring(0, goodLength) + " ..." |> (fun s -> s.Replace("\r\n","\n"))
 
-                (cleaned) |> checkAgainstStringStandardCleaned env
+                verify
+                    {
+                        let! meetsStandard = (cleaned) |> checkAgainstStringStandardCleaned env
+                        return Success
+                    }
             ))
         
