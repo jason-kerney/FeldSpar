@@ -321,5 +321,5 @@ module Runner =
     /// Searches test assembly for tests and runs them.
     /// </summary>
     /// <param name="ignoreAssemblyConfig">Ured if you do not want gold standard testing reporters</param>
-    /// <param name="assemblyPath">the path of the assembly</param>
-    let runTests ignoreAssemblyConfig (assemblyPath:string) = assemblyPath |> getToken |> runTestsAndReport ignoreAssemblyConfig ignore
+    /// <param name="token">the token representing the test Assembly</param>
+    let runTests ignoreAssemblyConfig (token:IToken) = token |> runTestsAndReport ignoreAssemblyConfig ignore
