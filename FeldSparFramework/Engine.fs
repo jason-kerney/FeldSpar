@@ -184,9 +184,8 @@ module Runner =
     /// <param name="config">The configuration information for the assembly</param>
     /// <param name="report">a way to report progress of any test</param>
     /// <param name="token">the token representing the test assembly</param>
-    /// <param name="assembly">the test assembly</param>
     /// <param name="tests">the test templates to convert</param>
-    let buildTestPlan (config : AssemblyConfiguration) report (token:IToken) assembly (tests:(string * Test)[]) =
+    let buildTestPlan (config : AssemblyConfiguration) report (token:IToken) (tests:(string * Test)[]) =
         tests
             |> Array.map(fun (assemblyName, test) -> test |> createTestFromTemplate config report assemblyName token.AssemblyPath token.Assembly)
             |> Array.toList
@@ -236,7 +235,7 @@ module Runner =
 
         tests
             |> shuffleTests
-            |> buildTestPlan config report token token.Assembly
+            |> buildTestPlan config report token
 
     /// <summary>
     /// Converts theory a theory template into an array of test templates
