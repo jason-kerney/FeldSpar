@@ -2,9 +2,6 @@
 open System
 open ApprovalTests.Core
 
-/// <summary>
-/// The type/reason for a test failure
-/// </summary>
 type FailureType =
     | GeneralFailure of string
     | ExpectationFailure of string
@@ -12,19 +9,13 @@ type FailureType =
     | Ignored of String
     | StandardNotMet of String
 
-/// <summary>
-/// The result of running a unit test
-/// </summary>
 type TestResult =
     | Success
     | Failure of FailureType
 
-/// <summary>
-/// Information about test result
-/// </summary>
 type ExecutionSummary =
     {
-        TestName : string;
+        TestDescription : string;
         TestCanonicalizedName : string;
         TestResults : TestResult;
     }
@@ -34,7 +25,7 @@ type ExecutionSummary =
 /// </summary>
 type FailureReport = 
     {
-        TestName : string;
+        Name : string;
         FailureType : FailureType;
     }
 
@@ -43,7 +34,7 @@ type FailureReport =
 /// </summary>
 type OutputReport =
     {
-        AssemblyName : string;
+        Name : string;
         Failures : FailureReport[];
         Successes : string[];
     }
@@ -195,30 +186,30 @@ module Utilities =
     /// <summary>
     /// Takes results and divides them up by success and failures
     /// </summary>
-    /// <param name="assemblyName">The name of the test assembly</param>
+    /// <param name="name">The name of the test assembly</param>
     /// <param name="results">the test results</param>
-    let buildOutputReport (assemblyName, results:ExecutionSummary seq) =
+    let buildOutputReport (name, results:ExecutionSummary seq) =
         let successes = 
             results
             |> Seq.filter (fun result -> result.TestResults = Success)
-            |> Seq.sortBy (fun result -> result.TestName)
-            |> Seq.map (fun result -> result.TestName)
+            |> Seq.sortBy (fun result -> result.TestDescription)
+            |> Seq.map (fun result -> result.TestDescription)
             |> Seq.toArray
 
         let failures =
             results
             |> Seq.filter (fun result -> result.TestResults <> Success)
-            |> Seq.sortBy (fun result -> result.TestName)
-            |> Seq.map(fun { TestName = testName; TestCanonicalizedName = _ ; TestResults = Failure(failType) } -> 
+            |> Seq.sortBy (fun result -> result.TestDescription)
+            |> Seq.map(fun { TestDescription = name; TestCanonicalizedName = _ ; TestResults = Failure(failType) } -> 
                 {
-                    TestName = testName;
+                    Name = name;
                     FailureType = failType;
                 }
             )
             |> Seq.toArray
 
         {
-            AssemblyName = assemblyName;
+            Name = name;
             Failures = failures;
             Successes = successes;
         }

@@ -26,7 +26,7 @@ module TestSummaryUtilities =
 
         let failures = 
             value.Failures
-            |> Array.map (fun { TestName = name; FailureType = failureType } ->
+            |> Array.map (fun { Name = name; FailureType = failureType } ->
                 let failMsg = 
                     match failureType with
                     | GeneralFailure(msg)     -> sprintf "General Failure ('%s')" msg
@@ -41,5 +41,5 @@ module TestSummaryUtilities =
             )
             |> joinWith joinSpacer
 
-        let jsonString = sprintf "{%s\"Assembly Name\" : \"%s\" %s\"Failures\" : [\n\t\t%s\n\t],%s\"Successes\" : [\n\t\t%s\n\t]\n}\n" spacer (value.AssemblyName) spacer failures spacer successes
+        let jsonString = sprintf "{%s\"Assembly Name\" : \"%s\" %s\"Failures\" : [\n\t\t%s\n\t],%s\"Successes\" : [\n\t\t%s\n\t]\n}\n" spacer (value.Name) spacer failures spacer successes
         jsonString

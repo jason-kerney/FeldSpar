@@ -25,8 +25,8 @@ module Data =
                         ]
         })
 
-    let runTest testName assemblyPath template = 
-            let _, test = template |> createTestFromTemplate (createEnvironment { Reporters = [] } assemblyPath testFeldSparAssembly testName) ignore
+    let runTest description assemblyPath template = 
+            let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description assemblyPath testFeldSparAssembly
             test()
 
     let runAsTests assemblyPath templates = 
@@ -35,21 +35,21 @@ module Data =
     let filteringSetUp = 
         let hasOnlySuccesses =
             {
-                TestName = "successes only test";
+                TestDescription = "successes only test";
                 TestCanonicalizedName = "";
                 TestResults = Success
             }
 
         let hasOnlyFailures =
             {
-                TestName = "failures test";
+                TestDescription = "failures test";
                 TestCanonicalizedName = "";
                 TestResults = Failure(ExceptionFailure(new System.Exception()));
             }
 
         let hasMixedResults = 
             {
-                TestName = "mixed test";
+                TestDescription = "mixed test";
                 TestCanonicalizedName = "";
                 TestResults = Failure(GeneralFailure("This is a failure")); 
             }

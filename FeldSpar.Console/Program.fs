@@ -192,7 +192,7 @@ type Launcher () =
                 results 
                     |> List.filter
                         (
-                            fun { TestName = _;  TestCanonicalizedName = _; TestResults = r } -> 
+                            fun { TestDescription = _;  TestCanonicalizedName = _; TestResults = r } -> 
                                 
                                 match r with
                                 | Failure(Ignored(_)) -> false
