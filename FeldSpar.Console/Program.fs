@@ -91,9 +91,9 @@ module Processors =
     
         testsFeldSpar       
 
-    let runTests savePath runner tests =
+    let runTests savePath runner assemblyPaths =
         let saver = maybeSaveResults savePath (saveResults fileWriter)
-        let processor = (fun () -> runTestsAndSaveResults saver runner tests)
+        let processor = (fun () -> runTestsAndSaveResults saver runner assemblyPaths)
         let reporter = (printfn "%s")
 
         processWithReport reporter processor
