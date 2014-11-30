@@ -148,9 +148,9 @@ module Runner =
     /// Finds the configuration object for a test assembly. This object is used to set up reporters for gold standard testing.
     /// </summary>
     /// <param name="ignoreAssemblyConfig">is used to bypass the use of the configuration object</param>
-    /// <param name="assemblyPath">the path of the test assembly</param>
-    let findConfiguration ignoreAssemblyConfig (assemblyPath:string) = 
-        let assembly = assemblyPath |> IO.File.ReadAllBytes |> Assembly.Load
+    /// <param name="token">the token representing the test Assembly</param>
+    let findConfiguration ignoreAssemblyConfig (token:IToken) = 
+        let assembly = token.Assembly
         let empty = { Assembly = assembly; AssemblyConfiguration = Some(Config(fun () -> emptyGlobal)) }
 
         if ignoreAssemblyConfig then empty
@@ -290,7 +290,7 @@ module Runner =
     /// <param name="report">Used to report when a test is found</param>
     /// <param name="token">the token representing the test assembly</param>
     let findTestsAndReport ignoreAssemblyConfig report (token:IToken) = 
-        let (assembly, config, mapper) = token.AssemblyPath |> findConfiguration ignoreAssemblyConfig |> getMapper |> determinEnvironmentAndMapping 
+        let (assembly, config, mapper) = token |> findConfiguration ignoreAssemblyConfig |> getMapper |> determinEnvironmentAndMapping 
 
         token.AssemblyPath |> getTestsWith mapper config report assembly
 

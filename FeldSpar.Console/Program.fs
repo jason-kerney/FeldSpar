@@ -166,7 +166,7 @@ type Launcher () =
                 let paths = tokens
                 
                 for token in paths do
-                    let fileName = IO.Path.GetFileName token.AssemblyPath
+                    let fileName = token.AssemblyName
                     let path = IO.Path.GetDirectoryName token.AssemblyPath
                     let watcherA = new IO.FileSystemWatcher(path, fileName)
 

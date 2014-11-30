@@ -84,7 +84,6 @@ module ConsoleRunner =
                             )
 
     let runAndReport ignoreAssemblyConfiguration reporter showDetails (token:IToken) = 
-        let name = token.AssemblyName
         let tests = token |> runTestsAndReport ignoreAssemblyConfiguration reporter
         
         let failedTests = tests
@@ -100,7 +99,7 @@ module ConsoleRunner =
                 |> seperateResults
                 |> printReports
 
-        (name, tests)
+        (token.AssemblyName, tests)
         
     let runAndReportAll ignoreAssemblyConfiguration showDetails (token:IToken) =
         runAndReport ignoreAssemblyConfiguration reportAll showDetails token
