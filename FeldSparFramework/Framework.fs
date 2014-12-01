@@ -109,7 +109,7 @@ type TestInformation =
 type UnitTest = 
     {
         TestName: string;
-        TestCase: unit -> TestResult;
+        TestCase: unit -> ExecutionSummary;
     }
 
 type IToken =

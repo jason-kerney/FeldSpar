@@ -133,7 +133,7 @@ module Runner =
                             testingCode |> executeInNewDomain () env.AssemblyPath env.TestName
                         )
                         
-        (testName, testCase)
+        { TestName = testName; TestCase = testCase }
         
     /// <summary>
     /// Converts Execution summaries to strings for reporting on
@@ -298,7 +298,7 @@ module Runner =
         token 
         |> findTestsAndReport ignoreAssemblyConfig report 
         |> List.map(
-            fun (_, test) -> 
+            fun { TestName = _; TestCase = test } -> 
                 let result = test()
                 result.TestResults |> fileFinishedReport result.TestName report
                 result

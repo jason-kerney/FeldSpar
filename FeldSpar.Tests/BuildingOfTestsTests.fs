@@ -115,7 +115,10 @@ module BuildingOfTestsTests =
                                                     ("", 0) |> append arry
                                                 )
 
-                let testTemplatesa = findTests true (env |> loadToken) |> Seq.sortBy(fun (description, _) -> description) |> Seq.map(fun (description, _) -> "(" + description + ")")
+                let testTemplatesa = 
+                    findTests true (env |> loadToken) 
+                        |> Seq.sortBy(fun { TestName = description; TestCase =  _} -> description) 
+                        |> Seq.map(fun { TestName = description; TestCase = _} -> "(" + description + ")")
                 let testTemplatesb = testTemplatesa |> Seq.toList
                 let testTemplates = testTemplatesb |> join
 
@@ -141,7 +144,7 @@ module BuildingOfTestsTests =
                 let config : AssemblyConfiguration = { Reporters = []}
 
                 let resultSummary = 
-                    let _, test = ``A Test That will fail`` |> createTestFromTemplate config ignore (env |> loadToken)
+                    let { TestName = _; TestCase = test } = ``A Test That will fail`` |> createTestFromTemplate config ignore (env |> loadToken)
                     test()
 
                 verify
@@ -208,7 +211,7 @@ module BuildingOfTestsTests =
                         Test = ``A test that throws an exception``;
                     }
 
-                let _, case = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore (env |> loadToken)
+                let { TestName = _; TestCase = case } = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore (env |> loadToken)
 
                 let summary = case()
                 let result = summary.TestResults
