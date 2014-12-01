@@ -100,6 +100,12 @@ type TestTheoryTemplate<'a> =
 type Theory<'a> =
     | Theory of TestTheoryTemplate<'a>
 
+type TestInformation =
+    {
+        TestName: string;
+        Test: Test;
+    }
+
 type IToken =
     abstract AssemblyName: string;
     abstract AssemblyPath: string;
