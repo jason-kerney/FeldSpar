@@ -63,7 +63,7 @@ module Runner =
         finally
             AppDomain.Unload(appDomain)
 
-    let private createEnvironment (config : AssemblyConfiguration) (assemblyPath:IToken) assembly testName = 
+    let private createEnvironment (config : AssemblyConfiguration) (token:IToken) testName = 
         let rec getSourcePath path = 
             let p = System.IO.DirectoryInfo(path)
 
@@ -73,14 +73,14 @@ module Runner =
             | Some(_) -> p.Parent.FullName |> getSourcePath
             | None -> p.FullName + "\\"
 
-        let path = assemblyPath.AssemblyPath |> IO.Path.GetDirectoryName |> getSourcePath
+        let path = token.AssemblyPath |> IO.Path.GetDirectoryName |> getSourcePath
             
         { 
             TestName = testName;
             CanonicalizedName = testName |> Formatters.Basic.CanonicalizeString;
-            RootPath = path;
-            Assembly = assembly;
-            AssemblyPath = assemblyPath.AssemblyPath;
+            GoldStandardPath = path;
+            Assembly = token.Assembly;
+            AssemblyPath = token.AssemblyPath;
             Reporters = config.Reporters;
         }
 
@@ -102,7 +102,7 @@ module Runner =
     /// <param name="token">the token representing the test assembly</param>
     /// <param name="template">the template to use  to create an executable unit test</param>
     let createTestFromTemplate (config : AssemblyConfiguration) (report : ExecutionStatus -> unit ) testName (token:IToken) (Test(template)) =
-        let env = testName |> createEnvironment config token token.Assembly
+        let env = testName |> createEnvironment config token
 
         report |> fileFoundReport env
 
@@ -181,7 +181,7 @@ module Runner =
     /// <param name="tests">the test templates to convert</param>
     let buildTestPlan (config : AssemblyConfiguration) report (token:IToken) (tests:(string * Test)[]) =
         tests
-            |> Array.map(fun (assemblyName, test) -> test |> createTestFromTemplate config report assemblyName token)
+            |> Array.map(fun (testName, test) -> test |> createTestFromTemplate config report testName token)
             |> Array.toList
 
     /// <summary>

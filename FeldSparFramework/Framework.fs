@@ -54,7 +54,7 @@ type TestEnvironment =
     {
         TestName:string;
         CanonicalizedName : string;
-        RootPath : string;
+        GoldStandardPath : string;
         Assembly : Reflection.Assembly;
         AssemblyPath : string;
         Reporters : (unit -> IApprovalFailureReporter) List;

@@ -65,12 +65,12 @@ module ApprovalsSupport =
 
         let rec find frames = 
             match frames with
-            | [] -> env.RootPath
+            | [] -> env.GoldStandardPath
             | (GetFileName name)::_ -> 
                 let dir = System.IO.FileInfo(name).Directory
                 if dir.Exists
                 then dir.FullName + "\\"
-                else env.RootPath
+                else env.GoldStandardPath
 
             | _::tail -> find tail
 
