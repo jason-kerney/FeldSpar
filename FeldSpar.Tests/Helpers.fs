@@ -8,6 +8,13 @@ module Data =
     type internal Marker = interface end
     let testFeldSparAssembly = typeof<Marker>.Assembly
 
+    let buildType =
+#if DEBUG
+        "Debug"
+#else
+        "Release"
+#endif
+
     let loadToken (env:TestEnvironment) = { new IToken with
                                                 member this.Assembly = env.Assembly;
                                                 member this.AssemblyName = env.AssemblyPath |> System.IO.Path.GetFileName;

@@ -141,16 +141,6 @@ module Utilities =
     let getToken assemblyPath = RunningToken(assemblyPath) :> IToken
 
     /// <summary>
-    /// A way to programaticly know if in release or debug.
-    /// </summary>
-    let buildType =
-#if DEBUG
-        "Debug"
-#else
-        "Release"
-#endif
-
-    /// <summary>
     /// Gets the failure message from a result or an empty string if success
     /// </summary>
     /// <param name="result">Dhe result from which to get the message.</param>
