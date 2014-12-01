@@ -263,18 +263,13 @@ module Runner =
             
     let private getConfigurationError (prop:PropertyInfo) =
         [|
-            ( prop.Name, Test(fun _ -> ignoreWith "Assembly Can only have one Configuration") )
+            { TestName = prop.Name; Test = Test(fun _ -> ignoreWith "Assembly Can only have one Configuration"); }
          |]
 
     let private getMapper (config) =
-        let convertMapper (mapper: PropertyInfo -> (string * Test)[]) = 
-            (fun pi ->
-                pi |> mapper |> Array.map(fun (testName, test) -> { TestName = testName; Test = test })
-            )
-            
         match config with
         | { Token = _; AssemblyConfiguration = Some(_) } -> (config, (fun (prop:PropertyInfo) -> getTestsFromPropery prop ))
-        | { Token = _; AssemblyConfiguration = None } -> (config, convertMapper (fun (prop:PropertyInfo) -> getConfigurationError prop ))
+        | { Token = _; AssemblyConfiguration = None } -> (config, (fun (prop:PropertyInfo) -> getConfigurationError prop ))
 
     let private determinEnvironmentAndMapping (config, mapper) =
         match config with
