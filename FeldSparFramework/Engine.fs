@@ -249,14 +249,16 @@ module Runner =
                     |> Seq.filter (fun m -> m.Name = "convertTheoryToTests") 
                     |> Seq.head
 
+        let createTestInfo testName test = { TestName = testName; Test = test }
+
         match prop.PropertyType with
-            | t when t = typeof<Test> -> [|(prop.Name, prop.GetValue(null) :?> Test)|]
-            | t when t = typeof<IgnoredTest> -> [|(prop.Name, Test(fun _ -> ignoreWith "Compile Ignored"))|]
+            | t when t = typeof<Test> -> [|(createTestInfo prop.Name (prop.GetValue(null) :?> Test))|]
+            | t when t = typeof<IgnoredTest> -> [|(createTestInfo prop.Name (Test(fun _ -> ignoreWith "Compile Ignored")))|]
             | t when t |> isTheory -> 
                 let g = t.GetGenericArguments() 
                 let converterForTheoryTests = converterForTheoryTestsMethodInfo.MakeGenericMethod(g)
 
-                converterForTheoryTests.Invoke(null, [|prop.GetValue(null); prop.Name|]) :?> (string * Test)[]
+                converterForTheoryTests.Invoke(null, [|prop.GetValue(null); prop.Name|]) :?> (string * Test)[] |> Array.map (fun (testName, test) -> { TestName = testName; Test = test})
             | _ -> raise (ArgumentException("Incorrect property found by engine"))
             
     let private getConfigurationError (prop:PropertyInfo) =
@@ -265,9 +267,14 @@ module Runner =
          |]
 
     let private getMapper (config) =
+        let convertMapper (mapper: PropertyInfo -> (string * Test)[]) = 
+            (fun pi ->
+                pi |> mapper |> Array.map(fun (testName, test) -> { TestName = testName; Test = test })
+            )
+            
         match config with
         | { Token = _; AssemblyConfiguration = Some(_) } -> (config, (fun (prop:PropertyInfo) -> getTestsFromPropery prop ))
-        | { Token = _; AssemblyConfiguration = None } -> (config, (fun (prop:PropertyInfo) -> getConfigurationError prop ))
+        | { Token = _; AssemblyConfiguration = None } -> (config, convertMapper (fun (prop:PropertyInfo) -> getConfigurationError prop ))
 
     let private determinEnvironmentAndMapping (config, mapper) =
         match config with
@@ -284,7 +291,8 @@ module Runner =
     let findTestsAndReport ignoreAssemblyConfig report (token:IToken) = 
         let (token, config, mapper) = token |> findConfiguration ignoreAssemblyConfig |> getMapper |> determinEnvironmentAndMapping 
 
-        token |> getTestsWith mapper config report
+        let mapper1 = (fun pi -> pi |> mapper |> Array.map (fun { TestName = testName; Test = test} -> (testName, test)))
+        token |> getTestsWith mapper1 config report
 
     /// <summary>
     /// Searches test assembly for tests and runs them. It then reports as it finds them, runs, them, and they complete.
