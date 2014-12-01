@@ -204,7 +204,7 @@ module Runner =
 
         shuffle 0
 
-    let private shuffleTests (tests:(string * Test) []) =
+    let private shuffleTests (tests:TestInformation []) =
         let rnd = System.Random()
         let getNext = (fun (min, max) -> rnd.Next(min, max))
 
@@ -228,8 +228,8 @@ module Runner =
             |> Array.concat
 
         tests
-            |> Array.map(fun { TestName = testName; Test = test} -> (testName, test))
             |> shuffleTests
+            |> Array.map(fun { TestName = testName; Test = test} -> (testName, test))
             |> buildTestPlan config report token
 
     /// <summary>
