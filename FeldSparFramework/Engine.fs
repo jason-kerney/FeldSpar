@@ -179,9 +179,9 @@ module Runner =
     /// <param name="report">a way to report progress of any test</param>
     /// <param name="token">the token representing the test assembly</param>
     /// <param name="tests">the test templates to convert</param>
-    let buildTestPlan (config : AssemblyConfiguration) report (token:IToken) (tests:(string * Test)[]) =
+    let buildTestPlan (config : AssemblyConfiguration) report (token:IToken) (tests:TestInformation[]) =
         tests
-            |> Array.map(fun (testName, test) -> test |> createTestFromTemplate config report testName token)
+            |> Array.map(fun { TestName = testName; Test = test } -> test |> createTestFromTemplate config report testName token)
             |> Array.toList
 
     /// <summary>
@@ -229,7 +229,6 @@ module Runner =
 
         tests
             |> shuffleTests
-            |> Array.map(fun { TestName = testName; Test = test} -> (testName, test))
             |> buildTestPlan config report token
 
     /// <summary>
