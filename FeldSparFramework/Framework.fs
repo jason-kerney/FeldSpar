@@ -60,15 +60,19 @@ type TestEnvironment =
         Reporters : (unit -> IApprovalFailureReporter) List;
     }
 
+
+type TestTemplat = TestEnvironment -> TestResult
+
+
 /// <summary>
 /// A type represeting a unit test
 /// </summary>
-type Test = | Test of (TestEnvironment -> TestResult)
+type Test = | Test of (TestTemplat)
 
 /// <summary>
 /// A type representing an ignored unit test
 /// </summary>
-type IgnoredTest = | ITest of (TestEnvironment -> TestResult)
+type IgnoredTest = | ITest of (TestTemplat)
 
 /// <summary>
 /// A type to allow the dynamic loading of configuration if it is used
@@ -82,7 +86,7 @@ type Configuration = | Config of (unit -> AssemblyConfiguration)
 type TheoryCaseTemplate<'a> =
     {
         UnitDescription : 'a -> string;
-        UnitTest : 'a -> TestEnvironment -> TestResult;
+        UnitTest : 'a -> TestTemplat;
     }
     
 /// <summary>
