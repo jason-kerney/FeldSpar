@@ -63,7 +63,7 @@ module Runner =
         finally
             AppDomain.Unload(appDomain)
 
-    let private createEnvironment (config : AssemblyConfiguration) assemblyPath assembly testName = 
+    let private createEnvironment (config : AssemblyConfiguration) (assemblyPath:IToken) assembly testName = 
         let rec getSourcePath path = 
             let p = System.IO.DirectoryInfo(path)
 
@@ -73,14 +73,14 @@ module Runner =
             | Some(_) -> p.Parent.FullName |> getSourcePath
             | None -> p.FullName + "\\"
 
-        let path = assemblyPath |> IO.Path.GetDirectoryName |> getSourcePath
+        let path = assemblyPath.AssemblyPath |> IO.Path.GetDirectoryName |> getSourcePath
             
         { 
             TestName = testName;
             CanonicalizedName = testName |> Formatters.Basic.CanonicalizeString;
             RootPath = path;
             Assembly = assembly;
-            AssemblyPath = assemblyPath;
+            AssemblyPath = assemblyPath.AssemblyPath;
             Reporters = config.Reporters;
         }
 
@@ -100,10 +100,9 @@ module Runner =
     /// <param name="report">a way to report progress as the test executes</param>
     /// <param name="testName">the name of the test</param>
     /// <param name="token">the token representing the test assembly</param>
-    /// <param name="assembly">the test assembly</param>
     /// <param name="template">the template to use  to create an executable unit test</param>
-    let createTestFromTemplate (config : AssemblyConfiguration) (report : ExecutionStatus -> unit ) testName (token:IToken) assembly (Test(template)) =
-        let env = testName |> createEnvironment config token.AssemblyPath token.Assembly
+    let createTestFromTemplate (config : AssemblyConfiguration) (report : ExecutionStatus -> unit ) testName (token:IToken) (Test(template)) =
+        let env = testName |> createEnvironment config token token.Assembly
 
         report |> fileFoundReport env
 
@@ -182,7 +181,7 @@ module Runner =
     /// <param name="tests">the test templates to convert</param>
     let buildTestPlan (config : AssemblyConfiguration) report (token:IToken) (tests:(string * Test)[]) =
         tests
-            |> Array.map(fun (assemblyName, test) -> test |> createTestFromTemplate config report assemblyName token token.Assembly)
+            |> Array.map(fun (assemblyName, test) -> test |> createTestFromTemplate config report assemblyName token)
             |> Array.toList
 
     /// <summary>

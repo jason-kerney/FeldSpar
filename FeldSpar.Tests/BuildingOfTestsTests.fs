@@ -135,7 +135,7 @@ module BuildingOfTestsTests =
                 let config : AssemblyConfiguration = { Reporters = []}
 
                 let resultSummary = 
-                    let _, test = ``A Test That will fail`` |> createTestFromTemplate config ignore failDescription (env |> loadToken) (Data.testFeldSparAssembly)
+                    let _, test = ``A Test That will fail`` |> createTestFromTemplate config ignore failDescription (env |> loadToken)
                     test()
 
                 verify
@@ -190,7 +190,7 @@ module BuildingOfTestsTests =
                 let ex = IndexOutOfRangeException("The exception was out of range")
                 let ``A test that throws an exception`` =  Test((fun env -> raise ex))
 
-                let _, case = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore "A test that throws an exception" (env |> loadToken) (Data.testFeldSparAssembly)
+                let _, case = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore "A test that throws an exception" (env |> loadToken)
 
                 let summary = case()
                 let result = summary.TestResults

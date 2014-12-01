@@ -33,7 +33,7 @@ module Data =
         })
 
     let runTest description assemblyPath template = 
-            let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description assemblyPath testFeldSparAssembly
+            let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description assemblyPath
             test()
 
     let runAsTests assemblyPath templates = 
