@@ -84,7 +84,7 @@ module BuildingOfTestsTests =
 
                 let results =  "testing theory"
                                 |> convertTheoryToTests theory
-                                |> Array.map (fun (description, Test(test)) -> (description, env |> test))
+                                |> Array.map (fun { TestName = description; Test = Test(test) } -> (description, env |> test))
                                 |> Array.map (fun (description, result) ->
                                                 let resultString = 
                                                     match result with
