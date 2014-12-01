@@ -106,6 +106,12 @@ type TestInformation =
         Test: Test;
     }
 
+type UnitTest = 
+    {
+        TestName: string;
+        TestCase: unit -> TestResult;
+    }
+
 type IToken =
     abstract AssemblyName: string;
     abstract AssemblyPath: string;
