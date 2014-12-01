@@ -132,10 +132,16 @@ module BuildingOfTestsTests =
                 let ``A Test That will fail`` = 
                     Test((fun env -> failResult "Expected Failure"))
 
+                let ``A Test That will fail`` =
+                    {
+                        TestName = "A Test That will fail";
+                        Test = ``A Test That will fail``;
+                    }
+
                 let config : AssemblyConfiguration = { Reporters = []}
 
                 let resultSummary = 
-                    let _, test = ``A Test That will fail`` |> createTestFromTemplate config ignore failDescription (env |> loadToken)
+                    let _, test = ``A Test That will fail``.Test |> createTestFromTemplate config ignore ``A Test That will fail`` (env |> loadToken)
                     test()
 
                 verify
@@ -171,10 +177,16 @@ module BuildingOfTestsTests =
                             actual |> expectsToBe expected
                         ))
 
+                let info = 
+                    {
+                        TestName = testDescription;
+                        Test = ``Can0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~``
+                    }
+
                 verify
                     {
                         let! testRanCorrectly =(
-                            [("Can0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~", ``Can0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~``)] 
+                            [info] 
                                 |> runAsTests (env |> loadToken)
                                 |> reduceToFailures
                                 |> Seq.isEmpty 
@@ -190,7 +202,13 @@ module BuildingOfTestsTests =
                 let ex = IndexOutOfRangeException("The exception was out of range")
                 let ``A test that throws an exception`` =  Test((fun env -> raise ex))
 
-                let _, case = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore "A test that throws an exception" (env |> loadToken)
+                let ``A test that throws an exception`` = 
+                    {
+                        TestName = "A test that throws an exception";
+                        Test = ``A test that throws an exception``;
+                    }
+
+                let _, case = ``A test that throws an exception``.Test |> createTestFromTemplate { Reporters = [] } ignore ``A test that throws an exception`` (env |> loadToken)
 
                 let summary = case()
                 let result = summary.TestResults

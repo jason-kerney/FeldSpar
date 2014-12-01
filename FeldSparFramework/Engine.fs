@@ -101,7 +101,7 @@ module Runner =
     /// <param name="testName">the name of the test</param>
     /// <param name="token">the token representing the test assembly</param>
     /// <param name="template">the template to use  to create an executable unit test</param>
-    let createTestFromTemplate (config : AssemblyConfiguration) (report : ExecutionStatus -> unit ) testName (token:IToken) (Test(template)) =
+    let createTestFromTemplate (config : AssemblyConfiguration) (report : ExecutionStatus -> unit ) { TestName = testName; Test = Test(template) } (token:IToken) (Test(_)) =
         let env = testName |> createEnvironment config token
 
         report |> fileFoundReport env
@@ -181,7 +181,7 @@ module Runner =
     /// <param name="tests">the test templates to convert</param>
     let buildTestPlan (config : AssemblyConfiguration) report (token:IToken) (tests:TestInformation[]) =
         tests
-            |> Array.map(fun { TestName = testName; Test = test } -> test |> createTestFromTemplate config report testName token)
+            |> Array.map(fun info -> Test(fun _ -> Success) |> createTestFromTemplate config report info token)
             |> Array.toList
 
     /// <summary>

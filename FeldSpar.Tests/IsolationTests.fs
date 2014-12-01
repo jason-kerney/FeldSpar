@@ -29,6 +29,12 @@ module IsolationTests =
 
                             actual |> expectsToBe expected |> withFailComment "changer did not increment correctly"
                         ))
+                        
+                let ``First test to test isolation`` = 
+                    {
+                        TestName = "First test to test isolation";
+                        Test = ``First test to test isolation``;
+                    }
 
                 let ``Second test to test isolation`` = 
                     Test((fun env ->
@@ -40,7 +46,13 @@ module IsolationTests =
                             actual |> expectsToBe expected |> withFailComment "changer did not increment correctly expected"
                         ))
 
-                let results = [("First test to test isolation", ``First test to test isolation``); ("Second test to test isolation", ``Second test to test isolation``)] |> runAsTests (env|> loadToken)
+                let ``Second test to test isolation`` =
+                    {
+                        TestName = "Second test to test isolation"
+                        Test = ``Second test to test isolation``
+                    }
+
+                let results = [``First test to test isolation``; ``Second test to test isolation``] |> runAsTests (env|> loadToken)
                 let isolatedResults = results |> reduceToFailures |> Seq.isEmpty
 
                 let mainActual = changer.X

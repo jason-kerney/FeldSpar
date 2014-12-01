@@ -37,7 +37,7 @@ module Data =
             test()
 
     let runAsTests assemblyPath templates = 
-        templates |> Seq.map (fun (description, template) -> template |> runTest description assemblyPath)
+        templates |> Seq.map (fun info -> Test(fun _ -> Success) |> runTest info assemblyPath)
 
     let filteringSetUp = 
         let hasOnlySuccesses =
