@@ -5,9 +5,6 @@ open FeldSpar.Framework.Verification.ApprovalsSupport
 open ApprovalTests
 
 module Data =
-    type internal Marker = interface end
-    let testFeldSparAssembly = typeof<Marker>.Assembly
-
     let buildType =
 #if DEBUG
         "Debug"
