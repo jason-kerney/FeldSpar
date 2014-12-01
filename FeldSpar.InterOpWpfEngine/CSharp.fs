@@ -209,6 +209,10 @@ and ITestAssemblyModel =
     /// </summary>
     abstract member RunCommand : System.Windows.Input.ICommand with get
     /// <summary>
+    /// The ICommand used to run the tests in dubugger
+    /// </summary>
+    abstract member DebugCommand : System.Windows.Input.ICommand with get
+    /// <summary>
     /// The ICommand that is used to change the visibility of this assembly
     /// </summary>
     abstract member ToggleVisibilityCommand : System.Windows.Input.ICommand with get
@@ -217,6 +221,12 @@ and ITestAssemblyModel =
     /// </summary>
     /// <param name="ignored">this parameter is not used, but nessesary for the ICommand</param>
     abstract member Run : obj -> unit
+
+    /// <summary>
+    /// This launches debugger and runs the tests
+    /// </summary>
+    /// <param name="ignored">this parameter is not used, but nessesary for the ICommand</param>
+    abstract member Debug : obj -> unit
 
 /// <summary>
 /// This is the main model used to control and display tests
@@ -251,6 +261,10 @@ type ITestsMainModel =
     /// </summary>
     abstract RunCommand : System.Windows.Input.ICommand with get
     /// <summary>
+    /// The ICommand used to run all tests
+    /// </summary>
+    abstract DebugCommand : System.Windows.Input.ICommand with get
+    /// <summary>
     /// The ICommant used to add test assemblies
     /// </summary>
     abstract AddCommand : System.Windows.Input.ICommand with get
@@ -279,8 +293,10 @@ module Defaults =
             member this.Results 
                 with get () = new System.Collections.ObjectModel.ObservableCollection<TestResult>()
             member this.RunCommand with get () = emptyCommand
+            member this.DebugCommand with get () = emptyCommand
             member this.ToggleVisibilityCommand with get () = emptyCommand
             member this.Run param = ()
+            member this.Debug param = ()
             [<CLIEvent>]
             member this.DeletedFile = (new Event<EventHandler, EventArgs>()).Publish
         }
@@ -461,6 +477,22 @@ type TestAssemblyModel (path) as this =
         | Failure(ExceptionFailure(ex)) -> (TestStatus.Failure, ex.ToString())
         | Failure(Ignored(msg)) -> (TestStatus.Ignored, "Ignored:" + "\n" + msg)
         | Failure(StandardNotMet(path)) -> (TestStatus.Failure, sprintf "Gold Standard not met, check the comparison or configure comparison at %A" path)
+
+    let runWith runToken (this:TestAssemblyModel) =
+        async {
+            this.IsRunning <- true
+            results.Clear()
+
+            for test in tests do
+                test.Status <- TestStatus.None
+
+            let t = new Threading.Tasks.Task<unit>(fun () -> engine.RunTests(runToken))
+            t.Start()
+            do! Async.AwaitTask(t)
+
+            this.IsRunning <- false
+
+        } |> Async.Start
     
     do
         engine.TestFound.Add
@@ -545,25 +577,17 @@ type TestAssemblyModel (path) as this =
 
         member this.Results with get () = results
 
-        member this.Run _ = 
-            async {
-                this.ITestAssemblyModel.IsRunning <- true
-                results.Clear()
+        member this.Run _ = this |> runWith token
 
-                for test in tests do
-                    test.Status <- TestStatus.None
-
-                let t = new Threading.Tasks.Task<unit>(fun () -> engine.RunTests(token))
-                t.Start()
-                do! Async.AwaitTask(t)
-
-                this.ITestAssemblyModel.IsRunning <- false
-
-            } |> Async.Start
+        member this.Debug _ = this |> runWith (token |> withDebug)
 
         member this.RunCommand 
             with get () = 
                 new DelegateCommand(fun ignored -> this.ITestAssemblyModel.Run(ignored)) :> ICommand
+
+        member this.DebugCommand
+            with get () =
+                new DelegateCommand(fun ignored -> this.ITestAssemblyModel.Debug(ignored)) :> ICommand
 
         member this.ToggleVisibilityCommand 
             with get () =
@@ -613,10 +637,25 @@ type TestAssemblyModel (path) as this =
         } |> Async.Start
 
     /// <summary>
+    /// An asyncronous method to run tests.
+    /// </summary>
+    /// <param name="ignored">this parameter is not used but required to fullfil the ICommand contract</param>
+    member this.Debug _ = 
+        async {
+            this.ITestAssemblyModel.Debug null
+        } |> Async.Start
+
+    /// <summary>
     /// The ICommand used to run the tests
     /// </summary>
     member this.RunCommand 
         with get () = this.ITestAssemblyModel.RunCommand
+
+    /// <summary>
+    /// The ICommand used to run the tests
+    /// </summary>
+    member this.DebugCommand 
+        with get () = this.ITestAssemblyModel.DebugCommand
 
     /// <summary>
     /// The ICommand used to toggle if this assembly should be visible
@@ -630,6 +669,16 @@ type TestsMainModel () as this =
     let mutable assemblies = new ObservableCollection<ITestAssemblyModel>()
     let mutable isRunning = false
     let mutable selected : ITestDetailModel = Defaults.emptyTestDetailModel
+
+    let runIt runner (this:TestsMainModel) = 
+        let self = this :> ITestsMainModel
+        self.IsRunning <- true
+        for testAssemblyModel in self.Assemblies do
+            let model = testAssemblyModel
+            model |> runner
+            ()
+
+        self.IsRunning <- false
 
     do
         let itemsRemovedActions = [ NotifyCollectionChangedAction.Remove; NotifyCollectionChangedAction.Replace ]
@@ -691,14 +740,10 @@ type TestsMainModel () as this =
                 testAssemblyModel.DeletedFile.AddHandler onDelete
 
     member this.Run _ = 
-        let self = this :> ITestsMainModel
-        self.IsRunning <- true
-        for testAssemblyModel in self.Assemblies do
-            let model = testAssemblyModel
-            model.Run null
-            ()
+        this |> runIt (fun model -> model.Run null)
 
-        self.IsRunning <- false
+    member this.Debug _ = 
+        this |> runIt (fun model -> model.Debug null)
 
     member private this.GetTestItems (selector: ITestAssemblyModel -> 'b seq) =
         query { for assembly in assemblies do
@@ -744,6 +789,9 @@ type TestsMainModel () as this =
         member this.RunCommand
             with get () = new DelegateCommand((fun _ -> this.Run(null)), fun _ -> not this.ITestsMainModel.IsRunning) :> ICommand
 
+        member this.DebugCommand
+            with get () = new DelegateCommand((fun _ -> this.Debug(null)), fun _ -> not this.ITestsMainModel.IsRunning) :> ICommand
+
         member this.AddCommand
             with get () = new DelegateCommand(fun _ -> this.Add(null)) :> ICommand
 
@@ -772,6 +820,9 @@ type TestsMainModel () as this =
 
     member this.RunCommand
         with get () = this.ITestsMainModel.RunCommand
+        
+    member this.DebugCommand
+        with get () = this.ITestsMainModel.DebugCommand
 
     member this.AddCommand
         with get () = this.ITestsMainModel.AddCommand

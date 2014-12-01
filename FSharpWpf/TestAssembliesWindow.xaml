@@ -34,6 +34,7 @@
         <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Background="Lavender">
             <Menu Height="Auto" Visibility="Visible" IsMainMenu="True" Background="Lavender">
                 <MenuItem Header="_Run" Command="{Binding RunCommand}"></MenuItem>
+                <MenuItem Header="_Debug" Command="{Binding DebugCommand}"></MenuItem>
                 <MenuItem Header="_Add Test Suite" Command="{Binding AddCommand}"></MenuItem>
             </Menu>
         </DockPanel>
