@@ -32,12 +32,12 @@ module Data =
                         ]
         })
 
-    let runTest description assemblyPath template = 
-            let _, test = template |> createTestFromTemplate { Reporters = [] } ignore description assemblyPath
+    let runTest assemblyPath template = 
+            let _, test = template |> createTestFromTemplate { Reporters = [] } ignore assemblyPath
             test()
 
     let runAsTests assemblyPath templates = 
-        templates |> Seq.map (fun info -> Test(fun _ -> Success) |> runTest info assemblyPath)
+        templates |> Seq.map (fun info -> info |> runTest assemblyPath)
 
     let filteringSetUp = 
         let hasOnlySuccesses =

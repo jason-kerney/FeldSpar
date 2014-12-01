@@ -141,7 +141,7 @@ module BuildingOfTestsTests =
                 let config : AssemblyConfiguration = { Reporters = []}
 
                 let resultSummary = 
-                    let _, test = ``A Test That will fail``.Test |> createTestFromTemplate config ignore ``A Test That will fail`` (env |> loadToken)
+                    let _, test = ``A Test That will fail`` |> createTestFromTemplate config ignore (env |> loadToken)
                     test()
 
                 verify
@@ -208,7 +208,7 @@ module BuildingOfTestsTests =
                         Test = ``A test that throws an exception``;
                     }
 
-                let _, case = ``A test that throws an exception``.Test |> createTestFromTemplate { Reporters = [] } ignore ``A test that throws an exception`` (env |> loadToken)
+                let _, case = ``A test that throws an exception`` |> createTestFromTemplate { Reporters = [] } ignore (env |> loadToken)
 
                 let summary = case()
                 let result = summary.TestResults
