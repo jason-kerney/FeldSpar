@@ -106,6 +106,9 @@ module Runner =
 
         report |> fileFoundReport env
 
+        //if not System.Diagnostics.Debugger.IsAttached
+        //then System.Diagnostics.Debugger.Launch () |> ignore
+
         let testCase = (fun() -> 
                             let testingCode = (fun () ->
                                                     try
