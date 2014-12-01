@@ -225,3 +225,6 @@ pip-log.txt
 #############
 deploy/
 test/
+_test/
+_build/
+_deploy/

@@ -73,10 +73,10 @@ module Processors =
     /// Runs tests, saves the test result and returns the test result
     /// </summary>
     /// <param name="saver">A call that enables saving of results</param>
-    /// <param name="runner">The Call that takes an assembly path and runs all tests contained in the assembly</param>
-    /// <param name="testAssemblyPath">The path to a test assembly</param>
-    let runTestsAndSaveResults (saver:(string * #seq<ExecutionSummary>) list -> unit) (runner:string -> string * #seq<ExecutionSummary>) (testAssemblyPath:string list) = 
-        let testSummaries = testAssemblyPath |> List.map runner
+    /// <param name="runner">The Call that takes an token and runs all tests contained in the assembly</param>
+    /// <param name="tokens">A list of test assembly tokens/param>
+    let runTestsAndSaveResults (saver:(string * #seq<ExecutionSummary>) list -> unit) (runner:IToken -> string * #seq<ExecutionSummary>) (tokens:IToken list) = 
+        let testSummaries = tokens |> List.map (fun token -> runner token)
 
         saver testSummaries
 
@@ -91,9 +91,9 @@ module Processors =
     
         testsFeldSpar       
 
-    let runTests savePath runner tests =
+    let runTests savePath runner tokens =
         let saver = maybeSaveResults savePath (saveResults fileWriter)
-        let processor = (fun () -> runTestsAndSaveResults saver runner tests)
+        let processor = (fun () -> runTestsAndSaveResults saver runner tokens)
         let reporter = (printfn "%s")
 
         processWithReport reporter processor
@@ -132,7 +132,7 @@ type Launcher () =
 
             let pause = args.Contains (<@ Pause @>) || args.Contains (<@ Auto_Loop @>)
 
-            let testAssemblyPaths = args.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation )
+            let tokens = args.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation ) |> List.map getToken
 
             let runner = 
                 if args.Contains(<@ Verbosity @>)
@@ -163,27 +163,27 @@ type Launcher () =
             let autoLoop = args.Contains <@ Auto_Loop @> 
             if autoLoop 
             then
-                let paths = testAssemblyPaths
+                let paths = tokens
                 
-                for path in paths do
-                    let fileName = IO.Path.GetFileName path
-                    let path = IO.Path.GetDirectoryName path
+                for token in paths do
+                    let fileName = token.AssemblyName
+                    let path = IO.Path.GetDirectoryName token.AssemblyPath
                     let watcherA = new IO.FileSystemWatcher(path, fileName)
 
                     let changed (ar:IO.FileSystemEventArgs) = 
                         Threading.Thread.Sleep 100
-                        [ar.FullPath] |> runTests savePath runner |> ignore
+                        [ar.FullPath |> getToken] |> runTests savePath runner |> ignore
 
                     let created (ar:IO.FileSystemEventArgs) = 
                         Threading.Thread.Sleep 100
-                        [ar.FullPath] |> runTests savePath runner |> ignore
+                        [ar.FullPath |> getToken] |> runTests savePath runner |> ignore
 
                     watcherA.Changed.Add changed
                     watcherA.Created.Add created
 
                     watcherA.EnableRaisingEvents <- true
 
-            let results = runTests savePath runner testAssemblyPaths |> List.collect(fun (_, r) -> r)
+            let results = runTests savePath runner tokens |> List.collect(fun (_, r) -> r)
 
             if pause then Console.ReadKey true |> ignore
             
@@ -192,7 +192,7 @@ type Launcher () =
                 results 
                     |> List.filter
                         (
-                            fun { TestDescription = _;  TestCanonicalizedName = _; TestResults = r } -> 
+                            fun { TestName = _;  TestCanonicalizedName = _; TestResults = r } -> 
                                 
                                 match r with
                                 | Failure(Ignored(_)) -> false

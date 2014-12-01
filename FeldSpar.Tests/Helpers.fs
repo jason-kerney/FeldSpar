@@ -35,21 +35,21 @@ module Data =
     let filteringSetUp = 
         let hasOnlySuccesses =
             {
-                TestDescription = "successes only test";
+                TestName = "successes only test";
                 TestCanonicalizedName = "";
                 TestResults = Success
             }
 
         let hasOnlyFailures =
             {
-                TestDescription = "failures test";
+                TestName = "failures test";
                 TestCanonicalizedName = "";
                 TestResults = Failure(ExceptionFailure(new System.Exception()));
             }
 
         let hasMixedResults = 
             {
-                TestDescription = "mixed test";
+                TestName = "mixed test";
                 TestCanonicalizedName = "";
                 TestResults = Failure(GeneralFailure("This is a failure")); 
             }

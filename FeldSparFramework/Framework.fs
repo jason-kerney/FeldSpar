@@ -15,7 +15,7 @@ type TestResult =
 
 type ExecutionSummary =
     {
-        TestDescription : string;
+        TestName : string;
         TestCanonicalizedName : string;
         TestResults : TestResult;
     }
@@ -25,7 +25,7 @@ type ExecutionSummary =
 /// </summary>
 type FailureReport = 
     {
-        Name : string;
+        TestName : string;
         FailureType : FailureType;
     }
 
@@ -34,7 +34,7 @@ type FailureReport =
 /// </summary>
 type OutputReport =
     {
-        Name : string;
+        AssemblyName : string;
         Failures : FailureReport[];
         Successes : string[];
     }
@@ -100,8 +100,40 @@ type TestTheoryTemplate<'a> =
 type Theory<'a> =
     | Theory of TestTheoryTemplate<'a>
 
+type IToken =
+    abstract AssemblyName: string;
+    abstract AssemblyPath: string;
+    abstract Assembly: Reflection.Assembly;
+    abstract GetExportedTypes: unit -> Type[];
+    
+
+type RunningToken (assemblyPath) =
+    interface IToken with
+        member this.AssemblyPath = assemblyPath
+        member this.AssemblyName = IO.Path.GetFileName assemblyPath
+        member this.Assembly = assemblyPath |> IO.File.ReadAllBytes |> Reflection.Assembly.Load
+        member this.GetExportedTypes () = this.IToken.Assembly.GetExportedTypes()
+
+    member this.IToken = this :> IToken
+
 [<AutoOpen>]
 module Utilities =
+    /// <summary>
+    /// Constructs a token for running tests
+    /// </summary>
+    /// <param name="assemblyPath">The path to a test assembly</param>
+    let getToken assemblyPath = RunningToken(assemblyPath) :> IToken
+
+    /// <summary>
+    /// A way to programaticly know if in release or debug.
+    /// </summary>
+    let buildType =
+#if DEBUG
+        "Debug"
+#else
+        "Release"
+#endif
+
     /// <summary>
     /// Gets the failure message from a result or an empty string if success
     /// </summary>
@@ -159,6 +191,16 @@ module Utilities =
     /// </summary>
     let ``Not Yet Implemented`` = ignoreWith "Test not yet implemented"
 
+    /// <summary>
+    /// Returns a failure result of failure type 'Ignored' with a message indicating test is not yet implemented
+    /// </summary>
+    let ``Not yet implemented`` = ``Not Yet Implemented``
+
+    /// <summary>
+    /// Returns a failure result of failure type 'Ignored' with a message indicating test is not yet implemented
+    /// </summary>
+    let NotYetImplemented = ``Not Yet Implemented``
+
 
     /// <summary>
     /// Returns a failure result of failure type 'Ignored' with a message indicating test has an indeterminate test result.
@@ -188,28 +230,28 @@ module Utilities =
     /// </summary>
     /// <param name="name">The name of the test assembly</param>
     /// <param name="results">the test results</param>
-    let buildOutputReport (name, results:ExecutionSummary seq) =
+    let buildOutputReport (assemblyName, results:ExecutionSummary seq) =
         let successes = 
             results
             |> Seq.filter (fun result -> result.TestResults = Success)
-            |> Seq.sortBy (fun result -> result.TestDescription)
-            |> Seq.map (fun result -> result.TestDescription)
+            |> Seq.sortBy (fun result -> result.TestName)
+            |> Seq.map (fun result -> result.TestName)
             |> Seq.toArray
 
         let failures =
             results
             |> Seq.filter (fun result -> result.TestResults <> Success)
-            |> Seq.sortBy (fun result -> result.TestDescription)
-            |> Seq.map(fun { TestDescription = name; TestCanonicalizedName = _ ; TestResults = Failure(failType) } -> 
+            |> Seq.sortBy (fun result -> result.TestName)
+            |> Seq.map(fun { TestName = testName; TestCanonicalizedName = _ ; TestResults = Failure(failType) } -> 
                 {
-                    Name = name;
+                    TestName = testName;
                     FailureType = failType;
                 }
             )
             |> Seq.toArray
 
         {
-            Name = name;
+            AssemblyName = assemblyName;
             Failures = failures;
             Successes = successes;
         }

@@ -53,14 +53,14 @@ type Engine () =
 
     let report (status:ExecutionStatus) =
         match status with
-        | Found(token) -> token.Name |> found
-        | Running(token) -> token.Name |> running
-        | Finished(token, result) -> token.Name |> complete result
+        | Found(token) -> token.TestName |> found
+        | Running(token) -> token.TestName |> running
+        | Finished(token, result) -> token.TestName |> complete result
 
         ()
 
-    let doWork (work:(ExecutionStatus -> unit) -> string -> _) path =
-        path |> work report |> ignore
+    let doWork (work:(ExecutionStatus -> unit) -> IToken -> _) (token:IToken) =
+        token |> work report |> ignore
         
 
     /// <summary>
@@ -84,16 +84,16 @@ type Engine () =
     /// <summary>
     /// Looks for tests in assembly
     /// </summary>
-    /// <param name="path">the path of the assembly used to look for tests</param>
-    member this.FindTests (path:string) =
-        path |> doWork (findTestsAndReport false)
+    /// <param name="token">the token for the test assembly</param>
+    member this.FindTests (token:IToken) =
+        token |> doWork (findTestsAndReport false)
 
     /// <summary>
     /// Finds and runs all tests in a given assembly
     /// </summary>
-    /// <param name="path"></param>
-    member this.RunTests (path:string) =
-        path |> doWork (runTestsAndReport false)
+    /// <param name="token">the token for the test assembly</param>
+    member this.RunTests (token:IToken) =
+        token |> doWork (runTestsAndReport false)
 
 
 namespace FeldSpar.Api.Engine.ClrInterop.ViewModels
@@ -429,14 +429,13 @@ type TestAssemblyModel (path) as this =
 
     let deletedFile = new Event<_, _>()
 
-    let mutable assemblyPath = path
+    let mutable token = path |> getToken
     let engine = new Engine()
     let tests = new ObservableCollection<ITestDetailModel>()
     let results = new ObservableCollection<TestResult>()
     let knownTests = new Dictionary<string, ITestDetailModel>()
-    let watcher = new FileSystemWatcher(Path.GetDirectoryName(assemblyPath), "*.*")
+    let watcher = new FileSystemWatcher(Path.GetDirectoryName(token.AssemblyPath), "*.*")
 
-    let mutable name = Path.GetFileName(assemblyPath)
     let mutable isRunning = true
     let mutable isVisible = true
 
@@ -448,11 +447,11 @@ type TestAssemblyModel (path) as this =
         match args.ChangeType with
         | WatcherChangeTypes.Deleted -> ()
         | WatcherChangeTypes.Renamed -> 
-            assemblyPath <- args.FullPath
-            name <- args.Name
-            engine.FindTests(assemblyPath)
+            token <- args.FullPath |> getToken
+
+            engine.FindTests(token)
         | _ ->
-            engine.FindTests(assemblyPath)
+            engine.FindTests(token)
 
     let convert (result:TestResult) = 
         match result with
@@ -472,7 +471,7 @@ type TestAssemblyModel (path) as this =
                         let detail = new TestDetailModel()
                         detail.Name <- args.Name
                         detail.Status <- TestStatus.None
-                        detail.AssemblyName <- name
+                        detail.AssemblyName <- token.AssemblyName
                         detail.Parent <- this
 
                         tests.Add detail
@@ -504,7 +503,7 @@ type TestAssemblyModel (path) as this =
 
         watcher.EnableRaisingEvents <- true
 
-        engine.FindTests(assemblyPath)
+        engine.FindTests(token)
 
     /// <summary>
     /// A shortcut method to prevent the need for casting
@@ -538,9 +537,9 @@ type TestAssemblyModel (path) as this =
                     isRunning <- value
                     this.OnPropertyChanged "IsRunning"
 
-        member this.Name with get () = name
+        member this.Name with get () = token.AssemblyName
 
-        member this.AssemblyPath with get () = assemblyPath
+        member this.AssemblyPath with get () = token.AssemblyPath
 
         member this.Tests with get () = tests
 
@@ -554,7 +553,7 @@ type TestAssemblyModel (path) as this =
                 for test in tests do
                     test.Status <- TestStatus.None
 
-                let t = new Threading.Tasks.Task<unit>(fun () -> engine.RunTests(assemblyPath))
+                let t = new Threading.Tasks.Task<unit>(fun () -> engine.RunTests(token))
                 t.Start()
                 do! Async.AwaitTask(t)
 

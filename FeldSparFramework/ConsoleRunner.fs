@@ -22,12 +22,12 @@ module ConsoleRunner =
 
         match status with
         | Found(token) -> 
-            printfn "\t\tFound: '%s'" token.Name
+            printfn "\t\tFound: '%s'" token.TestName
         | Running(token) ->
-            printfn "\t\tRunning: '%s'" token.Name
+            printfn "\t\tRunning: '%s'" token.TestName
         | Finished(token, result) -> 
             let display status =
-                printfn "\t\t%s: '%s'" status token.Name
+                printfn "\t\t%s: '%s'" status token.TestName
 
             match result with
             | Success -> display "Success"
@@ -83,9 +83,8 @@ module ConsoleRunner =
                                     result + "\n" + sep + "\n"
                             )
 
-    let runAndReport ignoreAssemblyConfiguration reporter showDetails testAssemblyLocation = 
-        let name = testAssemblyLocation |> IO.Path.GetFileName
-        let tests = testAssemblyLocation |> runTestsAndReport ignoreAssemblyConfiguration reporter
+    let runAndReport ignoreAssemblyConfiguration reporter showDetails (token:IToken) = 
+        let tests = token |> runTestsAndReport ignoreAssemblyConfiguration reporter
         
         let failedTests = tests
                             |> reduceToFailures 
@@ -100,17 +99,16 @@ module ConsoleRunner =
                 |> seperateResults
                 |> printReports
 
-        (name, tests)
+        (token.AssemblyName, tests)
         
-                
-    let runAndReportAll ignoreAssemblyConfiguration showDetails testAssemblyLocation =
-        runAndReport ignoreAssemblyConfiguration reportAll showDetails testAssemblyLocation
+    let runAndReportAll ignoreAssemblyConfiguration showDetails (token:IToken) =
+        runAndReport ignoreAssemblyConfiguration reportAll showDetails token
 
-    let runAndReportResults ignoreAssemblyConfiguration showDetails testAssemblyLocation =
-        runAndReport ignoreAssemblyConfiguration reportOnlyResults showDetails testAssemblyLocation
+    let runAndReportResults ignoreAssemblyConfiguration showDetails (token:IToken) =
+        runAndReport ignoreAssemblyConfiguration reportOnlyResults showDetails token
 
-    let runAndReportFailure ignoreAssemblyConfiguration showDetails testAssemblyLocation =
-        runAndReport ignoreAssemblyConfiguration reportFailure showDetails testAssemblyLocation
+    let runAndReportFailure ignoreAssemblyConfiguration showDetails (token:IToken) =
+        runAndReport ignoreAssemblyConfiguration reportFailure showDetails token
 
-    let runAndReportNone ignoreAssemblyConfiguration showDetails testAssemblyLocation =
-        runAndReport ignoreAssemblyConfiguration reportNone showDetails testAssemblyLocation
+    let runAndReportNone ignoreAssemblyConfiguration showDetails (token:IToken) =
+        runAndReport ignoreAssemblyConfiguration reportNone showDetails token

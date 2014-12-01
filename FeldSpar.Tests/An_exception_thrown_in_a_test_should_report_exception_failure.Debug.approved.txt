@@ -1,0 +1,5 @@
+﻿Failure
+  (ExceptionFailure
+     System.IndexOutOfRangeException: The exception was out of range
+   at Microsoft.FSharp.Core.Operators.Raise[T](Exception exn)
+   at FeldSpar.Console.Tests.BuildingOfTestsTests.A test that throws an exception@ ...

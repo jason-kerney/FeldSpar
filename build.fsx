@@ -11,9 +11,9 @@ let releaseDir = "bin/Release/"
 
 
 
-let buildDir = "./build/"
-let testDir = "./test/"
-let deployDir = "./deploy/"
+let buildDir = "./_build/"
+let testDir = "./_test/"
+let deployDir = "./_deploy/"
 
 let nugetDeployDir = 
     let t = "C:/Nuget.Local/"
@@ -67,7 +67,7 @@ Target "Test" (fun _ ->
         Array.map(fun fi -> fi.FullName) |>
         Array.filter(fun fi -> fi.Contains("approved")) |>
         Copy testDir
-    let result = Shell.Exec (buildDir + "FeldSpar.Console.exe" ,"--v RESULTS --r \".\\RunReport.json\"  --a \".\\FeldSpar.Tests.dll\"", ?dir=Some(testDir))
+    let result = Shell.Exec (buildDir + "FeldSpar.Console.exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar.Tests.dll\"", ?dir=Some(testDir))
     if result <> 0 then failwith "Failed Tests"
 )
 
