@@ -17,6 +17,7 @@ module Data =
                                                 member this.AssemblyName = env.AssemblyPath |> System.IO.Path.GetFileName;
                                                 member this.AssemblyPath = env.AssemblyPath;
                                                 member this.GetExportedTypes () = env.Assembly.GetExportedTypes()
+                                                member this.IsDebugging = false;
                                           }
 
     let ``Setup Global Reports`` = 

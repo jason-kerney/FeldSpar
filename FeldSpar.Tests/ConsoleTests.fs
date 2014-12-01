@@ -111,6 +111,7 @@ module ConsoleTests =
                                         member this.AssemblyName = "";
                                         member this.Assembly = null;
                                         member this.GetExportedTypes() = null;
+                                        member this.IsDebugging = false;
                               }]
 
                 let results = runTestsAndSaveResults saver runner token

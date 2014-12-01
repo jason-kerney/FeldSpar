@@ -21,6 +21,7 @@ type CommandArguments =
     | [<AltCommandLine("--al")>]Auto_Loop
     | [<AltCommandLine("--ur")>]UseReporters
     | [<AltCommandLine("--p")>]Pause
+    | Debug
 with
     interface IArgParserTemplate with
         member s.Usage =
@@ -31,6 +32,7 @@ with
             | Auto_Loop -> "This makes the command contiuously run executing on every compile."
             | UseReporters _ -> "This enables the use of reporters configured in the test"
             | Pause -> "This makes the console wait for key press inorder to exit. This is automaticly in effect if \"auto-loop\" is used"
+            | Debug -> "This launches the debugger to allow you to debug the tests"
 
 [<AutoOpen>]
 module Processors = 
@@ -131,8 +133,12 @@ type Launcher () =
 
 
             let pause = args.Contains (<@ Pause @>) || args.Contains (<@ Auto_Loop @>)
+            let tokenGetter = 
+                if args.Contains (<@ Debug @>)
+                then getToken >> withDebug
+                else getToken
 
-            let tokens = args.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation ) |> List.map getToken
+            let tokens = args.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation ) |> List.map tokenGetter
 
             let runner = 
                 if args.Contains(<@ Verbosity @>)

@@ -120,6 +120,7 @@ type IToken =
     abstract AssemblyName: string;
     abstract AssemblyPath: string;
     abstract Assembly: Reflection.Assembly;
+    abstract IsDebugging: bool;
     abstract GetExportedTypes: unit -> Type[];
     
 
@@ -128,9 +129,11 @@ type RunningToken (assemblyPath) =
         member this.AssemblyPath = assemblyPath
         member this.AssemblyName = IO.Path.GetFileName assemblyPath
         member this.Assembly = assemblyPath |> IO.File.ReadAllBytes |> Reflection.Assembly.Load
+        member this.IsDebugging = false
         member this.GetExportedTypes () = this.IToken.Assembly.GetExportedTypes()
 
     member this.IToken = this :> IToken
+
 
 [<AutoOpen>]
 module Utilities =
@@ -139,6 +142,22 @@ module Utilities =
     /// </summary>
     /// <param name="assemblyPath">The path to a test assembly</param>
     let getToken assemblyPath = RunningToken(assemblyPath) :> IToken
+
+    let withDebug (token:IToken) = { new IToken with
+                                        member this.AssemblyPath = token.AssemblyPath;
+                                        member this.AssemblyName = token.AssemblyName;
+                                        member this.Assembly = token.Assembly;
+                                        member this.IsDebugging = true;
+                                        member this.GetExportedTypes () = token.GetExportedTypes ();
+                                    }
+
+    let withOutDebug (token:IToken) = { new IToken with
+                                        member this.AssemblyPath = token.AssemblyPath;
+                                        member this.AssemblyName = token.AssemblyName;
+                                        member this.Assembly = token.Assembly;
+                                        member this.IsDebugging = false;
+                                        member this.GetExportedTypes () = token.GetExportedTypes ();
+                                      }
 
     /// <summary>
     /// Gets the failure message from a result or an empty string if success
