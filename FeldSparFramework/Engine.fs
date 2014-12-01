@@ -213,7 +213,7 @@ module Runner =
     let private isTheory (t:Type) =
         t.IsGenericType && (t.GetGenericTypeDefinition()) = (typeof<Theory<_>>.GetGenericTypeDefinition())
 
-    let private getTestsWith (map:PropertyInfo -> (string * Test)[]) (config : AssemblyConfiguration) report (token:IToken) = 
+    let private getTestsWith (map:PropertyInfo -> (TestInformation)[]) (config : AssemblyConfiguration) report (token:IToken) = 
         let filter (prop:PropertyInfo) = 
             match prop.PropertyType with
             | t when t = typeof<Test> -> true
@@ -228,6 +228,7 @@ module Runner =
             |> Array.concat
 
         tests
+            |> Array.map(fun { TestName = testName; Test = test} -> (testName, test))
             |> shuffleTests
             |> buildTestPlan config report token
 
@@ -286,8 +287,7 @@ module Runner =
     let findTestsAndReport ignoreAssemblyConfig report (token:IToken) = 
         let (token, config, mapper) = token |> findConfiguration ignoreAssemblyConfig |> getMapper |> determinEnvironmentAndMapping 
 
-        let mapper1 = (fun pi -> pi |> mapper |> Array.map (fun { TestName = testName; Test = test} -> (testName, test)))
-        token |> getTestsWith mapper1 config report
+        token |> getTestsWith mapper config report
 
     /// <summary>
     /// Searches test assembly for tests and runs them. It then reports as it finds them, runs, them, and they complete.
