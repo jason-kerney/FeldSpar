@@ -62,6 +62,7 @@
     <Compile Include="TestAssemblyStatusColorValueConverter.fs" />
     <Compile Include="TestStatusColorValueConverter.fs" />
     <Compile Include="TestStatusToFontWeightConverter.fs" />
+    <Compile Include="InverseBooleanConverter.fs" />
     <Resource Include="TestAssembliesWindow.xaml" />
     <Compile Include="App.fs" />
     <Content Include="packages.config" />

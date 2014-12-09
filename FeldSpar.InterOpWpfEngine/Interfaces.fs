@@ -133,6 +133,10 @@ type ITestsMainModel =
     /// </summary>
     abstract IsRunning : bool with get, set
     /// <summary>
+    /// Indicates if the debugger is attached
+    /// </summary>
+    abstract IsInDebug: bool with get
+    /// <summary>
     /// The currently selected test's fail description
     /// </summary>
     abstract Description : string with get

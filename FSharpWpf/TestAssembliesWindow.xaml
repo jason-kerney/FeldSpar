@@ -9,6 +9,7 @@
             <valueConverters1:BinaryVisibilityConverter x:Key="binaryVisibility" />
             <valueConverters1:TestAssemblyStatusColorValueConverter x:Key="assemblyStatusColor" />
             <valueConverters1:TestStatusToFontWeightConverter x:Key="testStatusFontWeight" />
+            <valueConverters1:InverseBooleanConverter x:Key="inverseBooleanConverter" />
             <CollectionViewSource Source="{Binding Tests, Mode=OneWay}" x:Key="collectionSource">
                 <CollectionViewSource.SortDescriptions>
                     <componentModel:SortDescription PropertyName="Name" />
@@ -33,7 +34,7 @@
 
         <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Background="Lavender">
             <Menu Height="Auto" Visibility="Visible" IsMainMenu="True" Background="Lavender">
-                <MenuItem Header="_Run" Command="{Binding RunCommand}"></MenuItem>
+                <MenuItem Header="_Run" Command="{Binding RunCommand}" IsEnabled="{Binding IsInDebug, Converter={StaticResource inverseBooleanConverter}}"></MenuItem>
                 <MenuItem Header="_Debug" Command="{Binding DebugCommand}"></MenuItem>
                 <MenuItem Header="_Add Test Suite" Command="{Binding AddCommand}"></MenuItem>
             </Menu>

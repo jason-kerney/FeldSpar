@@ -19,11 +19,8 @@ module TestStatusColors =
 
 namespace FeldSparGuiFSharp.ValueConverters
 open System
-open System.Collections.Generic
 open System.Globalization
-open System.Windows
 open System.Windows.Data
-open FeldSpar.Api.Engine.ClrInterop
 open FeldSpar.Api.Engine.ClrInterop.ViewModels
 open FeldSparGuiFSharp.StyleConstants
 open System.Windows.Media

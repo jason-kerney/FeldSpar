@@ -12,7 +12,9 @@ type TestsMainModel () as this =
 
     let mutable assemblies = new ObservableCollection<ITestAssemblyModel>()
     let mutable isRunning = false
+    let mutable isDebug = false
     let mutable selected : ITestDetailModel = Defaults.emptyTestDetailModel
+    let mutable checker = new System.Threading.Timer((fun _ -> ()), (), 0, 0)
 
     let runIt runner (this:TestsMainModel) = 
         let self = this :> ITestsMainModel
@@ -23,6 +25,14 @@ type TestsMainModel () as this =
             ()
 
         self.IsRunning <- false
+
+    let rec checkDebug (_ignore:obj) = 
+        if System.Diagnostics.Debugger.IsAttached <> isDebug
+        then 
+            isDebug <- System.Diagnostics.Debugger.IsAttached
+            this.OnPropertyChanged("IsInDebug")
+
+        checker <- new System.Threading.Timer(checkDebug, (), 100, 100)
 
     do
         let itemsRemovedActions = [ NotifyCollectionChangedAction.Remove; NotifyCollectionChangedAction.Replace ]
@@ -43,6 +53,8 @@ type TestsMainModel () as this =
 
                         if args.OldItems.Count > 0 then this.OnPropertyChanged("Tests")
             )
+        
+        checker <- new System.Threading.Timer(checkDebug, (), 100, 100)
 
     member private this.itemOnPropertyChangedHandler =
         new PropertyChangedEventHandler(fun _ args -> this.itemOnPropertyChanged args) 
@@ -139,7 +151,12 @@ type TestsMainModel () as this =
         member this.AddCommand
             with get () = new DelegateCommand(fun _ -> this.Add(null)) :> ICommand
 
+        member this.IsInDebug
+            with get () = System.Diagnostics.Debugger.IsAttached
+
     member private this.ITestsMainModel = this :> ITestsMainModel
+
+    member this.IsInDebug with get () = this.ITestsMainModel.IsInDebug
 
     member this.Assemblies
         with get () = this.ITestsMainModel.Assemblies
