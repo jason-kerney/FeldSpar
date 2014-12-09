@@ -52,7 +52,13 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
-    <Compile Include="CSharp.fs" />
+    <Compile Include="Core.fs" />
+    <Compile Include="Interfaces.fs" />
+    <Compile Include="Defaults.fs" />
+    <Compile Include="DelegateCommand.fs" />
+    <Compile Include="TestDetailModel.fs" />
+    <Compile Include="TestAssemblyModel.fs" />
+    <Compile Include="TestsMainModel.fs" />
     <Content Include="packages.config" />
     <Compile Include="AssemblyInfo.fs" />
   </ItemGroup>
