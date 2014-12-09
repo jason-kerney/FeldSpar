@@ -108,6 +108,8 @@ module Runner =
 
         if token.IsDebugging && not System.Diagnostics.Debugger.IsAttached
         then System.Diagnostics.Debugger.Launch () |> ignore
+        else
+            ()
 
         let testCase = (fun() -> 
                             let testingCode = (fun () ->
