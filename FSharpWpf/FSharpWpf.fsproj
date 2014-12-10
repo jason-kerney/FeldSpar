@@ -52,11 +52,11 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
   <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
     <Resource Include="ApplicationResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
-    <Compile Include="AssemblyInfo.fs" />
     <Compile Include="BinaryVisibilityConverter.fs" />
     <Compile Include="FailedTestCountToTextConverter.fs" />
     <Compile Include="TestAssemblyStatusColorValueConverter.fs" />
