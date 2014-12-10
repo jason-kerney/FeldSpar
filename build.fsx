@@ -51,6 +51,10 @@ Target "BuildConsole" (fun _ ->
     build "./FeldSpar.Console/" releaseDir buildDir "BuildConsole-Output:" fSharpProjects
 )
 
+Target "BuildApi" (fun _ ->
+    build "./FeldSpar.InterOpWpfEngine/" releaseDir buildDir "BuildConsole-Output:" fSharpProjects
+)
+
 Target "BuildGui" (fun _ ->
     build "./FSharpWpf/" releaseDir buildDir "BuildGui-Output:" fSharpProjects
 )
@@ -120,6 +124,7 @@ Target "LocalDeploy" (fun _ ->
 "Clean"
     ==> "BuildApp"
     ==> "BuildConsole"
+    ==> "BuildApi"
     ==> "BuildGui"
     ==> "BuildTest"
     ==> "Test"
