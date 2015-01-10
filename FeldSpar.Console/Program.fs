@@ -107,9 +107,9 @@ type Launcher () =
         try
             let parser = UnionArgParser.Create<CommandArguments>()
 
-            let args = parser.Parse(args)
+            let argsNew = parser.Parse(args)
 
-            let ignoreConfig = args.Contains(<@ UseReporters @>) |> not
+            let ignoreConfig = argsNew.Contains(<@ UseReporters @>) |> not
 
             let assebmlyValidation a =
                 let ext = IO.Path.GetExtension a
@@ -132,26 +132,26 @@ type Launcher () =
                     failwith (sprintf "verbosity must be one of: %A" vebosityLevels)
 
 
-            let pause = args.Contains (<@ Pause @>) || args.Contains (<@ Auto_Loop @>)
+            let pause = argsNew.Contains (<@ Pause @>) || argsNew.Contains (<@ Auto_Loop @>)
             let tokenGetter = 
-                if args.Contains (<@ Debug @>)
+                if argsNew.Contains (<@ Debug @>)
                 then getToken >> withDebug
                 else getToken
 
-            let tokens = args.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation ) |> List.map tokenGetter
+            let tokens = argsNew.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation ) |> List.map tokenGetter
 
             let runner = 
-                if args.Contains(<@ Verbosity @>)
+                if argsNew.Contains(<@ Verbosity @>)
                 then
-                    args.PostProcessResult(<@ Verbosity @>, verbosityCheck)
+                    argsNew.PostProcessResult(<@ Verbosity @>, verbosityCheck)
                 else (runAndReportNone ignoreConfig false)
 
             let savePath =
-                let saveJSONReport = args.Contains <@ Report_Location @>
+                let saveJSONReport = argsNew.Contains <@ Report_Location @>
 
                 if saveJSONReport
                 then
-                    let pathValue = args.GetResult <@ Report_Location @>
+                    let pathValue = argsNew.GetResult <@ Report_Location @>
                     let fName = System.IO.Path.GetFileName pathValue
 
                     if fName = null
@@ -166,7 +166,7 @@ type Launcher () =
                 else
                     None
 
-            let autoLoop = args.Contains <@ Auto_Loop @> 
+            let autoLoop = argsNew.Contains <@ Auto_Loop @> 
             if autoLoop 
             then
                 let paths = tokens
