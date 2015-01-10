@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>Feldspar by jason-kerney</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Feldspar</h1>
+        <h2>Opinionated Purely Functional Unit Test Framework</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/jason-kerney/FeldSpar/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/jason-kerney/FeldSpar/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/jason-kerney/FeldSpar" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a id="feld-spar-f" class="anchor" href="#feld-spar-f" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>Feld Spar F#</strong>
+</h1>
+
+<blockquote>
+<p>An opinionated test framework designed to be functional from the ground up.</p>
+</blockquote>
+
+<h3>
+<a id="" class="anchor" href="#" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://ci.appveyor.com/project/jason-kerney/feldspar"><img src="https://ci.appveyor.com/api/projects/status/b5xo1bn8nxr7h06q?svg=true" alt="Build status"></a>
+</h3>
+
+<h2>
+<a id="available-on-nuget" class="anchor" href="#available-on-nuget" aria-hidden="true"><span class="octicon octicon-link"></span></a>Available on Nuget</h2>
+
+<h3>
+<a id="----framework" class="anchor" href="#----framework" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+<a href="https://www.nuget.org/packages/FeldSparFramework/"><img src="http://img.shields.io/nuget/v/FeldSparFramework.svg?style=flat" alt="NuGet Status"></a> -- Framework</h3>
+
+<h3>
+<a id="----console-runner" class="anchor" href="#----console-runner" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+<a href="https://www.nuget.org/packages/FeldSpar.Console/"><img src="http://img.shields.io/nuget/v/FeldSpar.Console.svg?style=flat" alt="NuGet Status"></a> -- Console Runner</h3>
+
+<h3>
+<a id="----gui-runner" class="anchor" href="#----gui-runner" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+<a href="https://www.nuget.org/packages/FeldSparGui/"><img src="http://img.shields.io/nuget/v/FeldSparGui.svg?style=flat" alt="NuGet Status"></a> -- GUI Runner</h3>
+
+<h3>
+<a id="----api-for-creating-a-gui-runner-for-feldspar" class="anchor" href="#----api-for-creating-a-gui-runner-for-feldspar" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+<a href="https://www.nuget.org/packages/FeldSpar.GuiApi.Engine/"><img src="http://img.shields.io/nuget/v/FeldSpar.GuiApi.Engine.svg?style=flat" alt="NuGet Status"></a> -- API for creating a GUI Runner for FeldSpar</h3>
+
+<hr>
+
+<h2>
+<a id="whats-different" class="anchor" href="#whats-different" aria-hidden="true"><span class="octicon octicon-link"></span></a>What's Different</h2>
+
+<ol>
+<li>Function Paradigm from the start</li>
+<li>Test Memory Isolation</li>
+<li>Random Test Execution</li>
+<li>Not a xUnit Clone</li>
+</ol>
+
+<hr>
+
+<h2>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h2>
+
+<h3>
+<a id="how-to-write-a-unit-test" class="anchor" href="#how-to-write-a-unit-test" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to write a unit test</h3>
+
+<div class="highlight highlight-fsharp"><pre><span class="pl-k">module</span> <span class="pl-en">BasicTests</span> <span class="pl-k">=</span>
+<span class="pl-k">open</span> <span class="pl-s3">FeldSpar.<span class="pl-s3">Framework</span></span>
+<span class="pl-k">open</span> <span class="pl-s3">FeldSpar.<span class="pl-s3">Framework</span>.<span class="pl-s3">Verification</span></span>
+<span class="pl-k">open</span> <span class="pl-s3">FeldSpar.<span class="pl-s3">Framework</span>.<span class="pl-s3">Verification</span>.<span class="pl-s3">ApprovalSupport</span></span>
+
+    let ``Adding <span class="pl-c1">6</span> and <span class="pl-c1">4</span> equals <span class="pl-c1">10</span>`` <span class="pl-k">=</span> 
+        Test((<span class="pl-k">fun</span> _ <span class="pl-k">-&gt;</span>
+                <span class="pl-st">let</span> x <span class="pl-k">=</span> <span class="pl-c1">6</span>
+                <span class="pl-st">let</span> y <span class="pl-k">=</span> <span class="pl-c1">4</span>
+
+               <span class="pl-c">// Before version 0.5</span>
+               <span class="pl-c">// (x + y) expectsToBe 10 "Addition failed 6 + 4 &lt;&gt; %d but did equal %d"</span>
+
+               <span class="pl-c">// After version 0.5</span>
+               (x <span class="pl-k">+</span> y) expectsToBe <span class="pl-c1">10</span>
+            ))
+
+    let ``A test <span class="pl-k">with</span> multiple checks to deterime a good result`` <span class="pl-k">=</span>
+        Test((<span class="pl-k">fun</span> _ <span class="pl-k">-&gt;</span>
+                <span class="pl-st">let</span> x <span class="pl-k">=</span> <span class="pl-c1">6</span>
+                <span class="pl-st">let</span> y <span class="pl-k">=</span> <span class="pl-c1">4</span>
+                <span class="pl-st">let</span> z <span class="pl-k">=</span> x <span class="pl-k">+</span> y
+
+                verify
+                    {
+                        <span class="pl-c">// Before version 0.5</span>
+                        <span class="pl-c">// let! goodX = x expectsToBe 6 "x failed expected %d but got %d"</span>
+                        <span class="pl-c">// let! goodY = y expectsToBe 4 "y failed expected %d but got %d"</span>
+                        <span class="pl-c">// let! goodZ = z expectsToBe 10 "(x + y) failed expected %d but got %d"</span>
+
+                        <span class="pl-c">// After version 0.5</span>
+                        <span class="pl-st">let!</span> goodX <span class="pl-k">=</span> x expectsToBe <span class="pl-c1">6</span> <span class="pl-k">|&gt;</span> withFailComment <span class="pl-s1"><span class="pl-pds">"</span>x was wrong<span class="pl-pds">"</span></span>
+                        <span class="pl-st">let!</span> goodY <span class="pl-k">=</span> y expectsToBe <span class="pl-c1">4</span> <span class="pl-k">|&gt;</span> withFailComment <span class="pl-s1"><span class="pl-pds">"</span>y was wrong<span class="pl-pds">"</span></span>
+                        <span class="pl-st">let!</span> goodZ <span class="pl-k">=</span> z expectsToBe <span class="pl-c1">10</span> <span class="pl-k">|&gt;</span> withFailComment <span class="pl-s1"><span class="pl-pds">"</span>z was wrong<span class="pl-pds">"</span></span>
+                        return Success
+                    }
+            ))
+
+    <span class="pl-c">(*This is how you quickly ignore a test*)</span>
+    let ``This test is not ready yet <span class="pl-st">and</span><span class="pl-en"> therefore</span> <span class="pl-v">is</span> <span class="pl-v">ignored</span>`` <span class="pl-k">=</span>
+        ITest(<span class="pl-k">fun</span> <span class="pl-v">env</span> <span class="pl-k">-&gt;</span> Success)
+
+    let ``Gold Standard Tests look like this <span class="pl-k">for</span> strings`` <span class="pl-k">=</span>
+        Test(<span class="pl-k">fun</span> <span class="pl-v">env</span> <span class="pl-k">-&gt;</span>
+                <span class="pl-st">let</span> env <span class="pl-k">=</span> env <span class="pl-k">|&gt;</span> addReporter<span class="pl-k">&lt;</span><span class="pl-s3">ApprovalTests</span>.<span class="pl-s3">Reporters.</span>DiffReporter<span class="pl-k">&gt;</span>
+
+                <span class="pl-s1"><span class="pl-pds">"</span>My string under test<span class="pl-pds">"</span></span> <span class="pl-k">|&gt;</span> checkAgainstStringStandard env
+            )
+
+    let ``This is a Combinatory Gold Standard Testing`` <span class="pl-k">=</span>
+        Test(<span class="pl-k">fun</span> <span class="pl-v">env</span> <span class="pl-k">-&gt;</span>
+            <span class="pl-st">let</span> names <span class="pl-k">=</span> <span class="pl-k">[</span><span class="pl-s1"><span class="pl-pds">"</span>Tom<span class="pl-pds">"</span></span><span class="pl-k">;</span> <span class="pl-s1"><span class="pl-pds">"</span>Jane<span class="pl-pds">"</span></span><span class="pl-k">;</span> <span class="pl-s1"><span class="pl-pds">"</span>Tarzan<span class="pl-pds">"</span></span><span class="pl-k">;</span> <span class="pl-s1"><span class="pl-pds">"</span>Stephanie<span class="pl-pds">"</span></span><span class="pl-k">]</span>
+            <span class="pl-st">let</span> amounts <span class="pl-k">=</span> <span class="pl-k">[</span><span class="pl-c1">11</span><span class="pl-k">;</span> <span class="pl-c1">2</span><span class="pl-k">;</span> <span class="pl-c1">5</span><span class="pl-k">;]</span>
+            <span class="pl-st">let</span> items <span class="pl-k">=</span> <span class="pl-k">[</span><span class="pl-s1"><span class="pl-pds">"</span>pears<span class="pl-pds">"</span></span><span class="pl-k">;</span><span class="pl-s1"><span class="pl-pds">"</span>earrings<span class="pl-pds">"</span></span><span class="pl-k">;</span><span class="pl-s1"><span class="pl-pds">"</span>cups<span class="pl-pds">"</span></span><span class="pl-k">]</span>
+
+            <span class="pl-st">let</span><span class="pl-en"> createSentance</span> <span class="pl-v">item</span> <span class="pl-v">amount</span> <span class="pl-v">name</span> <span class="pl-k">=</span> sprintf <span class="pl-s1"><span class="pl-pds">"</span><span class="pl-c1">%s</span> has <span class="pl-c1">%d</span> <span class="pl-c1">%s</span><span class="pl-pds">"</span></span> name amount item
+
+            createSentance
+                <span class="pl-k">|&gt;</span> calledWithEachOfThese items
+                <span class="pl-k">|&gt;</span> andAlsoEachOfThese amounts
+                <span class="pl-k">|&gt;</span> andAlsoEachOfThese names
+                <span class="pl-k">|&gt;</span> checkAllAgainstStandard env
+        )
+
+    let ``This is a theory Test`` <span class="pl-k">=</span>
+        Theory({
+                    Data <span class="pl-k">=</span> <span class="pl-k">[</span>
+                                (<span class="pl-c1">1</span>, <span class="pl-s1"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>)<span class="pl-k">;</span>
+                                (<span class="pl-c1">2</span>, <span class="pl-s1"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span>)<span class="pl-k">;</span>
+                                (<span class="pl-c1">3</span>, <span class="pl-s1"><span class="pl-pds">"</span>Fizz<span class="pl-pds">"</span></span>)<span class="pl-k">;</span>
+                                (<span class="pl-c1">5</span>, <span class="pl-s1"><span class="pl-pds">"</span>Buzz<span class="pl-pds">"</span></span>)<span class="pl-k">;</span>
+                                (<span class="pl-c1">6</span>, <span class="pl-s1"><span class="pl-pds">"</span>Fizz<span class="pl-pds">"</span></span>)<span class="pl-k">;</span>
+                                (<span class="pl-c1">10</span>,<span class="pl-s1"><span class="pl-pds">"</span>Buzz<span class="pl-pds">"</span></span>)<span class="pl-k">;</span>
+                                (<span class="pl-c1">15</span>,<span class="pl-s1"><span class="pl-pds">"</span>FizzBuzz<span class="pl-pds">"</span></span>)
+                    <span class="pl-k">]</span> <span class="pl-k">|&gt;</span> <span class="pl-s3">List</span>.toSeq
+                    Base <span class="pl-k">=</span> 
+                    {
+                        UnitDescription <span class="pl-k">=</span> (<span class="pl-k">fun</span> (<span class="pl-v">n</span>,<span class="pl-v">s</span>) <span class="pl-k">-&gt;</span> sprintf <span class="pl-s1"><span class="pl-pds">"</span>test converts <span class="pl-c1">%d</span> into <span class="pl-cce">\"</span><span class="pl-c1">%s</span><span class="pl-cce">\"</span><span class="pl-pds">"</span></span> n s)
+                        UnitTest <span class="pl-k">=</span> 
+                            (<span class="pl-k">fun</span> (<span class="pl-v">n</span>, <span class="pl-v">expected</span>) _ <span class="pl-k">-&gt;</span>
+                                <span class="pl-st">let</span> result <span class="pl-k">=</span> 
+                                    <span class="pl-k">match</span> n <span class="pl-k">with</span>
+                                    <span class="pl-k">|</span> v <span class="pl-k">when</span> v <span class="pl-k">%</span> <span class="pl-c1">15</span> <span class="pl-k">=</span> <span class="pl-c1">0</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-s1"><span class="pl-pds">"</span>FizzBuzz<span class="pl-pds">"</span></span>
+                                    <span class="pl-k">|</span> v <span class="pl-k">when</span> v <span class="pl-k">%</span> <span class="pl-c1">5</span> <span class="pl-k">=</span> <span class="pl-c1">0</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-s1"><span class="pl-pds">"</span>Buzz<span class="pl-pds">"</span></span>
+                                    <span class="pl-k">|</span> v <span class="pl-k">when</span> v <span class="pl-k">%</span> <span class="pl-c1">3</span> <span class="pl-k">=</span> <span class="pl-c1">0</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-s1"><span class="pl-pds">"</span>Fizz<span class="pl-pds">"</span></span>
+                                    <span class="pl-k">|</span> v <span class="pl-k">-</span><span class="pl-k">&gt;</span> v.ToString<span class="pl-c1">()</span>
+
+                                result <span class="pl-k">|&gt;</span> expectsToBe expected
+                            )
+                    }
+        })
+
+    let ``Division Theory`` <span class="pl-k">=</span> 
+        {
+            UnitDescription <span class="pl-k">=</span> (<span class="pl-k">fun</span> <span class="pl-v">n</span> <span class="pl-k">-&gt;</span> sprintf <span class="pl-s1"><span class="pl-pds">"</span> (<span class="pl-c1">%f</span> * <span class="pl-c1">%f</span>) / <span class="pl-c1">%f</span> = <span class="pl-c1">%f</span><span class="pl-pds">"</span></span> n n n n)
+            UnitTest <span class="pl-k">=</span> (<span class="pl-k">fun</span> <span class="pl-v">n</span> _ <span class="pl-k">-&gt;</span>
+                            <span class="pl-st">let</span><span class="pl-en"> v1</span> <span class="pl-k">=</span> n <span class="pl-k">**</span> <span class="pl-c1">2.0</span>
+                            <span class="pl-st">let</span> result <span class="pl-k">=</span> v1 <span class="pl-k">/</span> n
+
+                            result <span class="pl-k">|&gt;</span> expectsToBe n <span class="pl-s1"><span class="pl-pds">"</span>(<span class="pl-c1">%f</span> &lt;&gt; <span class="pl-c1">%f</span>)<span class="pl-pds">"</span></span>
+            )
+        }
+
+    let ``Whole Doubles from <span class="pl-c1">1.0</span> to <span class="pl-c1">20.0</span>`` <span class="pl-k">=</span> <span class="pl-st">seq</span> { <span class="pl-c1">1.0</span>..<span class="pl-c1">20.0</span> }  
+
+    let ``Here is a second theory test`` <span class="pl-k">=</span>
+        Theory({
+                Data <span class="pl-k">=</span> ``Whole Doubles from <span class="pl-c1">1.0</span> to <span class="pl-c1">20.0</span>``
+                Base <span class="pl-k">=</span> ``Division Theory``
+        })</pre></div>
+
+<h3>
+<a id="how-to-currently-run-all-tests" class="anchor" href="#how-to-currently-run-all-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to <em>(currently)</em> run all tests</h3>
+
+<ul>
+<li>Run "FeldSparGui.exe" </li>
+<li>Click "Add Test Suite" </li>
+<li>Navigate to compiled tests, and open file </li>
+<li>Click "Run"</li>
+</ul>
+
+<h3>
+<a id="or" class="anchor" href="#or" aria-hidden="true"><span class="octicon octicon-link"></span></a>OR:</h3>
+
+<ul>
+<li>Run FeldSpar.Console.exe with these args</li>
+</ul>
+
+<h4>
+<a id="console-args" class="anchor" href="#console-args" aria-hidden="true"><span class="octicon octicon-link"></span></a>Console args</h4>
+
+<div class="highlight highlight-console"><pre>
+<span class="pl-mo">--test-assembly [--a] &lt;string&gt;: This is the location of the test library. It can be a *.dll or a *.exe file</span>
+
+<span class="pl-mo">--report-location [--r] &lt;string&gt;: This flag indicates that a JSON report is to be generated at the given location</span>
+
+<span class="pl-mo">--verbosity [--v] &lt;string&gt;: This sets the verbosity level for the run. Possible levels are: ["Max"; "Results"; "Errors"; "Detail"]</span>
+
+<span class="pl-mo">--auto-loop [--al]: This makes the command contiuously run executing on every compile.</span>
+
+<span class="pl-mo">--usereporters [--ur]: This enables the use of reporters configured in the test</span>
+
+<span class="pl-mo">--pause [--p]: This makes the console wait for key press inorder to exit. This is automaticly in effect if "auto-loop" is used</span>
+
+<span class="pl-mo">--debug: This launches the debugger to allow you to debug the tests</span>
+
+<span class="pl-mo">--help [-h|/h|/help|/?]: display this list of options.</span>
+</pre></div>
+
+<h2>
+<a id="goals" class="anchor" href="#goals" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goals</h2>
+
+<h3>
+<a id="1-be-as-purely-functional-as-possible" class="anchor" href="#1-be-as-purely-functional-as-possible" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Be as purely functional as possible</h3>
+
+<h3>
+<a id="2-enforce-test-isolation" class="anchor" href="#2-enforce-test-isolation" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Enforce Test Isolation</h3>
+
+<ul>
+<li>
+<em>(done)</em> Tests run in isolated memory space</li>
+<li>
+<em>(done)</em> Test execution order is indeterminate</li>
+</ul>
+
+<h3>
+<a id="3-enable-gold-standard-testing-as-a-framework-feature" class="anchor" href="#3-enable-gold-standard-testing-as-a-framework-feature" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Enable Gold Standard Testing as a Framework Feature</h3>
+
+<ul>
+<li>
+<em>(done)</em> Enable use of Approval Libraries in a functional manner</li>
+<li>
+<em>(done)</em> Enable Configuration to setup global reporters for test Assembly.</li>
+</ul>
+
+<h3>
+<a id="4-implement-theory-based-testing" class="anchor" href="#4-implement-theory-based-testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. Implement Theory Based Testing</h3>
+
+<ul>
+<li>
+<em>(done)</em> Theory test type</li>
+</ul>
+
+<h3>
+<a id="5-integrate-with-visual-studio" class="anchor" href="#5-integrate-with-visual-studio" aria-hidden="true"><span class="octicon octicon-link"></span></a>5. Integrate with visual studio</h3>
+
+<h3>
+<a id="6-create-console-runner" class="anchor" href="#6-create-console-runner" aria-hidden="true"><span class="octicon octicon-link"></span></a>6. Create Console Runner</h3>
+
+<ul>
+<li>
+<em>(done)</em> Create parameterized console</li>
+<li>
+<em>(done)</em> Allow Console to auto detect changes and rerun all tests</li>
+</ul>
+
+<h3>
+<a id="7-provide-out-of-editor-gui-runner" class="anchor" href="#7-provide-out-of-editor-gui-runner" aria-hidden="true"><span class="octicon octicon-link"></span></a>7. Provide out of editor gui runner</h3>
+
+<ul>
+<li>
+<em>(done)</em> Build CLR integration layer for the Engine</li>
+<li>
+<em>(done)</em> Create a WPF viewer in C#</li>
+<li>Move View Models to the FeldSpar main project and convert them to F#</li>
+<li>Create WPF GUI runner in F# </li>
+</ul>
+
+<h3>
+<a id="3-generate-documentation" class="anchor" href="#3-generate-documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Generate Documentation</h3>
+
+<ul>
+<li>Add XML Comments</li>
+<li>
+<em>(done)</em> Add Read Me</li>
+</ul>
+
+<h2>
+<a id="design-considerations" class="anchor" href="#design-considerations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Design Considerations</h2>
+
+<h3>
+<a id="no-exception-driven-workflows" class="anchor" href="#no-exception-driven-workflows" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+<strong>NO</strong> Exception Driven Workflows</h3>
+
+<blockquote>
+<p>OO based test frameworks use <code>Assert</code> to designate a failure. This works because it generates an exception which forces an early exit without <code>if</code> <code>then</code> <code>else</code> or <code>case</code> statements.</p>
+
+<p>Functional programming has a better way. In F# that way is called a workflow. Every test <strong>must</strong> return a valid type indicating its success or failure. In FeldSpar that type is a <code>TestResult</code>.</p>
+
+<p>Exceptions happen. The Framework will handle them, however they should be an exception to the normal rule.</p>
+</blockquote>
+
+<h3>
+<a id="ignored-tests-are-failing-tests" class="anchor" href="#ignored-tests-are-failing-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ignored Tests are failing tests</h3>
+
+<blockquote>
+<p>In other frameworks an ingnored test simply does not run and reports itself as being in a third state if <em>ignored</em>. Ignoring a test is a failure. It is a failure of either the test or test methodologies.</p>
+
+<p>By having an ignored state you increase complexity of the system because there are three states of a test.</p>
+
+<p>Feld Spar tackles this by having only 2 states of a test. Success or Failure. Failures allow you to have a reason for failure, which will be <code>Ignored</code> for an ignored test.</p>
+</blockquote>
+
+<h3>
+<a id="favor-intention" class="anchor" href="#favor-intention" aria-hidden="true"><span class="octicon octicon-link"></span></a>Favor Intention</h3>
+
+<blockquote>
+<p>.Net attributes are not immediately obvious when your program execution depends on them. If you find a method that conforms to the test signature but lacks the attribute was the attribute removed?</p>
+
+<p>I wanted a test framework that made a test method as obviously indented to be a test.</p>
+
+<p>I also choose a convention based approach whenever I was able to without forfeiting clarity</p>
+</blockquote>
+
+<h2>
+<a id="feld-spar" class="anchor" href="#feld-spar" aria-hidden="true"><span class="octicon octicon-link"></span></a>Feld Spar?</h2>
+
+<blockquote>
+<p>Vikings navigated using solar navigation. This presented a problem when it was foggy, overcast or rainy. However they were very successful at navigation despite these limitations. Myth states that the Vikings had a magic <a href="http://news.discovery.com/earth/rocks-fossils/viking-sunstone-shipwreck-130311.htm">Sun Stone</a> that enabled them to navigate during the worst of weather.</p>
+
+<p>Recent discoveries have shown that the Viking Sun Stone was not a myth. It was a type of stone known as Icelantic Spar which is in tern a type of Feld Spar.</p>
+
+<p>Unit tests guide us out of the worst situations. And so I named my framework after the tool that guided the Vikings out of the worst weather.</p>
+</blockquote>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
