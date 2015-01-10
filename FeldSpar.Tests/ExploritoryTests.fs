@@ -71,9 +71,9 @@ module ExploritoryTests =
 
                 let result = shuffle<int> numbers (fun (min, _) -> indices.[min]) |> Array.toList
 
-                let env = env |> addReporter<ApprovalTests.Reporters.ClipboardReporter>
+                let envNew = env |> addReporter<ApprovalTests.Reporters.ClipboardReporter>
 
-                result |> checkAgainstStandardObjectAsCleanedString env
+                result |> checkAgainstStandardObjectAsCleanedString envNew
             )
 
     let ``Combinatory Gold Standard Testing`` =
