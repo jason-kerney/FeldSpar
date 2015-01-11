@@ -6,7 +6,8 @@
 
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+      <link rel="stylesheet" type="text/css" href="lib/highlight/styles/default.css">
+      <link rel="stylesheet" type="text/css" href="lib/highlight/styles/zenburn.css">
 
     <title>Feldspar by jason-kerney</title>
   </head>
@@ -79,116 +80,120 @@
 <h3>
 <a id="how-to-write-a-unit-test" class="anchor" href="#how-to-write-a-unit-test" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to write a unit test</h3>
 
-<div class="highlight highlight-fsharp"><pre><span class="pl-k">module</span> <span class="pl-en">BasicTests</span> <span class="pl-k">=</span>
-<span class="pl-k">open</span> <span class="pl-s3">FeldSpar.<span class="pl-s3">Framework</span></span>
-<span class="pl-k">open</span> <span class="pl-s3">FeldSpar.<span class="pl-s3">Framework</span>.<span class="pl-s3">Verification</span></span>
-<span class="pl-k">open</span> <span class="pl-s3">FeldSpar.<span class="pl-s3">Framework</span>.<span class="pl-s3">Verification</span>.<span class="pl-s3">ApprovalSupport</span></span>
+<pre>
+    <code class="fs">
+module BasicTests =
+open FeldSpar.Framework
+open FeldSpar.Framework.Verification
+open FeldSpar.Framework.Verification.ApprovalSupport
 
-    let ``Adding <span class="pl-c1">6</span> and <span class="pl-c1">4</span> equals <span class="pl-c1">10</span>`` <span class="pl-k">=</span> 
-        Test((<span class="pl-k">fun</span> _ <span class="pl-k">-&gt;</span>
-                <span class="pl-st">let</span> x <span class="pl-k">=</span> <span class="pl-c1">6</span>
-                <span class="pl-st">let</span> y <span class="pl-k">=</span> <span class="pl-c1">4</span>
+    let ``Adding 6 and 4 equals 10`` =
+        Test((fun _ ->
+                let x = 6
+                let y = 4
 
-               <span class="pl-c">// Before version 0.5</span>
-               <span class="pl-c">// (x + y) expectsToBe 10 "Addition failed 6 + 4 &lt;&gt; %d but did equal %d"</span>
+                // Before version 0.5
+                // (x + y) expectsToBe 10 "Addition failed 6 + 4 <> %d but did equal %d"
 
-               <span class="pl-c">// After version 0.5</span>
-               (x <span class="pl-k">+</span> y) expectsToBe <span class="pl-c1">10</span>
+                // After version 0.5
+                (x + y) expectsToBe 10
             ))
 
-    let ``A test <span class="pl-k">with</span> multiple checks to deterime a good result`` <span class="pl-k">=</span>
-        Test((<span class="pl-k">fun</span> _ <span class="pl-k">-&gt;</span>
-                <span class="pl-st">let</span> x <span class="pl-k">=</span> <span class="pl-c1">6</span>
-                <span class="pl-st">let</span> y <span class="pl-k">=</span> <span class="pl-c1">4</span>
-                <span class="pl-st">let</span> z <span class="pl-k">=</span> x <span class="pl-k">+</span> y
+    let ``A test with multiple checks to deterime a good result`` =
+        Test((fun _ ->
+                let x = 6
+                let y = 4
+                let z = x + y
 
                 verify
                     {
-                        <span class="pl-c">// Before version 0.5</span>
-                        <span class="pl-c">// let! goodX = x expectsToBe 6 "x failed expected %d but got %d"</span>
-                        <span class="pl-c">// let! goodY = y expectsToBe 4 "y failed expected %d but got %d"</span>
-                        <span class="pl-c">// let! goodZ = z expectsToBe 10 "(x + y) failed expected %d but got %d"</span>
+                        // Before version 0.5
+                        // let! goodX = x expectsToBe 6 "x failed expected %d but got %d"
+                        // let! goodY = y expectsToBe 4 "y failed expected %d but got %d"
+                        // let! goodZ = z expectsToBe 10 "(x + y) failed expected %d but got %d"
 
-                        <span class="pl-c">// After version 0.5</span>
-                        <span class="pl-st">let!</span> goodX <span class="pl-k">=</span> x expectsToBe <span class="pl-c1">6</span> <span class="pl-k">|&gt;</span> withFailComment <span class="pl-s1"><span class="pl-pds">"</span>x was wrong<span class="pl-pds">"</span></span>
-                        <span class="pl-st">let!</span> goodY <span class="pl-k">=</span> y expectsToBe <span class="pl-c1">4</span> <span class="pl-k">|&gt;</span> withFailComment <span class="pl-s1"><span class="pl-pds">"</span>y was wrong<span class="pl-pds">"</span></span>
-                        <span class="pl-st">let!</span> goodZ <span class="pl-k">=</span> z expectsToBe <span class="pl-c1">10</span> <span class="pl-k">|&gt;</span> withFailComment <span class="pl-s1"><span class="pl-pds">"</span>z was wrong<span class="pl-pds">"</span></span>
+                        // After version 0.5
+                        let! goodX = x expectsToBe 6 |> withFailComment "x was wrong"
+                        let! goodY = y expectsToBe 4 |> withFailComment "y was wrong"
+                        let! goodZ = z expectsToBe 10 |> withFailComment "z was wrong"
                         return Success
                     }
             ))
 
-    <span class="pl-c">(*This is how you quickly ignore a test*)</span>
-    let ``This test is not ready yet <span class="pl-st">and</span><span class="pl-en"> therefore</span> <span class="pl-v">is</span> <span class="pl-v">ignored</span>`` <span class="pl-k">=</span>
-        ITest(<span class="pl-k">fun</span> <span class="pl-v">env</span> <span class="pl-k">-&gt;</span> Success)
+    (*This is how you quickly ignore a test*)
+    let ``This test is not ready yet and therefore is ignored`` =
+        ITest(fun env -> Success)
 
-    let ``Gold Standard Tests look like this <span class="pl-k">for</span> strings`` <span class="pl-k">=</span>
-        Test(<span class="pl-k">fun</span> <span class="pl-v">env</span> <span class="pl-k">-&gt;</span>
-                <span class="pl-st">let</span> env <span class="pl-k">=</span> env <span class="pl-k">|&gt;</span> addReporter<span class="pl-k">&lt;</span><span class="pl-s3">ApprovalTests</span>.<span class="pl-s3">Reporters.</span>DiffReporter<span class="pl-k">&gt;</span>
+    let ``Gold Standard Tests look like this for strings`` =
+            Test(fun env ->
+                    let env = env |> addReporter<ApprovalTests.Reporters.DiffReporter>
 
-                <span class="pl-s1"><span class="pl-pds">"</span>My string under test<span class="pl-pds">"</span></span> <span class="pl-k">|&gt;</span> checkAgainstStringStandard env
+                    "My string under test" |> checkAgainstStringStandard env
+                )
+
+    let ``This is a Combinatory Gold Standard Testing`` =
+        Test(fun env ->
+                let names = ["Tom"; "Jane"; "Tarzan"; "Stephanie"]
+                let amounts = [11; 2; 5;]
+                let items = ["pears";"earrings";"cups"]
+
+                let createSentance item amount name = sprintf "%s has %d %s" name amount item
+
+                createSentance
+                    |> calledWithEachOfThese items
+                    |> andAlsoEachOfThese amounts
+                    |> andAlsoEachOfThese names
+                    |> checkAllAgainstStandard env
             )
 
-    let ``This is a Combinatory Gold Standard Testing`` <span class="pl-k">=</span>
-        Test(<span class="pl-k">fun</span> <span class="pl-v">env</span> <span class="pl-k">-&gt;</span>
-            <span class="pl-st">let</span> names <span class="pl-k">=</span> <span class="pl-k">[</span><span class="pl-s1"><span class="pl-pds">"</span>Tom<span class="pl-pds">"</span></span><span class="pl-k">;</span> <span class="pl-s1"><span class="pl-pds">"</span>Jane<span class="pl-pds">"</span></span><span class="pl-k">;</span> <span class="pl-s1"><span class="pl-pds">"</span>Tarzan<span class="pl-pds">"</span></span><span class="pl-k">;</span> <span class="pl-s1"><span class="pl-pds">"</span>Stephanie<span class="pl-pds">"</span></span><span class="pl-k">]</span>
-            <span class="pl-st">let</span> amounts <span class="pl-k">=</span> <span class="pl-k">[</span><span class="pl-c1">11</span><span class="pl-k">;</span> <span class="pl-c1">2</span><span class="pl-k">;</span> <span class="pl-c1">5</span><span class="pl-k">;]</span>
-            <span class="pl-st">let</span> items <span class="pl-k">=</span> <span class="pl-k">[</span><span class="pl-s1"><span class="pl-pds">"</span>pears<span class="pl-pds">"</span></span><span class="pl-k">;</span><span class="pl-s1"><span class="pl-pds">"</span>earrings<span class="pl-pds">"</span></span><span class="pl-k">;</span><span class="pl-s1"><span class="pl-pds">"</span>cups<span class="pl-pds">"</span></span><span class="pl-k">]</span>
-
-            <span class="pl-st">let</span><span class="pl-en"> createSentance</span> <span class="pl-v">item</span> <span class="pl-v">amount</span> <span class="pl-v">name</span> <span class="pl-k">=</span> sprintf <span class="pl-s1"><span class="pl-pds">"</span><span class="pl-c1">%s</span> has <span class="pl-c1">%d</span> <span class="pl-c1">%s</span><span class="pl-pds">"</span></span> name amount item
-
-            createSentance
-                <span class="pl-k">|&gt;</span> calledWithEachOfThese items
-                <span class="pl-k">|&gt;</span> andAlsoEachOfThese amounts
-                <span class="pl-k">|&gt;</span> andAlsoEachOfThese names
-                <span class="pl-k">|&gt;</span> checkAllAgainstStandard env
-        )
-
-    let ``This is a theory Test`` <span class="pl-k">=</span>
+    let ``This is a theory Test`` =
         Theory({
-                    Data <span class="pl-k">=</span> <span class="pl-k">[</span>
-                                (<span class="pl-c1">1</span>, <span class="pl-s1"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>)<span class="pl-k">;</span>
-                                (<span class="pl-c1">2</span>, <span class="pl-s1"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span>)<span class="pl-k">;</span>
-                                (<span class="pl-c1">3</span>, <span class="pl-s1"><span class="pl-pds">"</span>Fizz<span class="pl-pds">"</span></span>)<span class="pl-k">;</span>
-                                (<span class="pl-c1">5</span>, <span class="pl-s1"><span class="pl-pds">"</span>Buzz<span class="pl-pds">"</span></span>)<span class="pl-k">;</span>
-                                (<span class="pl-c1">6</span>, <span class="pl-s1"><span class="pl-pds">"</span>Fizz<span class="pl-pds">"</span></span>)<span class="pl-k">;</span>
-                                (<span class="pl-c1">10</span>,<span class="pl-s1"><span class="pl-pds">"</span>Buzz<span class="pl-pds">"</span></span>)<span class="pl-k">;</span>
-                                (<span class="pl-c1">15</span>,<span class="pl-s1"><span class="pl-pds">"</span>FizzBuzz<span class="pl-pds">"</span></span>)
-                    <span class="pl-k">]</span> <span class="pl-k">|&gt;</span> <span class="pl-s3">List</span>.toSeq
-                    Base <span class="pl-k">=</span> 
+                    Data = [
+                                (1, "1");
+                                (2, "2");
+                                (3, "Fizz");
+                                (5, "Buzz");
+                                (6, "Fizz");
+                                (10,"Buzz");
+                                (15,"FizzBuzz")
+                    ] |> List.toSeq
+                    Base =
                     {
-                        UnitDescription <span class="pl-k">=</span> (<span class="pl-k">fun</span> (<span class="pl-v">n</span>,<span class="pl-v">s</span>) <span class="pl-k">-&gt;</span> sprintf <span class="pl-s1"><span class="pl-pds">"</span>test converts <span class="pl-c1">%d</span> into <span class="pl-cce">\"</span><span class="pl-c1">%s</span><span class="pl-cce">\"</span><span class="pl-pds">"</span></span> n s)
-                        UnitTest <span class="pl-k">=</span> 
-                            (<span class="pl-k">fun</span> (<span class="pl-v">n</span>, <span class="pl-v">expected</span>) _ <span class="pl-k">-&gt;</span>
-                                <span class="pl-st">let</span> result <span class="pl-k">=</span> 
-                                    <span class="pl-k">match</span> n <span class="pl-k">with</span>
-                                    <span class="pl-k">|</span> v <span class="pl-k">when</span> v <span class="pl-k">%</span> <span class="pl-c1">15</span> <span class="pl-k">=</span> <span class="pl-c1">0</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-s1"><span class="pl-pds">"</span>FizzBuzz<span class="pl-pds">"</span></span>
-                                    <span class="pl-k">|</span> v <span class="pl-k">when</span> v <span class="pl-k">%</span> <span class="pl-c1">5</span> <span class="pl-k">=</span> <span class="pl-c1">0</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-s1"><span class="pl-pds">"</span>Buzz<span class="pl-pds">"</span></span>
-                                    <span class="pl-k">|</span> v <span class="pl-k">when</span> v <span class="pl-k">%</span> <span class="pl-c1">3</span> <span class="pl-k">=</span> <span class="pl-c1">0</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-s1"><span class="pl-pds">"</span>Fizz<span class="pl-pds">"</span></span>
-                                    <span class="pl-k">|</span> v <span class="pl-k">-</span><span class="pl-k">&gt;</span> v.ToString<span class="pl-c1">()</span>
+                        UnitDescription = (fun (n,s) -> sprintf "test converts %d into \"%s\"" n s)
+                        UnitTest =
+                            (fun (n, expected) _ ->
+                                let result =
+                                    match n with
+                                    | v when v % 15 = 0 -> "FizzBuzz"
+                                    | v when v % 5 = 0 -> "Buzz"
+                                    | v when v % 3 = 0 -> "Fizz"
+                                    | v -> v.ToString()
 
-                                result <span class="pl-k">|&gt;</span> expectsToBe expected
+                                result |> expectsToBe expected
                             )
                     }
         })
 
-    let ``Division Theory`` <span class="pl-k">=</span> 
+    let ``Division Theory`` =
         {
-            UnitDescription <span class="pl-k">=</span> (<span class="pl-k">fun</span> <span class="pl-v">n</span> <span class="pl-k">-&gt;</span> sprintf <span class="pl-s1"><span class="pl-pds">"</span> (<span class="pl-c1">%f</span> * <span class="pl-c1">%f</span>) / <span class="pl-c1">%f</span> = <span class="pl-c1">%f</span><span class="pl-pds">"</span></span> n n n n)
-            UnitTest <span class="pl-k">=</span> (<span class="pl-k">fun</span> <span class="pl-v">n</span> _ <span class="pl-k">-&gt;</span>
-                            <span class="pl-st">let</span><span class="pl-en"> v1</span> <span class="pl-k">=</span> n <span class="pl-k">**</span> <span class="pl-c1">2.0</span>
-                            <span class="pl-st">let</span> result <span class="pl-k">=</span> v1 <span class="pl-k">/</span> n
+            UnitDescription = (fun n -> sprintf " (%f * %f) / %f = %f" n n n n)
+            UnitTest = (fun n _ ->
+                            let v1 = n ** 2.0
+                            let result = v1 / n
 
-                            result <span class="pl-k">|&gt;</span> expectsToBe n <span class="pl-s1"><span class="pl-pds">"</span>(<span class="pl-c1">%f</span> &lt;&gt; <span class="pl-c1">%f</span>)<span class="pl-pds">"</span></span>
+                            result |> expectsToBe n "(%f <> %f)"
             )
         }
 
-    let ``Whole Doubles from <span class="pl-c1">1.0</span> to <span class="pl-c1">20.0</span>`` <span class="pl-k">=</span> <span class="pl-st">seq</span> { <span class="pl-c1">1.0</span>..<span class="pl-c1">20.0</span> }  
+    let ``Whole Doubles from 1.0 to 20.0`` = seq { 1.0..20.0 }
 
-    let ``Here is a second theory test`` <span class="pl-k">=</span>
+    let ``Here is a second theory test`` =
         Theory({
-                Data <span class="pl-k">=</span> ``Whole Doubles from <span class="pl-c1">1.0</span> to <span class="pl-c1">20.0</span>``
-                Base <span class="pl-k">=</span> ``Division Theory``
-        })</pre></div>
+                Data = ``Whole Doubles from 1.0 to 20.0``
+                Base = ``Division Theory``
+        })
+    </code>
+</pre>
 
 <h3>
 <a id="how-to-currently-run-all-tests" class="anchor" href="#how-to-currently-run-all-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to <em>(currently)</em> run all tests</h3>
@@ -346,6 +351,8 @@
       </section>
     </div>
 
+    <script src="lib/highlight/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     
   </body>
 </html>
