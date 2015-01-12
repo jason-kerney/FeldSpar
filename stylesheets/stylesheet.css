@@ -59,7 +59,6 @@ header h1 {
 header h1:before {
   color: #FA8258;
   font-size: 124px;
-  margin: 0 0 0 -80px;
   font-weight: bold;
   position: absolute;
   -moz-transform: scale(1.25, 1);
@@ -67,7 +66,7 @@ header h1:before {
   -webkit-transform: scale(1.25, 1);
   transform: scale(1.25, 1);
   
-  content: "ʎ ";
+  content: "ʎ: ";
 }
 
 header h2 {
