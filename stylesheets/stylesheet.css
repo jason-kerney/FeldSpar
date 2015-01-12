@@ -8,7 +8,7 @@ body {
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
 }
 
-.head-wrapper .lambda {
+.lambda {
   color: #FA8258;
   font-size: 124px;
   font-weight: bold;
