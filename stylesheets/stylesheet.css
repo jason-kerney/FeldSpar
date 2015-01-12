@@ -70,8 +70,17 @@ header h1 {
 }
 
 header h1:before {
-  content: "./ ";
-  font-size: 24px;
+  color: #FA8258;
+  font-size: 124px;
+  font-weight: bold;
+  position: absolute;
+  z-index: -1;
+  -moz-transform: scale(1.25, 1);
+  -ms-transform: scale(1.25, 1);
+  -webkit-transform: scale(1.25, 1);
+  transform: scale(1.25, 1);
+  
+  content: "ʎ ";
 }
 
 header h2 {
