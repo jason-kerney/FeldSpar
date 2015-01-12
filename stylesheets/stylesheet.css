@@ -8,18 +8,6 @@ body {
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
 }
 
-.lambda {
-  color: #FA8258;
-  font-size: 124px;
-  font-weight: bold;
-  position: absolute;
-  z-index: -1;
-  -moz-transform: scale(1.25, 1);
-  -ms-transform: scale(1.25, 1);
-  -webkit-transform: scale(1.25, 1);
-  transform: scale(1.25, 1);
-}
-
 /* General & 'Reset' Stuff */
 
 .container {
@@ -58,7 +46,6 @@ header {
 header h1 {
   font-size: 30px;
   line-height: 1.5;
-  margin: 0 0 0 -40px;
   font-weight: bold;
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   color: #b5e853;
