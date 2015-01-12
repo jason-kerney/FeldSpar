@@ -62,7 +62,6 @@ header h1:before {
   margin: 0 0 0 -800px;
   font-weight: bold;
   position: absolute;
-  z-index: -1;
   -moz-transform: scale(1.25, 1);
   -ms-transform: scale(1.25, 1);
   -webkit-transform: scale(1.25, 1);
