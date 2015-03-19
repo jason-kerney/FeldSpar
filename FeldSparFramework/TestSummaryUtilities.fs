@@ -2,6 +2,9 @@
 
 module TestSummaryUtilities =
     open TestResultUtilities
+    open TryParser
+    open FeldSpar.Framework.Sorting
+    open System
     
     let joinWith separator (strings : string seq) =
         System.String.Join(separator, strings)

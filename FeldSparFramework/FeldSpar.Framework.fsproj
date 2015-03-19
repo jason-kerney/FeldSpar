@@ -52,6 +52,8 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
+    <Compile Include="TryParser.fs" />
+    <Compile Include="Sorting.fs" />
     <Compile Include="Framework.fs" />
     <Compile Include="TestResultUtilities.fs" />
     <Compile Include="TestSummaryUtilities.fs" />

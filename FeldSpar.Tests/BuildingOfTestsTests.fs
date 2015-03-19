@@ -41,6 +41,38 @@ module BuildingOfTestsTests =
             report |> checkAgainstStandardObjectAsCleanedString env
         )
 
+    let ``Can Build Report from Execution Summaries Sorted by numeric Values`` =
+        Test(fun env ->
+            let summaries = (
+                "internal tests",
+                [
+                    { 
+                        TestName = "Summary 3"; 
+                        TestCanonicalizedName = "Summary3";
+                        TestResults = Success;
+                    };
+                    { 
+                        TestName = "Summary 4"; 
+                        TestCanonicalizedName = "Summary4";
+                        TestResults = Failure(GeneralFailure("Something unknown happened"));
+                    };
+                    { 
+                        TestName = "Summary 11"; 
+                        TestCanonicalizedName = "Summary11";
+                        TestResults = Success;
+                    };
+                    { 
+                        TestName = "Summary 12"; 
+                        TestCanonicalizedName = "Summary12";
+                        TestResults = 5 |> expectsToBe 4;
+                    };
+                ])
+
+            summaries 
+                |> buildOutputReport 
+                |> checkAgainstStandardObjectAsCleanedString env
+        )
+
     let ``Report exports to JSON`` =
         Test(fun env ->
             let summaries = (

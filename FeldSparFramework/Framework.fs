@@ -1,6 +1,7 @@
 ﻿namespace FeldSpar.Framework
 open System
 open ApprovalTests.Core
+open FeldSpar.Framework.Sorting.Sorters
 
 type FailureType =
     | GeneralFailure of string
@@ -259,14 +260,14 @@ module Utilities =
         let successes = 
             results
             |> Seq.filter (fun result -> result.TestResults = Success)
-            |> Seq.sortBy (fun result -> result.TestName)
+            |> naturalSortBy (fun result -> result.TestName)
             |> Seq.map (fun result -> result.TestName)
             |> Seq.toArray
 
         let failures =
             results
             |> Seq.filter (fun result -> result.TestResults <> Success)
-            |> Seq.sortBy (fun result -> result.TestName)
+            |> naturalSortBy (fun result -> result.TestName)
             |> Seq.map(fun { TestName = testName; TestCanonicalizedName = _ ; TestResults = Failure(failType) } -> 
                 {
                     TestName = testName;
@@ -280,3 +281,4 @@ module Utilities =
             Failures = failures;
             Successes = successes;
         }
+
