@@ -105,7 +105,6 @@ Target "LocalDeploy" (fun _ ->
             |> Array.map (fun fi -> fi.FullName)
             |> Array.iter (printfn "LocalDeploy-Output: %s")
     
-
     use file = System.IO.File.Create(deployDir + "push.txt")
     let writer = new System.IO.StreamWriter(file)
 
