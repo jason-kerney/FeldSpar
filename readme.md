@@ -21,7 +21,7 @@
 
 ----------------- 
 ## Writing Tests
-[Documentation](https://github.com/jason-kerney/FeldSpar/wiki)
+[The Documentation](https://github.com/jason-kerney/FeldSpar/wiki)
 
 ##Goals
 ### 1. Be as purely functional as possible
