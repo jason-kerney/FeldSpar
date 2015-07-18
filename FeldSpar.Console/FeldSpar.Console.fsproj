@@ -37,7 +37,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\Release\FeldSpar.Console.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
-    <StartArguments>--a "C:\Users\Jason\OneDrive\Development\GitHub\FeldSpar\FeldSpar.Tests\bin\Debug\FeldSpar.Tests.dll" --p --ur --r "..\..\..\runreport.json"</StartArguments>
+    <StartArguments>--a "C:\Users\baghe\OneDrive\Development\GitHub\FeldSpar\FeldSpar.Tests\bin\Debug\FeldSpar.Tests.dll" --p --ur --r "..\..\..\runreport.json"</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion>14.0</VisualStudioVersion>
@@ -73,10 +73,7 @@
       <HintPath>..\packages\ApprovalUtilities.3.0.7\lib\net35\ApprovalUtilities.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.Core">
-      <HintPath>..\packages\FSharp.Core.Microsoft.Signed.3.1.1.1\lib\net45\FSharp.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="FSharp.Core, Version=4.3.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
