@@ -2,7 +2,7 @@
 =========
 > An opinionated test framework designed to be functional from the ground up.
 
-###[![Build status](https://ci.appveyor.com/api/projects/status/b5xo1bn8nxr7h06q?svg=true)](https://ci.appveyor.com/project/jason-kerney/feldspar)
+### Temporarily Removed CI as the server is failing, but the build is good.
 
 ## Available on Nuget
 
