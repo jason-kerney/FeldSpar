@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Debug\FeldSpar.Tests.XML</DocumentationFile>
+    <StartAction>Project</StartAction>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -62,7 +63,6 @@
     <Compile Include="FilteringTests.fs" />
     <Compile Include="IsolationTests.fs" />
     <Compile Include="ExpectationTests.fs" />
-    <Compile Include="ConsoleTests.fs" />
     <Content Include="A_test_to_check_verification.approved.txt" />
     <Content Include="Find_All_Tests_through_Reflection.approved.txt" />
     <Content Include="testFindTests.approved.txt" />
@@ -93,11 +93,6 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FeldSpar.Console\FeldSpar.Console.fsproj">
-      <Name>FeldSpar.Console</Name>
-      <Project>{f5ac016a-d435-4a8e-a7b5-be504e7e51a9}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\FeldSparFramework\FeldSpar.Framework.fsproj">
       <Name>FeldSpar.Framework</Name>
       <Project>{ad56b1ee-515d-40d2-8217-4b4335c0a37b}</Project>
