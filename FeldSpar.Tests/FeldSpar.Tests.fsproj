@@ -63,6 +63,7 @@
     <Compile Include="FilteringTests.fs" />
     <Compile Include="IsolationTests.fs" />
     <Compile Include="ExpectationTests.fs" />
+    <Compile Include="Program.fs" />
     <Content Include="A_test_to_check_verification.approved.txt" />
     <Content Include="Find_All_Tests_through_Reflection.approved.txt" />
     <Content Include="testFindTests.approved.txt" />
