@@ -78,9 +78,7 @@ Target "Default" (fun _ ->
 
 Target "Nuget" (fun _ ->
     Shell.Exec ("nuget", @"pack ..\FeldSparFramework\FeldSpar.Framework.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
-    Shell.Exec ("nuget", @"pack ..\FeldSpar.InterOpWpfEngine\FeldSpar.GuiApi.Engine.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
-    Shell.Exec ("nuget", @"pack ..\FeldSpar.Console\FeldSpar.Console.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
-    Shell.Exec ("nuget", @"pack ..\FSharpWpf\FSharpWpf.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack ..\FeldSpar.ContinuousIntegration\FeldSpar.ContinuousIntegration.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
 )
 
 Target "LocalDeploy" (fun _ ->

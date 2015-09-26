@@ -3,19 +3,18 @@
   <metadata>
     <id>$id$</id>
     <version>$version$</version>
-    <title>FeldSpar Console Test Runner</title>
+    <title>FeldSpar Continuous Integration Test Runner</title>
     <authors>R. Jason Kerney</authors>
     <owners>R. Jason Kerney</owners>
     <licenseUrl>https://github.com/jason-kerney/FeldSpar/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/jason-kerney/FeldSpar</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Allows the running of FeldSpar tests using the console</description>
-    <releaseNotes>Changed command line options to allow for multiple levels of verbosity</releaseNotes>
-    <copyright>Copyright 2014</copyright>
-    <tags>F#, FSharp, F-Sharp, Unit Testing, Unit Tests, Runner</tags>
+    <description>Allows the running of FeldSpar tests using the console for continuous integration</description>
+    <releaseNotes>Changed it to a single process single run application</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>F#, FSharp, F-Sharp, Unit Testing, Unit Tests, Runner, Continuous Integration, FeldSpar</tags>
   </metadata>
   <files>
-    <file src="bin\Release\FeldSpar.Console.exe.config" target="Content" />
-    <file src="tools\install.ps1" target="tools" />
+    <file src="bin\Release\FeldSpar.ContinuousIntegration.exe.config" target="Content" />
   </files>
 </package>
