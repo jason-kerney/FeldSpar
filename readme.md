@@ -8,7 +8,7 @@
 ## Available on Nuget
 
 ### [![NuGet Status](http://img.shields.io/nuget/v/FeldSparFramework.svg?style=flat)](https://www.nuget.org/packages/FeldSparFramework/) -- Framework
-### [![NuGet Status](http://img.shields.io/nuget/v/FeldSpar.ContinuousIntegration.svg?style=flat)](https://www.nuget.org/packages/FeldSpar.ContinuousIntegration/) -- Console Runner
+### [![NuGet Status](http://img.shields.io/nuget/v/FeldSpar.ContinuousIntegration.svg?style=flat)](https://www.nuget.org/packages/FeldSpar.ContinuousIntegration/) -- CI Runner
 
 -----------------
 ## What's Different
