@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.Framework", "FeldSparFramework\FeldSpar.Framework.fsproj", "{AD56B1EE-515D-40D2-8217-4B4335C0A37B}"
 EndProject
@@ -18,12 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D5009B
 	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.Tests", "FeldSpar.Tests\FeldSpar.Tests.fsproj", "{6F2261D9-2268-4595-B35D-C401148906D5}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PathFindindTests", "PathFindindTests\PathFindindTests.fsproj", "{546D5801-9FD4-4A17-AF78-A150AFE59F44}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.GuiApi.Engine", "FeldSpar.InterOpWpfEngine\FeldSpar.GuiApi.Engine.fsproj", "{1AA77874-54D1-4094-9C72-5F4D0F8DF64F}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpWpf", "FSharpWpf\FSharpWpf.fsproj", "{30597BE9-08F8-4832-8AB7-009C00A6A2F2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B84953F4-F188-4E3E-95AB-EFA278975C4A}"
 	ProjectSection(SolutionItems) = preProject
@@ -70,36 +64,6 @@ Global
 		{6F2261D9-2268-4595-B35D-C401148906D5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{6F2261D9-2268-4595-B35D-C401148906D5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6F2261D9-2268-4595-B35D-C401148906D5}.Release|x86.ActiveCfg = Release|Any CPU
-		{546D5801-9FD4-4A17-AF78-A150AFE59F44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{546D5801-9FD4-4A17-AF78-A150AFE59F44}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{546D5801-9FD4-4A17-AF78-A150AFE59F44}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{546D5801-9FD4-4A17-AF78-A150AFE59F44}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{546D5801-9FD4-4A17-AF78-A150AFE59F44}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{546D5801-9FD4-4A17-AF78-A150AFE59F44}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{546D5801-9FD4-4A17-AF78-A150AFE59F44}.Release|Any CPU.Build.0 = Release|Any CPU
-		{546D5801-9FD4-4A17-AF78-A150AFE59F44}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{546D5801-9FD4-4A17-AF78-A150AFE59F44}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{546D5801-9FD4-4A17-AF78-A150AFE59F44}.Release|x86.ActiveCfg = Release|Any CPU
-		{1AA77874-54D1-4094-9C72-5F4D0F8DF64F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1AA77874-54D1-4094-9C72-5F4D0F8DF64F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1AA77874-54D1-4094-9C72-5F4D0F8DF64F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1AA77874-54D1-4094-9C72-5F4D0F8DF64F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{1AA77874-54D1-4094-9C72-5F4D0F8DF64F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1AA77874-54D1-4094-9C72-5F4D0F8DF64F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1AA77874-54D1-4094-9C72-5F4D0F8DF64F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1AA77874-54D1-4094-9C72-5F4D0F8DF64F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{1AA77874-54D1-4094-9C72-5F4D0F8DF64F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{1AA77874-54D1-4094-9C72-5F4D0F8DF64F}.Release|x86.ActiveCfg = Release|Any CPU
-		{30597BE9-08F8-4832-8AB7-009C00A6A2F2}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{30597BE9-08F8-4832-8AB7-009C00A6A2F2}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{30597BE9-08F8-4832-8AB7-009C00A6A2F2}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{30597BE9-08F8-4832-8AB7-009C00A6A2F2}.Debug|x86.ActiveCfg = Debug|x86
-		{30597BE9-08F8-4832-8AB7-009C00A6A2F2}.Debug|x86.Build.0 = Debug|x86
-		{30597BE9-08F8-4832-8AB7-009C00A6A2F2}.Release|Any CPU.ActiveCfg = Release|x86
-		{30597BE9-08F8-4832-8AB7-009C00A6A2F2}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{30597BE9-08F8-4832-8AB7-009C00A6A2F2}.Release|Mixed Platforms.Build.0 = Release|x86
-		{30597BE9-08F8-4832-8AB7-009C00A6A2F2}.Release|x86.ActiveCfg = Release|x86
-		{30597BE9-08F8-4832-8AB7-009C00A6A2F2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
