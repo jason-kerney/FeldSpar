@@ -27,8 +27,8 @@ open ApprovalTests
             let assembly = System.Reflection.Assembly.GetExecutingAssembly()
             let assemblyPath =
                 let codebase = assembly.CodeBase
-                let uriBuilder = System.UriBuilder(codebase)
-                let path = System.Uri.UnescapeDataString(uriBuilder.Path)
+                let uriBuilder = System.UriBuilder codebase
+                let path = System.Uri.UnescapeDataString uriBuilder.Path
                 System.IO.Path.GetDirectoryName path
 
             { new IToken with
