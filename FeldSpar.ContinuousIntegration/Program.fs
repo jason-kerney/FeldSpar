@@ -95,8 +95,6 @@ module Processors =
         processWithReport reporter processor
 
 type Launcher () =
-    inherit MarshalByRefObject ()
-
     let run args =
         try
             let parser = UnionArgParser.Create<CommandArguments>()
@@ -184,17 +182,8 @@ module Program =
     [<EntryPoint>]
     let public main args = 
         try
-            let applicationName = "FeldSparConsole"
-            let path = IO.Path.GetDirectoryName(Reflection.Assembly.GetExecutingAssembly().Location)
-            let appDomain = AppDomain.CreateDomain(applicationName, null, path, path, true)
-
-            let launcherType = typeof<Launcher>
-            let sandBoxAssemblyName = launcherType.Assembly.FullName
-            let sandBoxTypeName = launcherType.FullName
-
-            let sandbox = appDomain.CreateInstanceAndUnwrap(sandBoxAssemblyName, sandBoxTypeName) :?> Launcher
-
-            sandbox.Run args
+            let launch = Launcher()
+            launch.Run args
         with
         | ex -> 
             printfn "%A" ex

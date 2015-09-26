@@ -48,15 +48,7 @@ Target "BuildApp" (fun _ ->
 )
 
 Target "BuildConsole" (fun _ ->
-    build "./FeldSpar.Console/" releaseDir buildDir "BuildConsole-Output:" fSharpProjects
-)
-
-Target "BuildApi" (fun _ ->
-    build "./FeldSpar.InterOpWpfEngine/" releaseDir buildDir "BuildConsole-Output:" fSharpProjects
-)
-
-Target "BuildGui" (fun _ ->
-    build "./FSharpWpf/" releaseDir buildDir "BuildGui-Output:" fSharpProjects
+    build "./FeldSpar.ContinuousIntegration/" releaseDir buildDir "BuildConsole-Output:" fSharpProjects
 )
 
 Target "BuildTest" (fun _ ->
@@ -71,7 +63,7 @@ Target "Test" (fun _ ->
         Array.map(fun fi -> fi.FullName) |>
         Array.filter(fun fi -> fi.Contains("approved")) |>
         Copy testDir
-    let result = Shell.Exec (buildDir + "FeldSpar.Console.exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar.Tests.dll\"", ?dir=Some(testDir))
+    let result = Shell.Exec (buildDir + "FeldSpar.ContinuousIntegration.exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar.Tests.exe\"", ?dir=Some(testDir))
     if result <> 0 then failwith "Failed Tests"
 )
 
@@ -123,8 +115,6 @@ Target "LocalDeploy" (fun _ ->
 "Clean"
     ==> "BuildApp"
     ==> "BuildConsole"
-    ==> "BuildApi"
-    ==> "BuildGui"
     ==> "BuildTest"
     ==> "Test"
     ==> "Zip"
