@@ -14,4 +14,8 @@
     <copyright>Copyright 2014</copyright>
     <tags>F#, FSharp, F-Sharp, Unit Testing, Unit Tests</tags>
   </metadata>
+  <files>
+  	<file src="content\Program.fs" target="content"/>
+	<file src="tools\Install.ps1" target="tools" />
+  </files>
 </package>
