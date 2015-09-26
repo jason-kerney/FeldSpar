@@ -33,35 +33,7 @@ type RunConfiguration =
 module Runner =
     open System.Diagnostics
 
-    type private Executioner<'a, 'b> () =
-        inherit System.MarshalByRefObject ()
-        member this.Execute (input : 'a) (action : 'a -> 'b) =
-            input |> action
-
-        override this.InitializeLifetimeService () =
-            null
-
     let private emptyGlobal : AssemblyConfiguration = { Reporters = [] }
-
-    let private executeInNewDomain (input : 'a) assemblyPath testName (action : 'a -> 'b) =
-        let appDomain = AppDomain.CreateDomain("AppDomainHelper.ExecuteInNewAppDomain", null, appBasePath = System.IO.Path.GetDirectoryName(assemblyPath), appRelativeSearchPath = System.IO.Path.GetDirectoryName(assemblyPath), shadowCopyFiles = true)
-
-        try
-            try
-
-                let exicutionType = typeof<Executioner<'a, 'b>>
-                let sandBoxAssemblyName = exicutionType.Assembly.GetName () |> fun assembly -> assembly.FullName
-                let sandBoxTypeName = exicutionType.FullName
-
-                let sandbox = appDomain.CreateInstanceAndUnwrap(sandBoxAssemblyName, sandBoxTypeName) :?> Executioner<'a, 'b>
-
-                sandbox.Execute input action
-            with 
-            | e when (e.Message.Contains("Unexpected assembly-qualifier in a typename.")) ->
-                raise (ArgumentException(sprintf "``%s`` Failed to load. Test member name may not contain a comma" testName))
-            | e -> raise e
-        finally
-            AppDomain.Unload(appDomain)
 
     let private createEnvironment (config : AssemblyConfiguration) (token:IToken) testName = 
         let rec getSourcePath path = 
@@ -135,7 +107,7 @@ module Runner =
                                                 )
 
                             fileRunningReport env report
-                            testingCode |> executeInNewDomain () env.AssemblyPath env.TestName
+                            testingCode ()
                         )
                         
         { TestName = testName; TestCase = testCase }

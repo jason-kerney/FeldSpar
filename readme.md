@@ -3,21 +3,19 @@
 > An opinionated test framework designed to be functional from the ground up.
 
 ### Temporarily Removed CI as the server is failing, but the build is good.
+###[![Build status](https://ci.appveyor.com/api/projects/status/b5xo1bn8nxr7h06q?svg=true)](https://ci.appveyor.com/project/jason-kerney/feldspar)
 
 ## Available on Nuget
 
 ### [![NuGet Status](http://img.shields.io/nuget/v/FeldSparFramework.svg?style=flat)](https://www.nuget.org/packages/FeldSparFramework/) -- Framework
-### [![NuGet Status](http://img.shields.io/nuget/v/FeldSpar.Console.svg?style=flat)](https://www.nuget.org/packages/FeldSpar.Console/) -- Console Runner
-### [![NuGet Status](http://img.shields.io/nuget/v/FeldSparGui.svg?style=flat)](https://www.nuget.org/packages/FeldSparGui/) -- GUI Runner
-### [![NuGet Status](http://img.shields.io/nuget/v/FeldSpar.GuiApi.Engine.svg?style=flat)](https://www.nuget.org/packages/FeldSpar.GuiApi.Engine/) -- API for creating a GUI Runner for FeldSpar
+### [![NuGet Status](http://img.shields.io/nuget/v/FeldSpar.ContinuousIntegration.svg?style=flat)](https://www.nuget.org/packages/FeldSpar.ContinuousIntegration/) -- CI Runner
 
 -----------------
 ## What's Different
 
 1. Function Paradigm from the start
-2. Test Memory Isolation
-3. Random Test Execution
-4. Not a xUnit Clone
+2. Random Test Execution
+3. Not a xUnit Clone
 
 ----------------- 
 ## Writing Tests
@@ -27,7 +25,6 @@
 ### 1. Be as purely functional as possible
 ### 2. _(done)_ Enforce Test Isolation
 
-* _(done)_ Tests run in isolated memory space
 * _(done)_ Test execution order is indeterminate
 
 ### 3. _(done)_ Enable Gold Standard Testing as a Framework Feature
@@ -37,19 +34,10 @@
 ### 4. _(done)_ Implement Theory Based Testing
 * _(done)_ Theory test type
 
-### 5. Integrate with visual studio
-
-### 6. _(done)_ Create Console Runner
+### 6. _(done)_ Create Console CI Runner
 * _(done)_ Create parameterized console
-* _(done)_ Allow Console to auto detect changes and rerun all tests
 
-### 7. _(done)_ Provide out of editor gui runner
-* _(done)_ Build CLR integration layer for the Engine
-* _(done)_ Create a WPF viewer in C#
-* _(done)_ Move View Models to the FeldSpar main project and convert them to F#
-* _(done)_ Create WPF GUI runner in F# 
-
-### 3. Generate Documentation
+### 7. Generate Documentation
 * Add XML Comments
 * _(done)_ Add Read Me
 

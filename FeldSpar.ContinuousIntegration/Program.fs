@@ -18,10 +18,7 @@ type CommandArguments =
     | [<Mandatory>][<AltCommandLine("--a")>]Test_Assembly of string
     | [<AltCommandLine("--r")>]Report_Location of string
     | [<AltCommandLine("--v")>]Verbosity of string
-    | [<AltCommandLine("--al")>]Auto_Loop
     | [<AltCommandLine("--ur")>]UseReporters
-    | [<AltCommandLine("--p")>]Pause
-    | Debug
 with
     interface IArgParserTemplate with
         member s.Usage =
@@ -29,10 +26,7 @@ with
             | Report_Location _ -> "This flag indicates that a JSON report is to be generated at the given location"
             | Test_Assembly _ -> "This is the location of the test library. It can be a *.dll or a *.exe file"
             | Verbosity _ -> sprintf "This sets the verbosity level for the run. Possible levels are: %A" vebosityLevels
-            | Auto_Loop -> "This makes the command contiuously run executing on every compile."
             | UseReporters _ -> "This enables the use of reporters configured in the test"
-            | Pause -> "This makes the console wait for key press inorder to exit. This is automaticly in effect if \"auto-loop\" is used"
-            | Debug -> "This launches the debugger to allow you to debug the tests"
 
 [<AutoOpen>]
 module Processors = 
@@ -101,8 +95,6 @@ module Processors =
         processWithReport reporter processor
 
 type Launcher () =
-    inherit MarshalByRefObject ()
-
     let run args =
         try
             let parser = UnionArgParser.Create<CommandArguments>()
@@ -132,11 +124,8 @@ type Launcher () =
                     failwith (sprintf "verbosity must be one of: %A" vebosityLevels)
 
 
-            let pause = argsNew.Contains (<@ Pause @>) || argsNew.Contains (<@ Auto_Loop @>)
             let tokenGetter = 
-                if argsNew.Contains (<@ Debug @>)
-                then getToken >> withDebug
-                else getToken
+                getToken
 
             let tokens = argsNew.PostProcessResults(<@ Test_Assembly @>, assebmlyValidation ) |> List.map tokenGetter
 
@@ -166,47 +155,20 @@ type Launcher () =
                 else
                     None
 
-            let autoLoop = argsNew.Contains <@ Auto_Loop @> 
-            if autoLoop 
-            then
-                let paths = tokens
-                
-                for token in paths do
-                    let fileName = token.AssemblyName
-                    let path = IO.Path.GetDirectoryName token.AssemblyPath
-                    let watcherA = new IO.FileSystemWatcher(path, fileName)
-
-                    let changed (ar:IO.FileSystemEventArgs) = 
-                        Threading.Thread.Sleep 100
-                        [ar.FullPath |> getToken] |> runTests savePath runner |> ignore
-
-                    let created (ar:IO.FileSystemEventArgs) = 
-                        Threading.Thread.Sleep 100
-                        [ar.FullPath |> getToken] |> runTests savePath runner |> ignore
-
-                    watcherA.Changed.Add changed
-                    watcherA.Created.Add created
-
-                    watcherA.EnableRaisingEvents <- true
-
             let results = runTests savePath runner tokens |> List.collect(fun (_, r) -> r)
 
-            if pause then Console.ReadKey true |> ignore
-            
-            if autoLoop then 0
-            else
-                results 
-                    |> List.filter
-                        (
-                            fun { TestName = _;  TestCanonicalizedName = _; TestResults = r } -> 
+            results 
+                |> List.filter
+                    (
+                        fun { TestName = _;  TestCanonicalizedName = _; TestResults = r } -> 
                                 
-                                match r with
-                                | Failure(Ignored(_)) -> false
-                                | Failure(_) -> true
-                                | _ -> false
-                        )
+                            match r with
+                            | Failure(Ignored(_)) -> false
+                            | Failure(_) -> true
+                            | _ -> false
+                    )
 
-                    |> List.length
+                |> List.length
 
         with
         | ex -> 
@@ -220,17 +182,8 @@ module Program =
     [<EntryPoint>]
     let public main args = 
         try
-            let applicationName = "FeldSparConsole"
-            let path = IO.Path.GetDirectoryName(Reflection.Assembly.GetExecutingAssembly().Location)
-            let appDomain = AppDomain.CreateDomain(applicationName, null, path, path, true)
-
-            let launcherType = typeof<Launcher>
-            let sandBoxAssemblyName = launcherType.Assembly.FullName
-            let sandBoxTypeName = launcherType.FullName
-
-            let sandbox = appDomain.CreateInstanceAndUnwrap(sandBoxAssemblyName, sandBoxTypeName) :?> Launcher
-
-            sandbox.Run args
+            let launch = Launcher()
+            launch.Run args
         with
         | ex -> 
             printfn "%A" ex

@@ -20,23 +20,6 @@ module Data =
                                                 member this.IsDebugging = false;
                                           }
 
-    let ``Setup Global Reports`` = 
-        Config(fun () -> 
-        { 
-            Reporters = [
-                            fun _ -> 
-                                    Searching
-                                        |> findFirstReporter<Reporters.DiffReporter>
-                                        |> findFirstReporter<Reporters.WinMergeReporter>
-                                        |> findFirstReporter<Reporters.NotepadLauncher>
-                                        |> unWrapReporter
-                                            
-                            fun _ -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;
-
-                            fun _ -> Reporters.QuietReporter() :> Core.IApprovalFailureReporter;
-                        ]
-        })
-
     let runTest assemblyPath template = 
             let { TestName = _; TestCase = test } = template |> createTestFromTemplate { Reporters = [] } ignore assemblyPath
             test()
