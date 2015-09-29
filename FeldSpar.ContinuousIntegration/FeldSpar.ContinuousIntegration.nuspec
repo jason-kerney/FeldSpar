@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/jason-kerney/FeldSpar</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Allows the running of FeldSpar tests using the console for continuous integration</description>
-    <releaseNotes>Changed it to a single process single run application</releaseNotes>
+    <releaseNotes>Updated to most recent Approval Tests</releaseNotes>
     <copyright>Copyright 2015</copyright>
     <tags>F#, FSharp, F-Sharp, Unit Testing, Unit Tests, Runner, Continuous Integration, FeldSpar</tags>
   </metadata>
