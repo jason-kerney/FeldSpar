@@ -16,7 +16,7 @@ module ChecksClean =
     let checkStandardsAndReport (env:TestEnvironment) (reporter:IApprovalFailureReporter) (approver:IApprovalApprover) =
         if(approver.Approve ())
         then
-            do approver.CleanUpAfterSucess(reporter) 
+            do approver.CleanUpAfterSuccess (reporter) 
             Success
         else 
             do approver.ReportFailure (reporter)
@@ -24,7 +24,8 @@ module ChecksClean =
             match reporter with
             | :? IReporterWithApprovalPower as approvalReporter -> 
                 if approvalReporter.ApprovedWhenReported ()
-                then do approver.CleanUpAfterSucess(reporter)
+                then do approver.CleanUpAfterSuccess(reporter)
+                ()
             | _ -> ()
 
             Failure(StandardNotMet((getPath env) + env.CanonicalizedName + ".approved"))
