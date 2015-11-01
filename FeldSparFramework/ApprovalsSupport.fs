@@ -22,7 +22,7 @@ module ApprovalsSupport =
     let private writeTo fullPath writer result =
         Directory.CreateDirectory (Path.GetDirectoryName (fullPath)) |> ignore
         do writer fullPath result
-        fullPath        
+        fullPath
 
     let private writeBinaryTo fullPath result =
         let writer path toWrite = File.WriteAllBytes(path, toWrite)
