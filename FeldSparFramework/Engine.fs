@@ -73,7 +73,7 @@ module Runner =
     /// <param name="token">the token representing the test assembly</param>
     /// <param name="testName">the name of the test</param>
     /// <param name="template">The code that is executed as the test</param>
-    let createTestFromTemplate (config : AssemblyConfiguration) (report : ExecutionStatus -> unit ) (token:IToken) { TestName = testName; Test = Test(template) } =
+    let createTestFromTemplate (config : AssemblyConfiguration) (report : ExecutionStatus -> unit ) (token:IToken) { TestContainerName = containerName; TestName = testName; Test = Test(template) } =
         let env = testName |> createEnvironment config token
 
         report |> fileFoundReport env
@@ -85,25 +85,19 @@ module Runner =
 
         let testCase = (fun() -> 
                             let testingCode = (fun () ->
-                                                    try
-                                                        let result = 
-                                                            {
-                                                                TestName = env.TestName;
-                                                                TestCanonicalizedName = env.CanonicalizedName;
-                                                                TestResults = template env;
-                                                            }
-
-                                                        result
-                                                    with
-                                                    | e -> 
-                                                        let result = 
-                                                            {
-                                                                TestName = env.TestName;
-                                                                TestCanonicalizedName = env.CanonicalizedName;
-                                                                TestResults = Failure(ExceptionFailure(e));
-                                                            }
-
-                                                        result
+                                                    let result = 
+                                                        try
+                                                            template env
+                                                        with
+                                                        | e -> 
+                                                            Failure(ExceptionFailure(e))
+                                                    
+                                                    {
+                                                        TestContainerName = containerName;
+                                                        TestName = env.TestName;
+                                                        TestCanonicalizedName = env.CanonicalizedName;
+                                                        TestResults = result;
+                                                    }
                                                 )
 
                             fileRunningReport env report
@@ -118,9 +112,11 @@ module Runner =
     /// <param name="results">the execution summaries to report</param>
     let reportResults results = Basic.printResults results
 
-    let private findStaticProperties (t:Type) = t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static)
+    let private findStaticProperties (t:Type) = 
+        t.GetProperties(Reflection.BindingFlags.Public ||| Reflection.BindingFlags.Static)
+            |> Array.map (fun p -> (t.Name, p))
 
-    let private findTestProperties (filter : PropertyInfo -> bool) (token:IToken) = 
+    let private findTestProperties (filter : string * PropertyInfo -> bool) (token:IToken) = 
         token.GetExportedTypes()
             |> List.ofSeq
             |> List.map findStaticProperties
@@ -138,13 +134,13 @@ module Runner =
 
         if ignoreAssemblyConfig then empty
         else
-            let configs = token |> findTestProperties (fun p -> p.PropertyType = typeof<Configuration>)
+            let configs = token |> findTestProperties (fun (_, p) -> p.PropertyType = typeof<Configuration>)
 
             if configs.Length = 0
             then empty
             elif configs.Length = 1
             then
-                let config = configs.[0] |> (fun p -> p.GetValue (null) :?> Configuration)
+                let config = configs.[0] |> (fun (_, p) -> p.GetValue (null) :?> Configuration)
                 { Token = token; AssemblyConfiguration = Some(config) }
             else
                 { Token = token; AssemblyConfiguration =  None}
@@ -190,8 +186,8 @@ module Runner =
     let private isTheory (t:Type) =
         t.IsGenericType && (t.GetGenericTypeDefinition()) = (typeof<Theory<_>>.GetGenericTypeDefinition())
 
-    let private getTestsWith (map:PropertyInfo -> (TestInformation)[]) (config : AssemblyConfiguration) report (token:IToken) = 
-        let filter (prop:PropertyInfo) = 
+    let private getTestsWith (map:string * PropertyInfo -> (TestInformation)[]) (config : AssemblyConfiguration) report (token:IToken) = 
+        let filter (_, prop:PropertyInfo) = 
             match prop.PropertyType with
             | t when t = typeof<Test> -> true
             | t when t = typeof<IgnoredTest> -> true
@@ -212,13 +208,13 @@ module Runner =
     /// Converts theory a theory template into an array of test templates
     /// </summary>
     /// <param name="baseName">The name of the theory template being converted</param>
-    let convertTheoryToTests (Theory({Data = data; Base = {UnitDescription = getUnitDescription; UnitTest = testTemplate}})) baseName =
+    let convertTheoryToTests (Theory({Data = data; Base = {UnitDescription = getUnitDescription; UnitTest = testTemplate}})) containerName baseName =
         data
             |> Seq.map(fun datum -> (datum, datum |> testTemplate))
-            |> Seq.map(fun (datum, testTemplate) -> { TestName = sprintf "%s.%s" baseName (getUnitDescription datum); Test = Test(testTemplate) })
+            |> Seq.map(fun (datum, testTemplate) -> { TestContainerName = containerName; TestName = sprintf "%s.%s" baseName (getUnitDescription datum); Test = Test(testTemplate); })
             |> Seq.toArray
 
-    let private getTestsFromPropery (prop:PropertyInfo) =
+    let private getTestsFromPropery (containerName, prop:PropertyInfo) =
         let converterForTheoryTestsMethodInfo = 
             typeof<Theory<_>>.Assembly.GetExportedTypes() 
                     |> Seq.map(fun t -> t.GetMethods ()) 
@@ -226,7 +222,7 @@ module Runner =
                     |> Seq.filter (fun m -> m.Name = "convertTheoryToTests") 
                     |> Seq.head
 
-        let createTestInfo testName test = { TestName = testName; Test = test }
+        let createTestInfo testName test = { TestContainerName = containerName; TestName = testName; Test = test; }
 
         match prop.PropertyType with
             | t when t = typeof<Test> -> [|(createTestInfo prop.Name (prop.GetValue(null) :?> Test))|]
@@ -235,18 +231,18 @@ module Runner =
                 let g = t.GetGenericArguments() 
                 let converterForTheoryTests = converterForTheoryTestsMethodInfo.MakeGenericMethod(g)
 
-                converterForTheoryTests.Invoke(null, [|prop.GetValue(null); prop.Name|]) :?> (TestInformation)[]
+                converterForTheoryTests.Invoke(null, [|prop.GetValue(null); t.Name; prop.Name|]) :?> (TestInformation)[]
             | _ -> raise (ArgumentException("Incorrect property found by engine"))
             
-    let private getConfigurationError (prop:PropertyInfo) =
+    let private getConfigurationError (containerName:string, prop:PropertyInfo) =
         [|
-            { TestName = prop.Name; Test = Test(fun _ -> ignoreWith "Assembly Can only have one Configuration"); }
+            { TestContainerName = containerName; TestName = prop.Name; Test = Test(fun _ -> ignoreWith "Assembly Can only have one Configuration"); }
          |]
 
     let private getMapper (config) =
         match config with
-        | { Token = _; AssemblyConfiguration = Some(_) } -> (config, (fun (prop:PropertyInfo) -> getTestsFromPropery prop ))
-        | { Token = _; AssemblyConfiguration = None } -> (config, (fun (prop:PropertyInfo) -> getConfigurationError prop ))
+        | { Token = _; AssemblyConfiguration = Some(_) } -> (config, (fun (containerName:string, prop:PropertyInfo) -> getTestsFromPropery (containerName, prop) ))
+        | { Token = _; AssemblyConfiguration = None } -> (config, (fun (containerName:string, prop:PropertyInfo) -> getConfigurationError (containerName, prop) ))
 
     let private determinEnvironmentAndMapping (config, mapper) =
         match config with

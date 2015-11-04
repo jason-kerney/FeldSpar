@@ -30,6 +30,7 @@ module Data =
     let filteringSetUp = 
         let hasOnlySuccesses =
             {
+                TestContainerName = "";
                 TestName = "successes only test";
                 TestCanonicalizedName = "";
                 TestResults = Success
@@ -37,6 +38,7 @@ module Data =
 
         let hasOnlyFailures =
             {
+                TestContainerName = "";
                 TestName = "failures test";
                 TestCanonicalizedName = "";
                 TestResults = Failure(ExceptionFailure(new System.Exception()));
@@ -44,6 +46,7 @@ module Data =
 
         let hasMixedResults = 
             {
+                TestContainerName = "";
                 TestName = "mixed test";
                 TestCanonicalizedName = "";
                 TestResults = Failure(GeneralFailure("This is a failure")); 

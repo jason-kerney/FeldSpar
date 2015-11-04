@@ -16,21 +16,25 @@ module BuildingOfTestsTests =
                 "internal tests",
                 [
                     { 
+                        TestContainerName = "Can Build Report from Execution Summaries";
                         TestName = "Summary One"; 
                         TestCanonicalizedName = "SummaryOne";
                         TestResults = Success;
                     };
                     { 
+                        TestContainerName = "Can Build Report from Execution Summaries";
                         TestName = "Summary Two"; 
                         TestCanonicalizedName = "SummaryTwo";
                         TestResults = Failure(GeneralFailure("Something unknown happened"));
                     };
                     { 
+                        TestContainerName = "Can Build Report from Execution Summaries";
                         TestName = "Summary Three"; 
                         TestCanonicalizedName = "SummaryThree";
                         TestResults = Success;
                     };
                     { 
+                        TestContainerName = "Can Build Report from Execution Summaries";
                         TestName = "Summary Four"; 
                         TestCanonicalizedName = "SummaryThree";
                         TestResults = 5 |> expectsToBe 4;
@@ -47,21 +51,25 @@ module BuildingOfTestsTests =
                 "internal tests",
                 [
                     { 
+                        TestContainerName = "Can Build Report from Execution Summaries Sorted by numeric Values";
                         TestName = "Summary 3"; 
                         TestCanonicalizedName = "Summary3";
                         TestResults = Success;
                     };
                     { 
+                        TestContainerName = "Can Build Report from Execution Summaries Sorted by numeric Values";
                         TestName = "Summary 4"; 
                         TestCanonicalizedName = "Summary4";
                         TestResults = Failure(GeneralFailure("Something unknown happened"));
                     };
                     { 
+                        TestContainerName = "Can Build Report from Execution Summaries Sorted by numeric Values";
                         TestName = "Summary 11"; 
                         TestCanonicalizedName = "Summary11";
                         TestResults = Success;
                     };
                     { 
+                        TestContainerName = "Can Build Report from Execution Summaries Sorted by numeric Values";
                         TestName = "Summary 12"; 
                         TestCanonicalizedName = "Summary12";
                         TestResults = 5 |> expectsToBe 4;
@@ -79,21 +87,25 @@ module BuildingOfTestsTests =
                 "internal tests",
                 [
                     { 
+                        TestContainerName = "Report exports to JSON";
                         TestName = "Summary One"; 
                         TestCanonicalizedName = "SummaryOne";
                         TestResults = Success;
                     };
                     { 
+                        TestContainerName = "Report exports to JSON";
                         TestName = "Summary Two"; 
                         TestCanonicalizedName = "SummaryTwo";
                         TestResults = Failure(GeneralFailure("Something unknown happened"));
                     };
                     { 
+                        TestContainerName = "Report exports to JSON";
                         TestName = "Summary Three"; 
                         TestCanonicalizedName = "SummaryThree";
                         TestResults = Success;
                     };
                     { 
+                        TestContainerName = "Report exports to JSON";
                         TestName = "Summary Four"; 
                         TestCanonicalizedName = "SummaryThree";
                         TestResults = 5 |> expectsToBe 4;
@@ -115,16 +127,18 @@ module BuildingOfTestsTests =
                                     })
 
                 let results =  "testing theory"
-                                |> convertTheoryToTests theory
-                                |> Array.map (fun { TestName = description; Test = Test(test) } -> (description, env |> test))
-                                |> Array.map (fun (description, result) ->
-                                                let resultString = 
-                                                    match result with
-                                                    | Success -> "Success"
-                                                    | Failure(failType) -> sprintf "%A" failType
+                                |> convertTheoryToTests theory "Can Create multiple Tests From one Theory Test"
+                                |> Array.map (
+                                    (fun { TestName = description; Test = Test(test) } -> (description, env |> test))
+                                    >>
+                                    (fun (description, result) ->
+                                        let resultString = 
+                                            match result with
+                                            | Success -> "Success"
+                                            | Failure(failType) -> sprintf "%A" failType
 
-                                                sprintf "%s -> %s" description resultString
-                                              )
+                                        sprintf "%s -> %s" description resultString
+                                    ))
 
                 let result = String.Join("\n", results) + "\n"
 
@@ -169,6 +183,7 @@ module BuildingOfTestsTests =
 
                 let ``A Test That will fail`` =
                     {
+                        TestContainerName = "Test that a failing test shows as a failure";
                         TestName = "A Test That will fail";
                         Test = ``A Test That will fail``;
                     }
@@ -214,8 +229,9 @@ module BuildingOfTestsTests =
 
                 let info = 
                     {
+                        TestContainerName = "The environment of a test should canonicalize the description correctly into the name"
                         TestName = testDescription;
-                        Test = ``Can0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~``
+                        Test = ``Can0n1cliz3 \t\r\n\t\tThis<>/?!#$%^&*()+-*;'\"|`~``;
                     }
 
                 verify
@@ -239,6 +255,7 @@ module BuildingOfTestsTests =
 
                 let ``A test that throws an exception`` = 
                     {
+                        TestContainerName = "An exception thrown in a test should report exception failure";
                         TestName = "A test that throws an exception";
                         Test = ``A test that throws an exception``;
                     }

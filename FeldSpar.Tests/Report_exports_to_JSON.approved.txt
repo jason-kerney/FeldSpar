@@ -1,11 +1,21 @@
 ﻿{
 	"Assembly Name" : "internal tests" 
 	"Failures" : [
-		{ "Summary Four" : "Expectation Not Met ('5 expected to be 4')" },
-		{ "Summary Two" : "General Failure ('Something unknown happened')" }
+			{
+				"Collection": "Report exports to JSON",
+				"Tests": [
+						{ "Summary Four" : "Expectation Not Met ('5 expected to be 4')" },
+						{ "Summary Two" : "General Failure ('Something unknown happened')" }
+				]
+			}
 	],
 	"Successes" : [
-		"Summary One",
-		"Summary Three"
+			{
+				"Collection": "Report exports to JSON",
+				"Tests": [
+						"Summary One",
+						"Summary Three"
+				]
+			}
 	]
 }

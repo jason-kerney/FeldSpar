@@ -16,6 +16,7 @@ type TestResult =
 
 type ExecutionSummary =
     {
+        TestContainerName : string;
         TestName : string;
         TestCanonicalizedName : string;
         TestResults : TestResult;
@@ -30,14 +31,20 @@ type FailureReport =
         FailureType : FailureType;
     }
 
+type GroupReport = 
+    {
+        TestContainerName : string;
+        Failures : FailureReport[];
+        Successes : string[];
+    }
+
 /// <summary>
 /// Data about a test assembly results
 /// </summary>
 type OutputReport =
     {
         AssemblyName : string;
-        Failures : FailureReport[];
-        Successes : string[];
+        Reports : GroupReport seq;
     }
     
 /// <summary>
@@ -107,6 +114,7 @@ type Theory<'a> =
 
 type TestInformation =
     {
+        TestContainerName: string;
         TestName: string;
         Test: Test;
     }
@@ -257,28 +265,53 @@ module Utilities =
     /// <param name="name">The name of the test assembly</param>
     /// <param name="results">the test results</param>
     let buildOutputReport (assemblyName, results:ExecutionSummary seq) =
-        let successes = 
-            results
-            |> Seq.filter (fun result -> result.TestResults = Success)
-            |> naturalSortBy (fun result -> result.TestName)
-            |> Seq.map (fun result -> result.TestName)
-            |> Seq.toArray
+        let getFailureType r =
+            match r with
+            | Success -> GeneralFailure("FeldSpar Framework Reporting Error. Filter Broken")
+            | Failure(fail) -> fail
 
-        let failures =
+        let groups = 
             results
-            |> Seq.filter (fun result -> result.TestResults <> Success)
-            |> naturalSortBy (fun result -> result.TestName)
-            |> Seq.map(fun { TestName = testName; TestCanonicalizedName = _ ; TestResults = Failure(failType) } -> 
-                {
-                    TestName = testName;
-                    FailureType = failType;
-                }
-            )
-            |> Seq.toArray
+                |> Seq.groupBy (fun result -> result.TestContainerName)
+
+        let reports =
+            groups
+            |> Seq.map 
+                (fun (group, res) ->
+                    let res = 
+                        res
+                        |> Seq.sortBy (fun r -> r.TestName)
+
+                    let successes = 
+                        res
+                        |> Seq.filter (fun r -> r.TestResults = Success)
+                        |> Seq.map (fun r -> r.TestName)
+                        |> Seq.toArray
+
+                    let failures =
+                        res
+                        |> Seq.filter (fun r -> r.TestResults <> Success)
+                        |> Seq.map
+                            (fun r ->
+                                {
+                                    TestName = r.TestName;
+                                    FailureType = r.TestResults |> getFailureType
+                                }
+                            )
+                        |> Seq.toArray
+
+                    {
+                        TestContainerName = group;
+                        Failures = failures;
+                        Successes = successes;
+                    }
+                )
+
+        let reports =
+            reports |> Seq.sortBy (fun r -> r.TestContainerName)
 
         {
             AssemblyName = assemblyName;
-            Failures = failures;
-            Successes = successes;
+            Reports = reports;
         }
 

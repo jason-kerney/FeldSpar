@@ -45,7 +45,7 @@ module Basic =
     let printExecutionSummary (result : ExecutionSummary) =
         let resultsMessages = result.TestResults |> printResult "\t\t"
 
-        sprintf "\t%s\t%s" result.TestName resultsMessages
+        sprintf "\t%s\n\t\t%s\t\t%s" result.TestContainerName result.TestName resultsMessages
 
     /// <summary>
     /// Maps all Execution summaries to a friendly string
