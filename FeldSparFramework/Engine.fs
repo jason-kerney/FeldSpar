@@ -35,7 +35,7 @@ module Runner =
 
     let private emptyGlobal : AssemblyConfiguration = { Reporters = [] }
 
-    let private createEnvironment (config : AssemblyConfiguration) (token:IToken) testName = 
+    let private createEnvironment (config : AssemblyConfiguration) (token:IToken) containerName testName = 
         let rec getSourcePath path = 
             let p = System.IO.DirectoryInfo(path)
 
@@ -48,12 +48,14 @@ module Runner =
         let path = token.AssemblyPath |> IO.Path.GetDirectoryName |> getSourcePath
             
         { 
-            TestName = testName;
-            CanonicalizedName = testName |> Formatters.Basic.CanonicalizeString;
-            GoldStandardPath = path;
-            Assembly = token.Assembly;
-            AssemblyPath = token.AssemblyPath;
-            Reporters = config.Reporters;
+            ContainerName              = containerName;
+            CanonicalizedContainerName = containerName |> Formatters.Basic.CanonicalizeString;
+            TestName                   = testName;
+            CanonicalizedName          = testName |> Formatters.Basic.CanonicalizeString;
+            GoldStandardPath           = path;
+            Assembly                   = token.Assembly;
+            AssemblyPath               = token.AssemblyPath;
+            Reporters                  = config.Reporters;
         }
 
     let private fileFoundReport (env:TestEnvironment) report =
@@ -74,7 +76,7 @@ module Runner =
     /// <param name="testName">the name of the test</param>
     /// <param name="template">The code that is executed as the test</param>
     let createTestFromTemplate (config : AssemblyConfiguration) (report : ExecutionStatus -> unit ) (token:IToken) { TestContainerName = containerName; TestName = testName; Test = Test(template) } =
-        let env = testName |> createEnvironment config token
+        let env = testName |> createEnvironment config token containerName
 
         report |> fileFoundReport env
 

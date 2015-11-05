@@ -1,4 +1,6 @@
-﻿"{TestName = "We get the correct environment";
+﻿"{ContainerName = "Building Of Tests Is Correct";
+ CanonicalizedContainerName = "Building_Of_Tests_Is_Correct";
+ TestName = "We get the correct environment";
  CanonicalizedName = "We_get_the_correct_environment";
  GoldStandardPath =
   "C:\Users\baghe\OneDrive\Development\GitHub\FeldSpar\FeldSpar.Tests\";

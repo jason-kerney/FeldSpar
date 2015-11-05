@@ -9,7 +9,7 @@ open FeldSpar.Framework.Verification
 open FeldSpar.Framework.Verification.ChecksClean
 open FeldSpar.Framework.Verification.ApprovalsSupport
 
-module BuildingOfTestsTests =
+module ``Building Of Tests Is Correct`` =
     let private summaries = (
         "internal tests",
         [
@@ -275,7 +275,7 @@ module BuildingOfTestsTests =
                 let summary = case()
                 let result = summary.TestResults
 
-                let regex = System.Text.RegularExpressions.Regex(@"(?<=at FeldSpar\.Console\.Tests\.BuildingOfTestsTests\.A test that throws an exception).*\s+.*", Text.RegularExpressions.RegexOptions.Multiline)
+                let regex = System.Text.RegularExpressions.Regex(@"(?<=at FeldSpar\.Console\.Tests\.Building Of Tests Is Correct\.A test that throws an exception).*\s+.*", Text.RegularExpressions.RegexOptions.Multiline)
 
                 let resultString = result |> sprintf "%A"
                 let mtch = regex.Match(resultString)

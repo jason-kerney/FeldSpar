@@ -60,12 +60,14 @@ type AssemblyConfiguration =
 /// </summary>
 type TestEnvironment =
     {
-        TestName:string;
-        CanonicalizedName : string;
-        GoldStandardPath : string;
-        Assembly : Reflection.Assembly;
-        AssemblyPath : string;
-        Reporters : (unit -> IApprovalFailureReporter) List;
+        ContainerName              : string;
+        CanonicalizedContainerName : string;
+        TestName                   : string;
+        CanonicalizedName          : string;
+        GoldStandardPath           : string;
+        Assembly                   : Reflection.Assembly;
+        AssemblyPath               : string;
+        Reporters                  : (unit -> IApprovalFailureReporter) List;
     }
 
 
