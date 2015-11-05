@@ -2,12 +2,8 @@
  CanonicalizedContainerName = "Building_Of_Tests_Is_Correct";
  TestName = "We get the correct environment";
  CanonicalizedName = "We_get_the_correct_environment";
- GoldStandardPath =
-  "...\FeldSpar.Tests\";
+ GoldStandardPath = "...\FeldSpar.Tests\";
  Assembly =
   FeldSpar.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;
- AssemblyPath =
-  "...\FeldSpar.Tests\bin\...
- Reporters =
-  [<fun:Setup Global Reports@13-1>; <fun:Setup Global Reports@20-2>;
-   <fun:Setup Global Reports@22-3>];}"
+ AssemblyPath = "...\FeldSpar.Tests\bin\...";
+ Reporters = [];}"
