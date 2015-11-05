@@ -3,11 +3,11 @@
  TestName = "We get the correct environment";
  CanonicalizedName = "We_get_the_correct_environment";
  GoldStandardPath =
-  "C:\Users\baghe\OneDrive\Development\GitHub\FeldSpar\FeldSpar.Tests\";
+  "...\FeldSpar.Tests\";
  Assembly =
   FeldSpar.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;
  AssemblyPath =
-  "C:\Users\baghe\OneDrive\Development\GitHub\FeldSpar\FeldSpar.Tests\bin\Release";
+  "...\FeldSpar.Tests\bin\...
  Reporters =
   [<fun:Setup Global Reports@13-1>; <fun:Setup Global Reports@20-2>;
    <fun:Setup Global Reports@22-3>];}"

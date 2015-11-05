@@ -22,7 +22,7 @@ module ApprovalsSupport =
     let private writeTo fullPath writer result =
         Directory.CreateDirectory (Path.GetDirectoryName (fullPath)) |> ignore
         do writer fullPath result
-        fullPath        
+        fullPath
 
     let private writeBinaryTo fullPath result =
         let writer path toWrite = File.WriteAllBytes(path, toWrite)
@@ -82,7 +82,7 @@ module ApprovalsSupport =
 
         {  new IApprovalNamer with
             member this.SourcePath with get () = path
-            member this.Name with get () = env.CanonicalizedName
+            member this.Name with get () = env.CanonicalizedContainerName + "." + env.CanonicalizedName
         }
 
     let createReporter<'a when 'a:> IApprovalFailureReporter> () =
