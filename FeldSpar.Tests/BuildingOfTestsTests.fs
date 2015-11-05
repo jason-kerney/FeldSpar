@@ -10,39 +10,49 @@ open FeldSpar.Framework.Verification.ChecksClean
 open FeldSpar.Framework.Verification.ApprovalsSupport
 
 module BuildingOfTestsTests =
+    let private summaries = (
+        "internal tests",
+        [
+            { 
+                TestContainerName = "Can Build Report from Execution Summaries";
+                TestName = "Summary One"; 
+                TestCanonicalizedName = "SummaryOne";
+                TestResults = Success;
+            };
+            { 
+                TestContainerName = "Can Build Report from Execution Summaries";
+                TestName = "Summary Two"; 
+                TestCanonicalizedName = "SummaryTwo";
+                TestResults = Failure(GeneralFailure("Something unknown happened"));
+            };
+            { 
+                TestContainerName = "Can Build Report from Execution Summaries";
+                TestName = "Summary Three"; 
+                TestCanonicalizedName = "SummaryThree";
+                TestResults = Success;
+            };
+            { 
+                TestContainerName = "Can Build Report from Execution Summaries";
+                TestName = "Summary Four"; 
+                TestCanonicalizedName = "SummaryThree";
+                TestResults = 5 |> expectsToBe 4;
+            };
+        ])
+
+    let ``Summaries are correct`` =
+        Test(fun env ->
+            summaries |> checkAgainstStandardObjectAsCleanedString env
+        ) 
+
     let ``Can Build Report from Execution Summaries`` =
         Test(fun env ->
-            let summaries = (
-                "internal tests",
-                [
-                    { 
-                        TestContainerName = "Can Build Report from Execution Summaries";
-                        TestName = "Summary One"; 
-                        TestCanonicalizedName = "SummaryOne";
-                        TestResults = Success;
-                    };
-                    { 
-                        TestContainerName = "Can Build Report from Execution Summaries";
-                        TestName = "Summary Two"; 
-                        TestCanonicalizedName = "SummaryTwo";
-                        TestResults = Failure(GeneralFailure("Something unknown happened"));
-                    };
-                    { 
-                        TestContainerName = "Can Build Report from Execution Summaries";
-                        TestName = "Summary Three"; 
-                        TestCanonicalizedName = "SummaryThree";
-                        TestResults = Success;
-                    };
-                    { 
-                        TestContainerName = "Can Build Report from Execution Summaries";
-                        TestName = "Summary Four"; 
-                        TestCanonicalizedName = "SummaryThree";
-                        TestResults = 5 |> expectsToBe 4;
-                    };
-                ])
-
             let report = summaries |> buildOutputReport
             report |> checkAgainstStandardObjectAsCleanedString env
+        )
+
+    let ``We get the correct environment`` = 
+        Test(fun env ->
+            env |> checkAgainstStandardObjectAsCleanedString env
         )
 
     let ``Can Build Report from Execution Summaries Sorted by numeric Values`` =
