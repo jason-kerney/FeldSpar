@@ -2,7 +2,6 @@
 =========
 > An opinionated test framework designed to be functional from the ground up.
 
-### Temporarily Removed CI as the server is failing, but the build is good.
 ###[![Build status](https://ci.appveyor.com/api/projects/status/b5xo1bn8nxr7h06q?svg=true)](https://ci.appveyor.com/project/jason-kerney/feldspar)
 
 ## Available on Nuget
@@ -24,7 +23,6 @@
 ##Goals
 ### 1. Be as purely functional as possible
 ### 2. _(done)_ Enforce Test Isolation
-
 * _(done)_ Test execution order is indeterminate
 
 ### 3. _(done)_ Enable Gold Standard Testing as a Framework Feature
@@ -56,12 +54,10 @@
 
 > Feld Spar tackles this by having only 2 states of a test. Success or Failure. Failures allow you to have a reason for failure, which will be `Ignored` for an ignored test.
 
-### Favor Intention
+### Show Intention
 > .Net attributes are not immediately obvious when your program execution depends on them. If you find a method that conforms to the test signature but lacks the attribute was the attribute removed?
 
 > I wanted a test framework that made a test method as obviously indented to be a test.
-
-> I also choose a convention based approach whenever I was able to without forfeiting clarity
 
 ## Feld Spar?
 > Vikings navigated using solar navigation. This presented a problem when it was foggy, overcast or rainy. However they were very successful at navigation despite these limitations. Myth states that the Vikings had a magic [Sun Stone](http://news.discovery.com/earth/rocks-fossils/viking-sunstone-shipwreck-130311.htm) that enabled them to navigate during the worst of weather.
