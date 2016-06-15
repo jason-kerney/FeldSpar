@@ -38,6 +38,7 @@
 ### 7. Generate Documentation
 * Add XML Comments
 * _(done)_ Add Read Me
+* _(done)_ Add Example File on install
 
 ## Design Considerations
 ### **NO** Exception Driven Workflows
