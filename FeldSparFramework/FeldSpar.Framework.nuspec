@@ -10,12 +10,19 @@
     <projectUrl>https://github.com/jason-kerney/FeldSpar</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An opinionated fully functional testing framework for F#</description>
-    <releaseNotes>Updated to most recent Approval Tests</releaseNotes>
+    <releaseNotes>Added examples and documentation</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>F#, FSharp, F-Sharp, Unit Testing, Unit Tests</tags>
+	<dependencies>
+      <group targetFramework="net46">
+        <dependency id="ApprovalUtilities" version="(3.0.10,)" />
+        <dependency id="ApprovalTests" version="(3.0.10,)" />
+      </group>
+    </dependencies>
   </metadata>
   <files>
   	<file src="content\Program.fs" target="content"/>
+  	<file src="content\FeldSpar_Example.fs" target="content"/>
 	<file src="tools\Install.ps1" target="tools" />
   </files>
 </package>
