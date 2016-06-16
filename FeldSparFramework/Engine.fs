@@ -142,7 +142,7 @@ module Runner =
             then empty
             elif configs.Length = 1
             then
-                let config = configs.[0] |> (fun (_, p) -> p.GetValue (null) :?> Configuration)
+                let config = configs.[0] |> (fun (_, p) -> p.GetValue(null,null) :?> Configuration)
                 { Token = token; AssemblyConfiguration = Some(config) }
             else
                 { Token = token; AssemblyConfiguration =  None}
@@ -227,13 +227,13 @@ module Runner =
         let createTestInfo testName test = { TestContainerName = containerName; TestName = testName; Test = test; }
 
         match prop.PropertyType with
-            | t when t = typeof<Test> -> [|(createTestInfo prop.Name (prop.GetValue(null) :?> Test))|]
+            | t when t = typeof<Test> -> [|(createTestInfo prop.Name (prop.GetValue(null, null) :?> Test))|]
             | t when t = typeof<IgnoredTest> -> [|(createTestInfo prop.Name (Test(fun _ -> ignoreWith "Compile Ignored")))|]
             | t when t |> isTheory -> 
                 let g = t.GetGenericArguments() 
                 let converterForTheoryTests = converterForTheoryTestsMethodInfo.MakeGenericMethod(g)
 
-                converterForTheoryTests.Invoke(null, [|prop.GetValue(null); t.Name; prop.Name|]) :?> (TestInformation)[]
+                converterForTheoryTests.Invoke(null, [|prop.GetValue(null, null); t.Name; prop.Name|]) :?> (TestInformation)[]
             | _ -> raise (ArgumentException("Incorrect property found by engine"))
             
     let private getConfigurationError (containerName:string, prop:PropertyInfo) =
