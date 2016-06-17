@@ -5,13 +5,13 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{744ce068-0da4-4d19-8e1c-5d50ecdc4544}</ProjectGuid>
+    <ProjectGuid>ad56b1ee-515d-40d2-8217-4b4335c0a37b</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>FeldSparFramework</RootNamespace>
-    <AssemblyName>FeldSparFramework.40</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
-    <Name>FeldSpar.Framework</Name>
+    <AssemblyName>FeldSparFramework.46</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
+    <Name>FeldSpar.46.Framework</Name>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -19,19 +19,19 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
-    <OutputPath>bin\Debug40\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug40\FeldSparFramework.40.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\FeldSparFramework.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
-    <OutputPath>bin\Release40\</OutputPath>
-    <DefineConstants>TRACE;NET40</DefineConstants>
+    <OutputPath>bin\Release46\</OutputPath>
+    <DefineConstants>TRACE;NET46</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release40\FeldSparFramework.40.XML</DocumentationFile>
+    <DocumentationFile>bin\Release46\FeldSparFramework.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion>14.0</VisualStudioVersion>
@@ -58,6 +58,7 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
+    <Compile Include="FrameworkTools.fs" />
     <Compile Include="TryParser.fs" />
     <Compile Include="Sorting.fs" />
     <Compile Include="Framework.fs" />

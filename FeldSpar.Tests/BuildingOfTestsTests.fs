@@ -54,6 +54,7 @@ module ``Building Of Tests Is Correct`` =
     let ``We get the correct environment`` = 
         Test(fun env ->
             let sut = { env with GoldStandardPath = "...\\FeldSpar.Tests\\"; AssemblyPath = "...\\FeldSpar.Tests\\bin\\..."; Reporters = [] }
+            let env = { env with CanonicalizedName = env.CanonicalizedName + (sprintf ".%A" currentFramework)}
             sut |> checkAgainstStandardObjectAsCleanedString env
         )
 
