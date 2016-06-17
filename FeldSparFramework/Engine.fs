@@ -142,7 +142,7 @@ module Runner =
             then empty
             elif configs.Length = 1
             then
-                let config = configs.[0] |> (fun (_, p) -> p.GetValue(null) :?> Configuration)
+                let config = configs.[0] |> (fun (_, p) -> p.GetValue(null, null) :?> Configuration)
                 { Token = token; AssemblyConfiguration = Some(config) }
             else
                 { Token = token; AssemblyConfiguration =  None}

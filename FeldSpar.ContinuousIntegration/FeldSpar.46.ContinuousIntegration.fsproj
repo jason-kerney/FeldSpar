@@ -26,7 +26,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\Debug46\FeldSpar.46.Console.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
-    <StartArguments>--a "..\..\..\FeldSpar.Tests\bin\Debug46\FeldSpar.46.Tests.exe" --ur --r "..\..\..\runreport.json"</StartArguments>
+    <StartArguments>--v ERRORS --r ".\RunReport.json"  --a "..\..\..\FeldSpar.Tests\bin\Debug46\FeldSpar.46.Tests.exe"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

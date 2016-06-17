@@ -21,7 +21,7 @@ let nugetDeployDir =
     else deployDir
 
 let version () =
-    buildDir + "FeldSparFramework.dll" |> GetAssemblyVersionString 
+    buildDir + "FeldSparFramework.46.dll" |> GetAssemblyVersionString 
 
 let build appDir tmpDir targetDir label projecType =
     let tmpDir = (appDir + tmpDir)
@@ -77,8 +77,8 @@ Target "Default" (fun _ ->
 )
 
 Target "Nuget" (fun _ ->
-    Shell.Exec ("nuget", @"pack ..\FeldSparFramework\FeldSpar.Framework.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
-    Shell.Exec ("nuget", @"pack ..\FeldSpar.ContinuousIntegration\FeldSpar.ContinuousIntegration.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack ..\FeldSparFramework\FeldSpar.46.Framework.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack ..\FeldSpar.ContinuousIntegration\FeldSpar.46.ContinuousIntegration.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
 )
 
 Target "LocalDeploy" (fun _ ->
