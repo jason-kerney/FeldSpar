@@ -58,7 +58,15 @@ let buildApp netDir =
     build "./FeldSparFramework/" releaseDir (buildDir netDir) "AppBuild-Output:" fSharpProjects
 
 Target "BuildApp" (fun _ ->
-    buildApp netDir
+    ()
+)
+
+Target "BuildApp46" (fun _ ->
+    Some(net46) |> buildApp
+)
+
+Target "BuildApp40" (fun _ ->
+    Some(net40) |> buildApp
 )
 
 Target "BuildConsole" (fun _ ->
@@ -134,6 +142,8 @@ Target "LocalDeploy" (fun _ ->
 
 // Dependencies
 "Clean"
+    ==> "BuildApp40"
+    ==> "BuildApp46"
     ==> "BuildApp"
     ==> "BuildConsole"
     ==> "BuildTest"
