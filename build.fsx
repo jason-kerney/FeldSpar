@@ -98,7 +98,7 @@ Target "BuildTest46" (fun _ ->
     Some(net46) |> buildTest
 )
 
-Target "Test" (fun _ ->
+let test netDir = 
     FileSystemHelper.directoryInfo "./FeldSpar.Tests/" |>
         FileSystemHelper.filesInDir |>
         Array.map(fun fi -> fi.FullName) |>
@@ -106,11 +106,20 @@ Target "Test" (fun _ ->
         Copy (testDir netDir)
     let result = Shell.Exec ((buildDir netDir) + "FeldSpar" + netVersionFileName + ".ContinuousIntegration.exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar" + netVersionFileName + ".Tests.exe\"", ?dir=Some(testDir netDir))
     if result <> 0 then failwith "Failed Tests"
+
+Target "Test" doesNothing
+
+Target "Test40" (fun _ ->
+    Some(net40) |> test
+)
+
+Target "Test46" (fun _ ->
+    Some(net46) |> test
 )
 
 Target "Zip" (fun _ ->
-    let sourceDir = netDir |> buildDir
-    let destDir = netDir |> deployDir
+    let sourceDir = None |> buildDir
+    let destDir = None |> deployDir
     
     let dirInfo = System.IO.DirectoryInfo(destDir)
     if not dirInfo.Exists then
@@ -172,6 +181,8 @@ Target "LocalDeploy" (fun _ ->
     ==> "BuildTest46"
     ==> "BuildTest"
 
+    ==> "Test40"
+    ==> "Test46"
     ==> "Test"
 
     ==> "Zip"
