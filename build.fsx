@@ -6,7 +6,10 @@ open Fake.VersionHelper
 RestorePackages ()
 
 // Properties
-let fSharpProjects = "*.46.*.fsproj"
+let net46 = ".46"
+let net40 = ".40"
+let netVersion = net40
+let fSharpProjects = "*" + netVersion + ".*.fsproj"
 let releaseDir = "bin/Release/"
 
 
@@ -21,7 +24,7 @@ let nugetDeployDir =
     else deployDir
 
 let version () =
-    buildDir + "FeldSparFramework.46.dll" |> GetAssemblyVersionString 
+    buildDir + "FeldSparFramework" + netVersion + ".dll" |> GetAssemblyVersionString 
 
 let build appDir tmpDir targetDir label projecType =
     let tmpDir = (appDir + tmpDir)
@@ -52,7 +55,7 @@ Target "BuildConsole" (fun _ ->
 )
 
 Target "BuildTest" (fun _ ->
-    !! "./**/*.fsproj"
+    !! ("./**/" + fSharpProjects)
         |> MSBuildRelease testDir "Build"
         |> Log "TestBuild-Output:"
 )
@@ -63,7 +66,7 @@ Target "Test" (fun _ ->
         Array.map(fun fi -> fi.FullName) |>
         Array.filter(fun fi -> fi.Contains("approved")) |>
         Copy testDir
-    let result = Shell.Exec (buildDir + "FeldSpar.46.ContinuousIntegration.exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar.46.Tests.exe\"", ?dir=Some(testDir))
+    let result = Shell.Exec (buildDir + "FeldSpar" + netVersion + ".ContinuousIntegration.exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar" + netVersion + ".Tests.exe\"", ?dir=Some(testDir))
     if result <> 0 then failwith "Failed Tests"
 )
 
@@ -77,8 +80,8 @@ Target "Default" (fun _ ->
 )
 
 Target "Nuget" (fun _ ->
-    Shell.Exec ("nuget", @"pack ..\FeldSparFramework\FeldSpar.46.Framework.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
-    Shell.Exec ("nuget", @"pack ..\FeldSpar.ContinuousIntegration\FeldSpar.46.ContinuousIntegration.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack ..\FeldSparFramework\FeldSpar" + netVersion + ".Framework.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack ..\FeldSpar.ContinuousIntegration\FeldSpar" + netVersion + ".ContinuousIntegration.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
 )
 
 Target "LocalDeploy" (fun _ ->
