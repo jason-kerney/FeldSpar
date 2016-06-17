@@ -20,7 +20,7 @@
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
     <OutputPath>bin\Debug40\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Debug40\FeldSpar.40.Tests.XML</DocumentationFile>
     <StartAction>Project</StartAction>

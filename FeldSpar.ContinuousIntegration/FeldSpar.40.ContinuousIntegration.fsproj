@@ -21,7 +21,7 @@
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
     <OutputPath>bin\Debug40\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\Debug40\FeldSpar.40.Console.XML</DocumentationFile>
@@ -36,7 +36,7 @@
     <DefineConstants>TRACE;NET40</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\Release40\FeldSpar.Console.XML</DocumentationFile>
+    <DocumentationFile>bin\Release40\FeldSpar.40.Console.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
     <StartArguments>--a "C:\Users\baghe\OneDrive\Development\GitHub\FeldSpar\FeldSpar.Tests\bin\Debug\FeldSpar.40.Tests.dll" --p --ur --r "..\..\..\runreport.json"</StartArguments>
   </PropertyGroup>

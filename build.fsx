@@ -6,7 +6,7 @@ open Fake.VersionHelper
 RestorePackages ()
 
 // Properties
-let fSharpProjects = "*.fsproj"
+let fSharpProjects = "*.46.*.fsproj"
 let releaseDir = "bin/Release/"
 
 
@@ -63,7 +63,7 @@ Target "Test" (fun _ ->
         Array.map(fun fi -> fi.FullName) |>
         Array.filter(fun fi -> fi.Contains("approved")) |>
         Copy testDir
-    let result = Shell.Exec (buildDir + "FeldSpar.ContinuousIntegration.exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar.Tests.exe\"", ?dir=Some(testDir))
+    let result = Shell.Exec (buildDir + "FeldSpar.46.ContinuousIntegration.exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar.46.Tests.exe\"", ?dir=Some(testDir))
     if result <> 0 then failwith "Failed Tests"
 )
 

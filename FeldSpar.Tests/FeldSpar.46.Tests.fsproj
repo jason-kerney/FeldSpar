@@ -19,10 +19,10 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath>bin\Debug46\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET46</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\FeldSpar.Tests.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug46\FeldSpar.46.Tests.XML</DocumentationFile>
     <StartAction>Project</StartAction>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -32,7 +32,7 @@
     <OutputPath>bin\Release46\</OutputPath>
     <DefineConstants>TRACE;NET46</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release46\FeldSpar.Tests.XML</DocumentationFile>
+    <DocumentationFile>bin\Release46\FeldSpar.46.Tests.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>

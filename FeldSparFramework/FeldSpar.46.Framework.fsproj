@@ -19,10 +19,10 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath>bin\Debug46\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET46</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\FeldSparFramework.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug46\FeldSparFramework.46.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,7 +31,7 @@
     <OutputPath>bin\Release46\</OutputPath>
     <DefineConstants>TRACE;NET46</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release46\FeldSparFramework.XML</DocumentationFile>
+    <DocumentationFile>bin\Release46\FeldSparFramework.46.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion>14.0</VisualStudioVersion>

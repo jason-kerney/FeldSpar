@@ -6,7 +6,8 @@ open ApprovalTests
 
     module Program =
     
-        let ``Setup Global Reports`` = 
+        //let ``Setup Global Reports`` = 
+        let Setup_Global_Reports = 
             Config(fun () -> 
             { 
                 Reporters = [

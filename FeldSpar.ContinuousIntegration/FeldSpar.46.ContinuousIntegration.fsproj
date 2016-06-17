@@ -20,13 +20,13 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath>bin\Debug46\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET46</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\Debug\FeldSpar.Console.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug46\FeldSpar.46.Console.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
-    <StartArguments>--a "C:\Users\Jason\OneDrive\Development\GitHub\FeldSpar\FeldSpar.Tests\bin\Debug\FeldSpar.Tests.dll" --p --ur --r "..\..\..\runreport.json"</StartArguments>
+    <StartArguments>--a "..\..\..\FeldSpar.Tests\bin\Debug46\FeldSpar.46.Tests.exe" --ur --r "..\..\..\runreport.json"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,9 +36,9 @@
     <DefineConstants>TRACE;NET46</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\Release46\FeldSpar.Console.XML</DocumentationFile>
+    <DocumentationFile>bin\Release46\FeldSpar.46.Console.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
-    <StartArguments>--a "C:\Users\baghe\OneDrive\Development\GitHub\FeldSpar\FeldSpar.Tests\bin\Debug\FeldSpar.Tests.dll" --p --ur --r "..\..\..\runreport.json"</StartArguments>
+    <StartArguments>--a "..\..\..\FeldSpar.Tests\bin\Release46\FeldSpar.46.Tests.exe" --ur --r "..\..\..\runreport.json"</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion>14.0</VisualStudioVersion>
