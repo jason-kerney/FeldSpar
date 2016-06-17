@@ -6,25 +6,33 @@ open Fake.VersionHelper
 RestorePackages ()
 
 // Properties
-let net46 = ".46"
-let net40 = ".40"
-let netVersion = net40
-let fSharpProjects = "*" + netVersion + ".*.fsproj"
+let net46 = "46"
+let net40 = "40"
+let netVersion = net46
+let netDir = Some(netVersion)
+let netVersionFileName = "." + netVersion
+let fSharpProjects = "*" + netVersionFileName + ".*.fsproj"
 let releaseDir = "bin/Release/"
 
+let getSubFolder = function
+    | None -> ""
+    | Some(nv) -> nv + "/"
 
+let getFolder root nv =
+    let subFolder = getSubFolder nv
+    root + subFolder
 
-let buildDir = "./_build/"
-let testDir = "./_test/"
-let deployDir = "./_deploy/"
+let buildDir = getFolder "./_build/"
+let testDir = getFolder "./_test/"
+let deployDir = getFolder "./_deploy/"
 
 let nugetDeployDir = 
     let t = "C:/Nuget.Local/"
     if System.IO.Directory.Exists t then t
-    else deployDir
+    else netDir |> deployDir
 
 let version () =
-    buildDir + "FeldSparFramework" + netVersion + ".dll" |> GetAssemblyVersionString 
+    (netDir |> buildDir) + "FeldSparFramework" + netVersionFileName + ".dll" |> GetAssemblyVersionString 
 
 let build appDir tmpDir targetDir label projecType =
     let tmpDir = (appDir + tmpDir)
@@ -43,20 +51,21 @@ let build appDir tmpDir targetDir label projecType =
 
 // Default target
 Target "Clean" (fun _ ->
-    CleanDirs [buildDir; testDir; deployDir; nugetDeployDir]
+    CleanDirs [None |> buildDir; None |> testDir; None |> deployDir; nugetDeployDir]
 )
 
 Target "BuildApp" (fun _ ->
-    build "./FeldSparFramework/" releaseDir buildDir "AppBuild-Output:" fSharpProjects
+    build "./FeldSparFramework/" releaseDir (buildDir netDir) "AppBuild-Output:" fSharpProjects
 )
 
 Target "BuildConsole" (fun _ ->
-    build "./FeldSpar.ContinuousIntegration/" releaseDir buildDir "BuildConsole-Output:" fSharpProjects
+    build "./FeldSpar.ContinuousIntegration/" releaseDir (buildDir netDir) "BuildConsole-Output:" fSharpProjects
 )
 
 Target "BuildTest" (fun _ ->
+    let dir = netDir |> testDir
     !! ("./**/" + fSharpProjects)
-        |> MSBuildRelease testDir "Build"
+        |> MSBuildRelease dir "Build"
         |> Log "TestBuild-Output:"
 )
 
@@ -65,14 +74,21 @@ Target "Test" (fun _ ->
         FileSystemHelper.filesInDir |>
         Array.map(fun fi -> fi.FullName) |>
         Array.filter(fun fi -> fi.Contains("approved")) |>
-        Copy testDir
-    let result = Shell.Exec (buildDir + "FeldSpar" + netVersion + ".ContinuousIntegration.exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar" + netVersion + ".Tests.exe\"", ?dir=Some(testDir))
+        Copy (testDir netDir)
+    let result = Shell.Exec ((buildDir netDir) + "FeldSpar" + netVersionFileName + ".ContinuousIntegration.exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar" + netVersionFileName + ".Tests.exe\"", ?dir=Some(testDir netDir))
     if result <> 0 then failwith "Failed Tests"
 )
 
 Target "Zip" (fun _ ->
-    !! (buildDir + "/**/*.*")
-        |> Zip buildDir (deployDir + "FeldSparFSharp." + (version ()) + ".zip")
+    let sourceDir = netDir |> buildDir
+    let destDir = netDir |> deployDir
+    
+    let dirInfo = System.IO.DirectoryInfo(destDir)
+    if not dirInfo.Exists then
+        dirInfo.Create()
+
+    !! (sourceDir + "/**/*.*")
+        |> Zip sourceDir (destDir + "FeldSparFSharp." + (version ()) + ".zip")
 )
 
 Target "Default" (fun _ ->
@@ -80,14 +96,15 @@ Target "Default" (fun _ ->
 )
 
 Target "Nuget" (fun _ ->
-    Shell.Exec ("nuget", @"pack ..\FeldSparFramework\FeldSpar" + netVersion + ".Framework.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
-    Shell.Exec ("nuget", @"pack ..\FeldSpar.ContinuousIntegration\FeldSpar" + netVersion + ".ContinuousIntegration.fsproj -IncludeReferencedProjects -Prop Configuration=Release", deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack ..\FeldSparFramework\FeldSpar" + netVersionFileName + ".Framework.fsproj -IncludeReferencedProjects -Prop Configuration=Release", netDir |> deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack ..\FeldSpar.ContinuousIntegration\FeldSpar" + netVersionFileName + ".ContinuousIntegration.fsproj -IncludeReferencedProjects -Prop Configuration=Release", netDir |> deployDir) |> ignore
 )
 
 Target "LocalDeploy" (fun _ ->
-    if deployDir = nugetDeployDir then ()
+    let dir = netDir |> deployDir
+    if dir = nugetDeployDir then ()
     else
-        FileSystemHelper.directoryInfo deployDir
+        FileSystemHelper.directoryInfo dir
             |> FileSystemHelper.filesInDir
             |> Array.filter (fun fi -> fi.Extension = ".nupkg")
             |> Array.map (fun fi -> fi.FullName)
@@ -98,7 +115,7 @@ Target "LocalDeploy" (fun _ ->
             |> Array.map (fun fi -> fi.FullName)
             |> Array.iter (printfn "LocalDeploy-Output: %s")
     
-    use file = System.IO.File.Create(deployDir + "push.txt")
+    use file = System.IO.File.Create(dir + "push.txt")
     let writer = new System.IO.StreamWriter(file)
 
     FileSystemHelper.directoryInfo nugetDeployDir
