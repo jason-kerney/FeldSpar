@@ -57,9 +57,9 @@ Target "Clean" (fun _ ->
 let buildApp netDir = 
     build "./FeldSparFramework/" releaseDir (buildDir netDir) "AppBuild-Output:" fSharpProjects
 
-Target "BuildApp" (fun _ ->
-    ()
-)
+let doesNothing = (fun _ -> ())
+
+Target "BuildApp" doesNothing
 
 Target "BuildApp46" (fun _ ->
     Some(net46) |> buildApp
@@ -69,15 +69,33 @@ Target "BuildApp40" (fun _ ->
     Some(net40) |> buildApp
 )
 
-Target "BuildConsole" (fun _ ->
+let buildConsole netDir =
     build "./FeldSpar.ContinuousIntegration/" releaseDir (buildDir netDir) "BuildConsole-Output:" fSharpProjects
+
+Target "BuildConsole" doesNothing
+
+Target "BuildConsole40" (fun _ ->
+    Some(net40) |>  buildConsole
 )
 
-Target "BuildTest" (fun _ ->
+Target "BuildConsole46" (fun _ ->
+    Some(net46) |> buildConsole
+)
+
+let buildTest netDir =
     let dir = netDir |> testDir
     !! ("./**/" + fSharpProjects)
         |> MSBuildRelease dir "Build"
         |> Log "TestBuild-Output:"
+
+Target "BuildTest" doesNothing
+         
+Target "BuildTest40" (fun _ ->
+    Some(net40) |> buildTest
+)
+         
+Target "BuildTest46" (fun _ ->
+    Some(net46) |> buildTest
 )
 
 Target "Test" (fun _ ->
@@ -145,9 +163,17 @@ Target "LocalDeploy" (fun _ ->
     ==> "BuildApp40"
     ==> "BuildApp46"
     ==> "BuildApp"
+
+    ==> "BuildConsole40"
+    ==> "BuildConsole46"
     ==> "BuildConsole"
+
+    ==> "BuildTest40"
+    ==> "BuildTest46"
     ==> "BuildTest"
+
     ==> "Test"
+
     ==> "Zip"
     ==> "Default"
     ==> "Nuget"
