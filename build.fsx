@@ -54,8 +54,11 @@ Target "Clean" (fun _ ->
     CleanDirs [None |> buildDir; None |> testDir; None |> deployDir; nugetDeployDir]
 )
 
-Target "BuildApp" (fun _ ->
+let buildApp netDir = 
     build "./FeldSparFramework/" releaseDir (buildDir netDir) "AppBuild-Output:" fSharpProjects
+
+Target "BuildApp" (fun _ ->
+    buildApp netDir
 )
 
 Target "BuildConsole" (fun _ ->
