@@ -54,6 +54,7 @@ let nugetDeployDir netDir =
 let feldSpar = "FeldSparFramework"
 let feldSparDir = Some(feldSpar)
 let continuousIntegration = "ContinuousIntegration"
+let ciDir = Some(continuousIntegration)
 
 let version netDir =
     (buildDir feldSparDir netDir) + feldSpar + (netVersionFileName netDir) + ".dll" |> GetAssemblyVersionString 
@@ -88,7 +89,7 @@ let buildApp netDir =
 
 let buildConsole netDir =
     let projects = fSharpProjects netDir
-    build ("./FeldSpar." + continuousIntegration + "/") (releaseDir netDir) (buildDir feldSparDir netDir) "BuildConsole-Output:" projects
+    build ("./FeldSpar." + continuousIntegration + "/") (releaseDir netDir) (buildDir ciDir netDir) "BuildConsole-Output:" projects
 
 let buildTest netDir =
     let dir = netDir |> testDir
@@ -108,9 +109,9 @@ let test netDir =
         |> Copy (testDir netDir)
 
     let netVersion = netVersionFileName netDir
-    let ciPath = (buildDir feldSparDir netDir)
+    let ciPath = (buildDir ciDir netDir)
 
-    printfn "%A" (ciPath + "FeldSpar" + netVersion + "." + continuousIntegration + ".exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar" + netVersion + ".Tests.exe\"", Some(testDir netDir))
+    //printfn "%A" (ciPath + "FeldSpar" + netVersion + "." + continuousIntegration + ".exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar" + netVersion + ".Tests.exe\"", Some(testDir netDir))
     let result = Shell.Exec (ciPath + "FeldSpar" + netVersion + "." + continuousIntegration + ".exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar" + netVersion + ".Tests.exe\"", ?dir=Some(testDir netDir))
     if result <> 0 then failwith "Failed Tests"
     ()
