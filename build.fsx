@@ -88,15 +88,11 @@ let tee f (g) (a:'a) =
     f a |> g
 
 let test netDir = 
-    let a = FileSystemHelper.directoryInfo "./FeldSpar.Tests/"
-    
-    let b = a |> FileSystemHelper.filesInDir
-
-    let c = b  |> Array.map(fun fi -> fi.FullName)
-
-    let d = c |> Array.filter(fun fi -> fi.Contains("approved"))
-    
-    d |> Copy (testDir netDir)
+    FileSystemHelper.directoryInfo "./FeldSpar.Tests/"
+        |> FileSystemHelper.filesInDir
+        |> Array.map(fun fi -> fi.FullName)
+        |> Array.filter(fun fi -> fi.Contains("approved"))
+        |> Copy (testDir netDir)
 
     let netVersion = netVersionFileName netDir
 
