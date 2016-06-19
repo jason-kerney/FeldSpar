@@ -18,12 +18,13 @@ let fSharpProjects = function
     | Some(netVersionFileName) -> "*" + netVersionFileName + ".*.fsproj"
 
 
-let getSubFolder = function
+let getSubFolder st next =
+    match st with
     | None -> ""
-    | Some(nv) -> nv + "/"
+    | Some(nv) -> nv + "/" + next 
 
-let getFolder root nv =
-    let subFolder = getSubFolder nv
+let getFolder root next nv =
+    let subFolder = getSubFolder nv next
     root + subFolder
 
 let releaseDir netDir = 
@@ -32,9 +33,18 @@ let releaseDir netDir =
     | None -> baseDir + "/"
     | Some(ver) -> baseDir +  ver + "/"
 
-let buildDir = getFolder "./_build/"
-let testDir = getFolder "./_test/"
-let deployDir = getFolder "./_deploy/"
+let getTargetFolder typeDir project netDir =
+    let baseDir = sprintf "./%s/" typeDir
+    let projectDir = (getFolder baseDir "lib/" project)
+    
+    getFolder projectDir "" netDir
+
+let buildDir project = 
+    getTargetFolder "_build" project
+
+let testDir = getFolder "./_test/" ""
+
+let deployDir = getFolder "./_deploy/" ""
 
 let nugetDeployDir netDir = 
     let t = "C:/Nuget.Local/"
@@ -42,10 +52,11 @@ let nugetDeployDir netDir =
     else netDir |> deployDir
 
 let feldSpar = "FeldSparFramework"
+let feldSparDir = Some(feldSpar)
 let continuousIntegration = "ContinuousIntegration"
 
 let version netDir =
-    (netDir |> buildDir) + feldSpar + (netVersionFileName netDir) + ".dll" |> GetAssemblyVersionString 
+    (buildDir feldSparDir netDir) + feldSpar + (netVersionFileName netDir) + ".dll" |> GetAssemblyVersionString 
 
 let build appDir tmpDir targetDir label projecType =
     let tmpDir = (appDir + tmpDir)
@@ -67,15 +78,17 @@ let asPath baseName dirName =
 
 let buildApp netDir = 
     let target = feldSpar |> asPath "."
-    let destination = feldSpar |> asPath (buildDir netDir)
+    let destination = (buildDir feldSparDir netDir)
+
     let projects = fSharpProjects netDir
     let release = releaseDir netDir
+
     build target release destination "AppBuild-Output:" projects
 
 
 let buildConsole netDir =
     let projects = fSharpProjects netDir
-    build ("./FeldSpar." + continuousIntegration + "/") (releaseDir netDir) (buildDir netDir) "BuildConsole-Output:" projects
+    build ("./FeldSpar." + continuousIntegration + "/") (releaseDir netDir) (buildDir feldSparDir netDir) "BuildConsole-Output:" projects
 
 let buildTest netDir =
     let dir = netDir |> testDir
@@ -95,42 +108,41 @@ let test netDir =
         |> Copy (testDir netDir)
 
     let netVersion = netVersionFileName netDir
+    let ciPath = (buildDir feldSparDir netDir)
 
-    let result = Shell.Exec ((buildDir netDir) + "FeldSpar" + netVersion + "." + continuousIntegration + ".exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar" + netVersion + ".Tests.exe\"", ?dir=Some(testDir netDir))
+    printfn "%A" (ciPath + "FeldSpar" + netVersion + "." + continuousIntegration + ".exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar" + netVersion + ".Tests.exe\"", Some(testDir netDir))
+    let result = Shell.Exec (ciPath + "FeldSpar" + netVersion + "." + continuousIntegration + ".exe" ,"--v ERRORS --r \".\\RunReport.json\"  --a \".\\FeldSpar" + netVersion + ".Tests.exe\"", ?dir=Some(testDir netDir))
     if result <> 0 then failwith "Failed Tests"
+    ()
 
 Target "Nuke" (fun _ ->
     Shell.Exec ("git", "clean -xfd")  |> ignore
 )
 
+let clean () = CleanDirs [None |> buildDir None; None |> testDir; None |> deployDir; nugetDeployDir None]
+
 Target "Clean" (fun _ ->
-    CleanDirs [None |> buildDir; None |> testDir; None |> deployDir; nugetDeployDir None]
+    clean ()
 )
-
-let doesNothing = (fun _ -> ())
-
-Target "BuildApp" doesNothing
 
 Target "BuildApp46" (fun _ ->
     Some(net46) |> buildApp
 )
 
-Target "BuildApp40" (fun _ ->
-    Some(net40) |> buildApp
-)
+let build40 () = Some(net40) |> buildApp
 
-Target "BuildConsole" doesNothing
+Target "BuildApp40" build40
 
-Target "BuildConsole40" (fun _ ->
-    Some(net40) |>  buildConsole
-)
+Target "App40" build40
+
+let buildConsole40 () = Some(net40) |>  buildConsole
+
+Target "BuildConsole40" buildConsole40
 
 Target "BuildConsole46" (fun _ ->
     Some(net46) |> buildConsole
 )
 
-Target "BuildTest" doesNothing
-         
 Target "BuildTest40" (fun _ ->
     Some(net40) |> buildTest
 )
@@ -139,18 +151,16 @@ Target "BuildTest46" (fun _ ->
     Some(net46) |> buildTest
 )
 
-Target "Test" doesNothing
+let test40 () = Some(net40) |> test
 
-Target "Test40" (fun _ ->
-    Some(net40) |> test
-)
+Target "Test40" test40
 
 Target "Test46" (fun _ ->
     Some(net46) |> test
 )
 
 let zip netDir =
-    let sourceDir = None |> buildDir
+    let sourceDir = None |> buildDir None
     let destDir = None |> deployDir
     
     let dirInfo = System.IO.DirectoryInfo(destDir)
@@ -165,7 +175,7 @@ Target "Zip" (fun _ ->
     zip (Some(net46))
 )
 
-Target "Default" doesNothing
+Target "Default" DoNothing
 
 Target "Nuget" (fun _ ->
     //Shell.Exec ("nuget", @"pack ..\FeldSparFramework\FeldSpar" + (netVersionFileName netDir) + ".Framework.fsproj -IncludeReferencedProjects -Prop Configuration=Release", netDir |> deployDir) |> ignore
@@ -207,30 +217,40 @@ Target "LocalDeploy" (fun _ ->
     localDelpoy (Some(net46))
 )
 
+Target "40" DoNothing
+Target "46" DoNothing
+Target "Build" DoNothing
+
+Target "Build40" (fun _ ->
+    run "40"
+)
+
+Target "Build46" (fun _ ->
+    run "46"
+)
 
 // Dependencies
 "Clean"
-    ==> "BuildApp40"
-    ==> "BuildApp46"
-    ==> "BuildApp"
-
-    ==> "BuildConsole40"
-    ==> "BuildConsole46"
-    ==> "BuildConsole"
-
-    ==> "BuildTest40"
-    ==> "BuildTest46"
-    ==> "BuildTest"
-
-    ==> "Test40"
-    ==> "Test46"
-    ==> "Test"
-
+    ==> "Build40"
+    ==> "Build46"
+    ==> "Build"
     ==> "Zip"
     ==> "Default"
 
     ==> "Nuget"
     ==> "LocalDeploy"
+
+"BuildApp40"
+    ==> "BuildConsole40"
+    ==> "BuildTest40"
+    ==> "Test40"
+    ==> "40"
+
+"BuildApp46"
+    ==> "BuildConsole46"
+    ==> "BuildTest46"
+    ==> "Test46"
+    ==> "46"
 
 // start build
 RunTargetOrDefault "Default"
