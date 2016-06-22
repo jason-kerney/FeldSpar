@@ -120,7 +120,9 @@ Target "Nuke" (fun _ ->
     Shell.Exec ("git", "clean -xfd")  |> ignore
 )
 
-let clean () = CleanDirs [None |> buildDir None; None |> testDir; None |> deployDir; nugetDeployDir None]
+let clean () = 
+    [None |> buildDir None; None |> testDir; None |> deployDir; nugetDeployDir None]
+    |> CleanDirs
 
 Target "Clean" (fun _ ->
     clean ()
@@ -178,7 +180,38 @@ Target "Zip" (fun _ ->
 
 Target "Default" DoNothing
 
+let ensureExists (target:System.IO.DirectoryInfo) =
+    if target.Exists then
+        ()
+    else
+        target.Create ()
+
+    target
+
+let copyDirectory target (source:System.IO.DirectoryInfo) =
+    ensureExists (new System.IO.DirectoryInfo(target)) |> ignore
+
+let nugetSetup destination = 
+    FileSystemHelper.directoryInfo ("./" + feldSpar + "/")
+        |> FileSystemHelper.subDirectories
+        |> Array.map(fun di -> di.FullName)
+        |> Array.filter(fun name -> name.Contains("content") || name.Contains("tools"))
+        //|> Copy destination
+        |> Array.map(fun name -> new System.IO.DirectoryInfo(name))
+        |> ignore
+
+    FileSystemHelper.directoryInfo ("./")
+        |> FileSystemHelper.filesInDir
+        |> Array.map(fun fi -> fi.FullName)
+        |> Array.filter(fun name -> name.Contains("nuspec"))
+        |> Copy destination
+        |> ignore
+
 Target "Nuget" (fun _ ->
+    [buildDir feldSparDir None; buildDir ciDir None]
+        |> List.iter(fun f -> nugetSetup f)
+        |> ignore
+
     //Shell.Exec ("nuget", @"pack ..\FeldSparFramework\FeldSpar" + (netVersionFileName netDir) + ".Framework.fsproj -IncludeReferencedProjects -Prop Configuration=Release", netDir |> deployDir) |> ignore
     //Shell.Exec ("nuget", @"pack ..\FeldSpar.ContinuousIntegration\FeldSpar" + (netVersionFileName netDir) + ".ContinuousIntegration.fsproj -IncludeReferencedProjects -Prop Configuration=Release", netDir |> deployDir) |> ignore
     ()
@@ -235,6 +268,7 @@ Target "Build46" (fun _ ->
     ==> "Build40"
     ==> "Build46"
     ==> "Build"
+
     ==> "Zip"
     ==> "Default"
 
