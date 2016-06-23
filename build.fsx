@@ -242,29 +242,11 @@ Target "Nuget" (fun _ ->
 
     Shell.Exec("nuget", "pack " + feldSparNuget + " -Version " + v, deploy) |> ignore
     Shell.Exec("nuget", "pack " + ciSparNuget + " -Version " + v, deploy) |> ignore
-    ()
-)
 
-let localDelpoy netDir = 
-    let dir = netDir |> deployDir
-    let nugetDir = nugetDeployDir netDir
-    if dir = nugetDir then ()
-    else
-        FileSystemHelper.directoryInfo dir
-            |> FileSystemHelper.filesInDir
-            |> Array.filter (fun fi -> fi.Extension = ".nupkg")
-            |> Array.map (fun fi -> fi.FullName)
-            |> Copy nugetDir
-
-        FileSystemHelper.directoryInfo nugetDir
-            |> FileSystemHelper.filesInDir
-            |> Array.map (fun fi -> fi.FullName)
-            |> Array.iter (printfn "LocalDeploy-Output: %s")
-    
-    use file = System.IO.File.Create(dir + "push.txt")
+    use file = System.IO.File.Create(Path.Combine(deploy, "push.txt"))
     let writer = new System.IO.StreamWriter(file)
 
-    FileSystemHelper.directoryInfo nugetDir
+    FileSystemHelper.directoryInfo deploy
         |> FileSystemHelper.filesInDir
         |> Array.filter (fun fi -> fi.Extension = ".nupkg")
         |> Array.map (fun fi -> fi.FullName)
@@ -273,10 +255,7 @@ let localDelpoy netDir =
     writer.Close()
 
     printfn "%A" (System.DateTime.Now)
-
-Target "LocalDeploy" (fun _ ->
-    localDelpoy (Some(net40))
-    localDelpoy (Some(net46))
+    ()
 )
 
 Target "40" DoNothing
@@ -301,7 +280,6 @@ Target "Build46" (fun _ ->
     ==> "Default"
 
     ==> "Nuget"
-    ==> "LocalDeploy"
 
 "BuildApp40"
     ==> "BuildConsole40"
