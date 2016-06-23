@@ -16,12 +16,12 @@
         <dependencies>
             <dependency id="ApprovalUtilities" version="(3.0.10, )" />
             <dependency id="ApprovalTests" version="(3.0.10, )" />
-			<dependency id="FSharp.Core" version="(4.0.0.0, )" />
+            <dependency id="FSharp.Core" version="(4.0.0.0, )" />
         </dependencies>
     </metadata>
     <files>
-        <file src="content\Program.fs" target="content\Program.fs" />
         <file src="content\FeldSpar_Example.fs.txt" target="content\FeldSpar_Example.fs.txt" />
+        <file src="content\Program.fs" target="content\Program.fs" />
         <file src="lib\40\FeldSparFramework.40.dll" target="lib\40\FeldSparFramework.40.dll" />
         <file src="lib\40\FeldSparFramework.40.dll.config" target="lib\40\FeldSparFramework.40.dll.config" />
         <file src="lib\40\FeldSparFramework.40.pdb" target="lib\40\FeldSparFramework.40.pdb" />
@@ -30,6 +30,7 @@
         <file src="lib\46\FeldSparFramework.46.dll.config" target="lib\46\FeldSparFramework.46.dll.config" />
         <file src="lib\46\FeldSparFramework.46.pdb" target="lib\46\FeldSparFramework.46.pdb" />
         <file src="lib\46\FeldSparFramework.46.XML" target="lib\46\FeldSparFramework.46.XML" />
+        <!-- file src="lib\45\_._" target="lib\45\_._" / -->
         <file src="tools\install.ps1" target="tools\install.ps1" />
     </files>
 </package>

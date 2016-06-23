@@ -32,5 +32,6 @@
         <file src="lib\46\FeldSpar.46.ContinuousIntegration.exe" target="lib\46\FeldSpar.46.ContinuousIntegration.exe" />
         <file src="lib\46\FeldSpar.46.ContinuousIntegration.exe.config" target="lib\46\FeldSpar.46.ContinuousIntegration.exe.config" />
         <file src="lib\46\FeldSpar.46.ContinuousIntegration.pdb" target="lib\46\FeldSpar.46.ContinuousIntegration.pdb" />
-    </files>
+		<!-- file src="lib\45\_._" target="lib\45\_._" / -->
+	</files>
 </package>

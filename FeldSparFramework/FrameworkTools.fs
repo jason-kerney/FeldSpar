@@ -4,6 +4,7 @@
 module FrameworkTools =
     type SupportedFrameworks =
         | Net40
+        | Net45
         | Net46
 
     let currentFramework = 
@@ -17,6 +18,9 @@ module FrameworkTools =
 
     #if NET40
         let test = getVersion test Net40
+    #endif
+    #if NET45
+        let test = getVersion test Net45
     #endif
     #if NET46
         let test = getVersion test Net46

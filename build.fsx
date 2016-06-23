@@ -8,6 +8,7 @@ RestorePackages ()
 
 // Properties
 let net46 = "46"
+let net45 = "45"
 let net40 = "40"
 
 let netVersionFileName = function
