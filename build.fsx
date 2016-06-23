@@ -117,51 +117,15 @@ let test netDir =
     if result <> 0 then failwith "Failed Tests"
     ()
 
-Target "Nuke" (fun _ ->
-    Shell.Exec ("git", "clean -xfd")  |> ignore
-)
-
 let clean () = 
     [None |> buildDir None; None |> testDir; None |> deployDir; nugetDeployDir None]
     |> CleanDirs
 
-Target "Clean" (fun _ ->
-    clean ()
-)
-
-Target "BuildApp46" (fun _ ->
-    Some(net46) |> buildApp
-)
-
 let build40 () = Some(net40) |> buildApp
-
-Target "BuildApp40" build40
-
-Target "App40" build40
 
 let buildConsole40 () = Some(net40) |>  buildConsole
 
-Target "BuildConsole40" buildConsole40
-
-Target "BuildConsole46" (fun _ ->
-    Some(net46) |> buildConsole
-)
-
-Target "BuildTest40" (fun _ ->
-    Some(net40) |> buildTest
-)
-         
-Target "BuildTest46" (fun _ ->
-    Some(net46) |> buildTest
-)
-
 let test40 () = Some(net40) |> test
-
-Target "Test40" test40
-
-Target "Test46" (fun _ ->
-    Some(net46) |> test
-)
 
 let zip netDir =
     let sourceDir = None |> buildDir None
@@ -173,14 +137,6 @@ let zip netDir =
 
     !! (sourceDir + "/**/*.*")
         |> Zip sourceDir (destDir + "FeldSparFSharp." + (version netDir) + ".zip")
-
-Target "Zip" (fun _ ->
-    zip (Some(net40))
-    zip (Some(net46))
-)
-
-Target "Default" DoNothing
-
 
 let copyDirectory target (source:System.IO.DirectoryInfo) =
      let targetPath = Path.Combine(target, source.Name)
@@ -217,6 +173,51 @@ let getParent path =
         |> List.map DirectoryInfo
         |> List.map (fun di -> di.Parent.FullName)
         |> List.head 
+
+//Targets
+
+Target "Nuke" (fun _ ->
+    Shell.Exec ("git", "clean -xfd")  |> ignore
+)
+
+Target "Clean" (fun _ ->
+    clean ()
+)
+
+Target "BuildApp46" (fun _ ->
+    Some(net46) |> buildApp
+)
+
+Target "BuildApp40" build40
+
+Target "App40" build40
+
+Target "BuildConsole40" buildConsole40
+
+Target "BuildConsole46" (fun _ ->
+    Some(net46) |> buildConsole
+)
+
+Target "BuildTest40" (fun _ ->
+    Some(net40) |> buildTest
+)
+         
+Target "BuildTest46" (fun _ ->
+    Some(net46) |> buildTest
+)
+
+Target "Test40" test40
+
+Target "Test46" (fun _ ->
+    Some(net46) |> test
+)
+
+Target "Zip" (fun _ ->
+    zip (Some(net40))
+    zip (Some(net46))
+)
+
+Target "Default" DoNothing
 
 Target "Nuget" (fun _ ->
     let corePath = 
