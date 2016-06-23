@@ -122,8 +122,6 @@ let clean () =
     [None |> buildDir None; None |> testDir; None |> deployDir; nugetDeployDir None]
     |> CleanDirs
 
-let buildConsole40 () = Some(net40) |>  buildConsole
-
 let test40 () = Some(net40) |> test
 
 let zip netDir =
@@ -195,7 +193,13 @@ Target "BuildApp40" (fun _ ->
     Some(net40) |> buildApp
 )
 
-Target "BuildConsole40" buildConsole40
+Target "BuildConsole40" (fun _ ->
+    Some(net40) |>  buildConsole
+)
+
+Target "BuildConsole45" (fun _ ->
+    Some(net45) |> buildConsole
+)
 
 Target "BuildConsole46" (fun _ ->
     Some(net46) |> buildConsole
@@ -298,6 +302,7 @@ Target "Build46" (fun _ ->
     ==> "40"
 
 "BuildApp45"
+    ==> "BuildConsole45"
     ==> "45"
 
 "BuildApp46"
