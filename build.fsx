@@ -122,8 +122,6 @@ let clean () =
     [None |> buildDir None; None |> testDir; None |> deployDir; nugetDeployDir None]
     |> CleanDirs
 
-let build40 () = Some(net40) |> buildApp
-
 let buildConsole40 () = Some(net40) |>  buildConsole
 
 let test40 () = Some(net40) |> test
@@ -189,9 +187,13 @@ Target "BuildApp46" (fun _ ->
     Some(net46) |> buildApp
 )
 
-Target "BuildApp40" build40
+Target "BuildApp45" (fun _ ->
+    Some(net45) |> buildApp
+)
 
-Target "App40" build40
+Target "BuildApp40" (fun _ ->
+    Some(net40) |> buildApp
+)
 
 Target "BuildConsole40" buildConsole40
 
@@ -261,11 +263,16 @@ Target "Nuget" (fun _ ->
 )
 
 Target "40" DoNothing
+Target "45" DoNothing
 Target "46" DoNothing
 Target "Build" DoNothing
 
 Target "Build40" (fun _ ->
     run "40"
+)
+
+Target "Build45" (fun _ ->
+    run "45"
 )
 
 Target "Build46" (fun _ ->
@@ -275,6 +282,7 @@ Target "Build46" (fun _ ->
 // Dependencies
 "Clean"
     ==> "Build40"
+    ==> "Build45"
     ==> "Build46"
     ==> "Build"
 
@@ -288,6 +296,9 @@ Target "Build46" (fun _ ->
     ==> "BuildTest40"
     ==> "Test40"
     ==> "40"
+
+"BuildApp45"
+    ==> "45"
 
 "BuildApp46"
     ==> "BuildConsole46"
