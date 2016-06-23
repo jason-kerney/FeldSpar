@@ -16,14 +16,12 @@
         <dependencies>
             <dependency id="ApprovalUtilities" version="(3.0.10, )" />
             <dependency id="ApprovalTests" version="(3.0.10, )" />
+			<dependency id="FSharp.Core" version="(4.0.0.0, )" />
         </dependencies>
-        <references>
-            <reference file="FSharp.Core.dll" />
-        </references>
     </metadata>
     <files>
-        <file src="content\FeldSpar_Example.fs" target="content\FeldSpar_Example.fs" />
         <file src="content\Program.fs" target="content\Program.fs" />
+        <file src="content\FeldSpar_Example.fs.txt" target="content\FeldSpar_Example.fs.txt" />
         <file src="lib\40\FeldSparFramework.40.dll" target="lib\40\FeldSparFramework.40.dll" />
         <file src="lib\40\FeldSparFramework.40.dll.config" target="lib\40\FeldSparFramework.40.dll.config" />
         <file src="lib\40\FeldSparFramework.40.pdb" target="lib\40\FeldSparFramework.40.pdb" />
