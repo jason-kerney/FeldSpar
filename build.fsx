@@ -2,6 +2,7 @@
 #r @"packages\FAKE\tools\FakeLib.dll"
 open Fake
 open Fake.VersionHelper
+open System.IO
 
 RestorePackages ()
 
@@ -180,40 +181,67 @@ Target "Zip" (fun _ ->
 
 Target "Default" DoNothing
 
-let ensureExists (target:System.IO.DirectoryInfo) =
-    if target.Exists then
-        ()
-    else
-        target.Create ()
-
-    target
 
 let copyDirectory target (source:System.IO.DirectoryInfo) =
-    ensureExists (new System.IO.DirectoryInfo(target)) |> ignore
+     let targetPath = Path.Combine(target, source.Name)
+     Directory.CreateDirectory targetPath |> ignore
 
-let nugetSetup destination = 
+     source.GetFiles ()
+     |> Array.map (fun f -> f, Path.Combine(targetPath, f.Name))
+     |> Array.map(fun (f, t) -> f.CopyTo(t))
+
+let nugetMainSetup path =
     FileSystemHelper.directoryInfo ("./" + feldSpar + "/")
         |> FileSystemHelper.subDirectories
-        |> Array.map(fun di -> di.FullName)
-        |> Array.filter(fun name -> name.Contains("content") || name.Contains("tools"))
-        //|> Copy destination
-        |> Array.map(fun name -> new System.IO.DirectoryInfo(name))
+        |> Array.filter(fun di -> di.Name.Contains("content") || di.Name.Contains("tools"))
+        |> Array.map(fun di -> copyDirectory path di )
         |> ignore
 
     FileSystemHelper.directoryInfo ("./")
         |> FileSystemHelper.filesInDir
         |> Array.map(fun fi -> fi.FullName)
-        |> Array.filter(fun name -> name.Contains("nuspec"))
-        |> Copy destination
+        |> Array.filter(fun name -> name.Contains("FeldSparFramework.nuspec"))
+        |> Copy path
         |> ignore
 
-Target "Nuget" (fun _ ->
-    [buildDir feldSparDir None; buildDir ciDir None]
-        |> List.iter(fun f -> nugetSetup f)
+let nugetCiSetup path =
+    FileSystemHelper.directoryInfo ("./")
+        |> FileSystemHelper.filesInDir
+        |> Array.map(fun fi -> fi.FullName)
+        |> Array.filter(fun name -> name.Contains("ContinuousIntegration.nuspec"))
+        |> Copy path
         |> ignore
+        
+let getParent path =
+    [path]
+        |> List.map DirectoryInfo
+        |> List.map (fun di -> di.Parent.FullName)
+        |> List.head 
+
+Target "Nuget" (fun _ ->
+    let corePath = 
+        buildDir feldSparDir None
+            |> getParent
+    let ciPath = 
+        buildDir ciDir None
+            |> getParent
+
+    let v = version (Some(net40))
+
+    corePath |> nugetMainSetup
+    ciPath |> nugetCiSetup
 
     //Shell.Exec ("nuget", @"pack ..\FeldSparFramework\FeldSpar" + (netVersionFileName netDir) + ".Framework.fsproj -IncludeReferencedProjects -Prop Configuration=Release", netDir |> deployDir) |> ignore
     //Shell.Exec ("nuget", @"pack ..\FeldSpar.ContinuousIntegration\FeldSpar" + (netVersionFileName netDir) + ".ContinuousIntegration.fsproj -IncludeReferencedProjects -Prop Configuration=Release", netDir |> deployDir) |> ignore
+
+    let feldSparNuget = Path.Combine(corePath, "FeldSparFramework.nuspec")
+    let ciSparNuget = Path.Combine(ciPath, "ContinuousIntegration.nuspec")
+    let deploy = (deployDir feldSparDir) |> getParent
+
+    [deploy; feldSparNuget; ciSparNuget] |> List.iter (printfn "%A")
+
+    Shell.Exec("nuget", "pack " + feldSparNuget + " -Version " + v, deploy) |> ignore
+    Shell.Exec("nuget", "pack " + ciSparNuget + " -Version " + v, deploy) |> ignore
     ()
 )
 

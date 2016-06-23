@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>FeldSparFramework</id>
+        <version>$version$</version>
+        <title>FeldSpar Test Framework for F#</title>
+        <authors>R. Jason Kerney</authors>
+        <owners>R. Jason Kerney</owners>
+        <licenseUrl>https://github.com/jason-kerney/FeldSpar/blob/master/LICENSE.txt</licenseUrl>
+        <projectUrl>https://github.com/jason-kerney/FeldSpar</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>An opinionated fully functional testing framework for F#</description>
+        <releaseNotes>Added examples and documentation</releaseNotes>
+        <copyright>Copyright 2014</copyright>
+        <tags>F#, FSharp, F-Sharp, Unit Testing, Tests</tags>
+        <dependencies>
+            <group>
+                <dependency id="ApprovalUtilities" version="(3.0.10, )" />
+                <dependency id="ApprovalTests" version="(3.0.10, )" />
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="content\FeldSpar_Example.fs" target="content\FeldSpar_Example.fs" />
+        <file src="content\Program.fs" target="content\Program.fs" />
+        <file src="lib\40\FeldSparFramework.40.dll" target="lib\40\FeldSparFramework.40.dll" />
+        <file src="lib\40\FeldSparFramework.40.dll.config" target="lib\40\FeldSparFramework.40.dll.config" />
+        <file src="lib\40\FeldSparFramework.40.pdb" target="lib\40\FeldSparFramework.40.pdb" />
+        <file src="lib\40\FeldSparFramework.40.XML" target="lib\40\FeldSparFramework.40.XML" />
+        <file src="lib\40\FSharp.Core.dll" target="lib\40\FSharp.Core.dll" />
+        <file src="lib\40\FSharp.Core.xml" target="lib\40\FSharp.Core.xml" />
+        <file src="lib\46\FeldSparFramework.46.dll" target="lib\46\FeldSparFramework.46.dll" />
+        <file src="lib\46\FeldSparFramework.46.dll.config" target="lib\46\FeldSparFramework.46.dll.config" />
+        <file src="lib\46\FeldSparFramework.46.pdb" target="lib\46\FeldSparFramework.46.pdb" />
+        <file src="lib\46\FeldSparFramework.46.XML" target="lib\46\FeldSparFramework.46.XML" />
+        <file src="lib\46\FSharp.Core.dll" target="lib\46\FSharp.Core.dll" />
+        <file src="lib\46\FSharp.Core.xml" target="lib\46\FSharp.Core.xml" />
+        <file src="tools\install.ps1" target="tools\install.ps1" />
+    </files>
+</package>

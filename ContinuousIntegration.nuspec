@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>FeldSpar.ContinuousIntegration</id>
+        <version>$version$</version>
+        <title>FeldSpar Test Framework for F#</title>
+        <authors>R. Jason Kerney</authors>
+        <owners>R. Jason Kerney</owners>
+        <licenseUrl>https://github.com/jason-kerney/FeldSpar/blob/master/LICENSE.txt</licenseUrl>
+        <projectUrl>https://github.com/jason-kerney/FeldSpar</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>An opinionated fully functional testing framework for F#</description>
+        <releaseNotes>Added examples and documentation</releaseNotes>
+        <copyright>Copyright 2014</copyright>
+        <tags>F#, FSharp, F-Sharp, Unit Testing, Tests</tags>
+        <dependencies>
+            <group>
+                <dependency id="ApprovalUtilities" version="(3.0.10, )" />
+                <dependency id="ApprovalTests" version="(3.0.10, )" />
+				<dependency id="FeldSparFramework" version="($version$, )" />
+				<dependency id="UnionArgParser" version="(0.8.2, )" />
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="lib\40\FeldSpar.40.ContinuousIntegration.exe" target="lib\40\FeldSpar.40.ContinuousIntegration.exe" />
+        <file src="lib\40\FeldSpar.40.ContinuousIntegration.exe.config" target="lib\40\FeldSpar.40.ContinuousIntegration.exe.config" />
+        <file src="lib\40\FeldSpar.40.ContinuousIntegration.pdb" target="lib\40\FeldSpar.40.ContinuousIntegration.pdb" />
+        <file src="lib\46\FeldSpar.46.Console.XML" target="lib\40\FeldSpar.46.Console.XML" />
+        <file src="lib\46\FeldSpar.46.Console.XML" target="lib\46\FeldSpar.46.Console.XML" />
+        <file src="lib\46\FeldSpar.46.ContinuousIntegration.exe" target="lib\46\FeldSpar.46.ContinuousIntegration.exe" />
+        <file src="lib\46\FeldSpar.46.ContinuousIntegration.exe.config" target="lib\46\FeldSpar.46.ContinuousIntegration.exe.config" />
+        <file src="lib\46\FeldSpar.46.ContinuousIntegration.pdb" target="lib\46\FeldSpar.46.ContinuousIntegration.pdb" />
+    </files>
+</package>
