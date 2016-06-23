@@ -102,9 +102,9 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FeldSparFramework\FeldSpar.40.Framework.fsproj">
-      <Name>FeldSpar.40.Framework</Name>
-      <Project>{744ce068-0da4-4d19-8e1c-5d50ecdc4544}</Project>
+    <ProjectReference Include="..\FeldSparFramework\FeldSpar.45.Framework.fsproj">
+      <Name>FeldSpar.45.Framework</Name>
+      <Project>{3fea031a-7ca6-42b2-b596-660eb846d19a}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
