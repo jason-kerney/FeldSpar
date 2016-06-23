@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>FeldSparFramework</id>
         <version>$version$</version>
@@ -14,11 +14,12 @@
         <copyright>Copyright 2014</copyright>
         <tags>F#, FSharp, F-Sharp, Unit Testing, Tests</tags>
         <dependencies>
-            <group>
-                <dependency id="ApprovalUtilities" version="(3.0.10, )" />
-                <dependency id="ApprovalTests" version="(3.0.10, )" />
-            </group>
+            <dependency id="ApprovalUtilities" version="(3.0.10, )" />
+            <dependency id="ApprovalTests" version="(3.0.10, )" />
         </dependencies>
+        <references>
+            <reference file="FSharp.Core.dll" />
+        </references>
     </metadata>
     <files>
         <file src="content\FeldSpar_Example.fs" target="content\FeldSpar_Example.fs" />
@@ -27,14 +28,10 @@
         <file src="lib\40\FeldSparFramework.40.dll.config" target="lib\40\FeldSparFramework.40.dll.config" />
         <file src="lib\40\FeldSparFramework.40.pdb" target="lib\40\FeldSparFramework.40.pdb" />
         <file src="lib\40\FeldSparFramework.40.XML" target="lib\40\FeldSparFramework.40.XML" />
-        <file src="lib\40\FSharp.Core.dll" target="lib\40\FSharp.Core.dll" />
-        <file src="lib\40\FSharp.Core.xml" target="lib\40\FSharp.Core.xml" />
         <file src="lib\46\FeldSparFramework.46.dll" target="lib\46\FeldSparFramework.46.dll" />
         <file src="lib\46\FeldSparFramework.46.dll.config" target="lib\46\FeldSparFramework.46.dll.config" />
         <file src="lib\46\FeldSparFramework.46.pdb" target="lib\46\FeldSparFramework.46.pdb" />
         <file src="lib\46\FeldSparFramework.46.XML" target="lib\46\FeldSparFramework.46.XML" />
-        <file src="lib\46\FSharp.Core.dll" target="lib\46\FSharp.Core.dll" />
-        <file src="lib\46\FSharp.Core.xml" target="lib\46\FSharp.Core.xml" />
         <file src="tools\install.ps1" target="tools\install.ps1" />
     </files>
 </package>

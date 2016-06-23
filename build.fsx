@@ -236,7 +236,7 @@ Target "Nuget" (fun _ ->
 
     let feldSparNuget = Path.Combine(corePath, "FeldSparFramework.nuspec")
     let ciSparNuget = Path.Combine(ciPath, "ContinuousIntegration.nuspec")
-    let deploy = (deployDir feldSparDir) |> getParent
+    let deploy = (nugetDeployDir None)
 
     [deploy; feldSparNuget; ciSparNuget] |> List.iter (printfn "%A")
 

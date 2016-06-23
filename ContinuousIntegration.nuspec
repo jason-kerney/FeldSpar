@@ -21,6 +21,9 @@
 				<dependency id="UnionArgParser" version="(0.8.2, )" />
             </group>
         </dependencies>
+		<references>
+            <reference file="FSharp.Core.dll" />
+        </references>
     </metadata>
     <files>
         <file src="lib\40\FeldSpar.40.ContinuousIntegration.exe" target="lib\40\FeldSpar.40.ContinuousIntegration.exe" />
