@@ -280,7 +280,6 @@ Target "Test461" (fun _ ->
 
 Target "Zip" (fun _ ->
     zip (Some(net40))
-    zip (Some(net46))
 )
 
 Target "Default" DoNothing
