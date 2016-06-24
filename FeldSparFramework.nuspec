@@ -34,6 +34,10 @@
         <file src="lib\451\FeldSparFramework.451.dll.config" target="lib\451\FeldSparFramework.451.dll.config" />
         <file src="lib\451\FeldSparFramework.451.pdb" target="lib\451\FeldSparFramework.451.pdb" />
         <file src="lib\451\FeldSparFramework.451.XML" target="lib\451\FeldSparFramework.451.XML" />
+        <file src="lib\452\FeldSparFramework.452.dll" target="lib\452\FeldSparFramework.452.dll" />
+        <file src="lib\452\FeldSparFramework.452.dll.config" target="lib\452\FeldSparFramework.452.dll.config" />
+        <file src="lib\452\FeldSparFramework.452.pdb" target="lib\452\FeldSparFramework.452.pdb" />
+        <file src="lib\452\FeldSparFramework.452.XML" target="lib\452\FeldSparFramework.452.XML" />
         <file src="lib\46\FeldSparFramework.46.dll" target="lib\46\FeldSparFramework.46.dll" />
         <file src="lib\46\FeldSparFramework.46.dll.config" target="lib\46\FeldSparFramework.46.dll.config" />
         <file src="lib\46\FeldSparFramework.46.pdb" target="lib\46\FeldSparFramework.46.pdb" />
