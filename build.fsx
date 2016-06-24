@@ -9,6 +9,7 @@ RestorePackages ()
 // Properties
 let net46  = "46"
 let net451 = "451"
+let net452 = "452"
 let net45  = "45"
 let net40  = "40"
 
