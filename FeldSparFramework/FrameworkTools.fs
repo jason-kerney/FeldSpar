@@ -8,6 +8,7 @@ module FrameworkTools =
         | Net451
         | Net452
         | Net46
+        | Net461
 
     let currentFramework = 
         let getVersion t v =
@@ -32,6 +33,9 @@ module FrameworkTools =
     #endif
     #if NET46
         let test = getVersion test Net46
+    #endif
+    #if NET461
+        let test = getVersion test Net461
     #endif
 
         match test () with

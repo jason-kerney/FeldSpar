@@ -274,6 +274,10 @@ Target "Test46" (fun _ ->
     Some(net46) |> test
 )
 
+Target "Test461" (fun _ ->
+    Some(net461) |> test
+)
+
 Target "Zip" (fun _ ->
     zip (Some(net40))
     zip (Some(net46))
@@ -401,7 +405,7 @@ Target "461" DoNothing
 "BuildApp461"
     ==> "BuildConsole461"
     ==> "BuildTest461"
-//    ==> "Test461"
+    ==> "Test461"
     ==> "461"
 
 // start build

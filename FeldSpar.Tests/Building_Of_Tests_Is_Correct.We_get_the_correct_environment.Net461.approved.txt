@@ -1,0 +1,9 @@
+﻿"{ContainerName = "Building Of Tests Is Correct";
+ CanonicalizedContainerName = "Building_Of_Tests_Is_Correct";
+ TestName = "We get the correct environment";
+ CanonicalizedName = "We_get_the_correct_environment";
+ GoldStandardPath = "...\FeldSpar.Tests\";
+ Assembly =
+  FeldSpar.461.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;
+ AssemblyPath = "...\FeldSpar.Tests\bin\...";
+ Reporters = [];}"
