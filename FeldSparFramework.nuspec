@@ -30,7 +30,10 @@
         <file src="lib\46\FeldSparFramework.46.dll.config" target="lib\46\FeldSparFramework.46.dll.config" />
         <file src="lib\46\FeldSparFramework.46.pdb" target="lib\46\FeldSparFramework.46.pdb" />
         <file src="lib\46\FeldSparFramework.46.XML" target="lib\46\FeldSparFramework.46.XML" />
-        <!-- file src="lib\45\_._" target="lib\45\_._" / -->
+        <file src="lib\45\FeldSparFramework.45.dll" target="lib\45\FeldSparFramework.45.dll" />
+        <file src="lib\45\FeldSparFramework.45.dll.config" target="lib\45\FeldSparFramework.45.dll.config" />
+        <file src="lib\45\FeldSparFramework.45.pdb" target="lib\45\FeldSparFramework.45.pdb" />
+        <file src="lib\45\FeldSparFramework.45.XML" target="lib\45\FeldSparFramework.45.XML" />
         <file src="tools\install.ps1" target="tools\install.ps1" />
     </files>
 </package>

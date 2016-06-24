@@ -24,14 +24,17 @@
         </dependencies>
     </metadata>
     <files>
+        <file src="lib\40\FeldSpar.40.Console.XML" target="lib\40\FeldSpar.40.Console.XML" />
         <file src="lib\40\FeldSpar.40.ContinuousIntegration.exe" target="lib\40\FeldSpar.40.ContinuousIntegration.exe" />
         <file src="lib\40\FeldSpar.40.ContinuousIntegration.exe.config" target="lib\40\FeldSpar.40.ContinuousIntegration.exe.config" />
         <file src="lib\40\FeldSpar.40.ContinuousIntegration.pdb" target="lib\40\FeldSpar.40.ContinuousIntegration.pdb" />
-        <file src="lib\46\FeldSpar.46.Console.XML" target="lib\40\FeldSpar.46.Console.XML" />
+        <file src="lib\45\FeldSpar.45.Console.XML" target="lib\45\FeldSpar.45.Console.XML" />
+        <file src="lib\45\FeldSpar.45.ContinuousIntegration.exe" target="lib\45\FeldSpar.45.ContinuousIntegration.exe" />
+        <file src="lib\45\FeldSpar.45.ContinuousIntegration.exe.config" target="lib\45\FeldSpar.45.ContinuousIntegration.exe.config" />
+        <file src="lib\45\FeldSpar.45.ContinuousIntegration.pdb" target="lib\45\FeldSpar.45.ContinuousIntegration.pdb" />
         <file src="lib\46\FeldSpar.46.Console.XML" target="lib\46\FeldSpar.46.Console.XML" />
         <file src="lib\46\FeldSpar.46.ContinuousIntegration.exe" target="lib\46\FeldSpar.46.ContinuousIntegration.exe" />
         <file src="lib\46\FeldSpar.46.ContinuousIntegration.exe.config" target="lib\46\FeldSpar.46.ContinuousIntegration.exe.config" />
         <file src="lib\46\FeldSpar.46.ContinuousIntegration.pdb" target="lib\46\FeldSpar.46.ContinuousIntegration.pdb" />
-		<!-- file src="lib\45\_._" target="lib\45\_._" / -->
 	</files>
 </package>
