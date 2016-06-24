@@ -182,6 +182,10 @@ Target "Clean" (fun _ ->
     clean ()
 )
 
+Target "BuildApp461" (fun _ ->
+    Some(net461) |> buildApp
+)
+
 Target "BuildApp46" (fun _ ->
     Some(net46) |> buildApp
 )
@@ -329,12 +333,17 @@ Target "Build46" (fun _ ->
     run "46"
 )
 
+Target "Build461" (fun _ ->
+    run "461"
+)
+
 Target "Build" DoNothing
 Target "40" DoNothing
 Target "45" DoNothing
 Target "451" DoNothing
 Target "452" DoNothing
 Target "46" DoNothing
+Target "461" DoNothing
 
 // Dependencies
 "Clean"
@@ -343,6 +352,7 @@ Target "46" DoNothing
     ==> "Build451"
     ==> "Build452"
     ==> "Build46"
+    ==> "Build461"
     ==> "Build"
 
     ==> "Zip"
@@ -379,6 +389,12 @@ Target "46" DoNothing
     ==> "BuildTest46"
     ==> "Test46"
     ==> "46"
+
+"BuildApp461"
+//    ==> "BuildConsole461"
+//    ==> "BuildTest461"
+//    ==> "Test461"
+    ==> "461"
 
 // start build
 RunTargetOrDefault "Default"
