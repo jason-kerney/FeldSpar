@@ -44,5 +44,9 @@
         <file src="lib\46\FeldSpar.46.ContinuousIntegration.exe" target="lib\46\FeldSpar.46.ContinuousIntegration.exe" />
         <file src="lib\46\FeldSpar.46.ContinuousIntegration.exe.config" target="lib\46\FeldSpar.46.ContinuousIntegration.exe.config" />
         <file src="lib\46\FeldSpar.46.ContinuousIntegration.pdb" target="lib\46\FeldSpar.46.ContinuousIntegration.pdb" />
+        <file src="lib\461\FeldSpar.461.Console.XML" target="lib\461\FeldSpar.461.Console.XML" />
+        <file src="lib\461\FeldSpar.461.ContinuousIntegration.exe" target="lib\461\FeldSpar.461.ContinuousIntegration.exe" />
+        <file src="lib\461\FeldSpar.461.ContinuousIntegration.exe.config" target="lib\461\FeldSpar.461.ContinuousIntegration.exe.config" />
+        <file src="lib\461\FeldSpar.461.ContinuousIntegration.pdb" target="lib\461\FeldSpar.461.ContinuousIntegration.pdb" />
 	</files>
 </package>

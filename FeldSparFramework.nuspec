@@ -42,6 +42,10 @@
         <file src="lib\46\FeldSparFramework.46.dll.config" target="lib\46\FeldSparFramework.46.dll.config" />
         <file src="lib\46\FeldSparFramework.46.pdb" target="lib\46\FeldSparFramework.46.pdb" />
         <file src="lib\46\FeldSparFramework.46.XML" target="lib\46\FeldSparFramework.46.XML" />
+        <file src="lib\461\FeldSparFramework.461.dll" target="lib\461\FeldSparFramework.461.dll" />
+        <file src="lib\461\FeldSparFramework.461.dll.config" target="lib\461\FeldSparFramework.461.dll.config" />
+        <file src="lib\461\FeldSparFramework.461.pdb" target="lib\461\FeldSparFramework.461.pdb" />
+        <file src="lib\461\FeldSparFramework.461.XML" target="lib\461\FeldSparFramework.461.XML" />
         <file src="tools\install.ps1" target="tools\install.ps1" />
     </files>
 </package>
