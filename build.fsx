@@ -61,7 +61,7 @@ let continuousIntegration = "ContinuousIntegration"
 let ciDir = Some(continuousIntegration)
 
 let version netDir =
-    (buildDir feldSparDir netDir) + feldSpar + (netVersionFileName netDir) + ".dll" |> GetAssemblyVersionString 
+    (buildDir feldSparDir netDir) + feldSpar + (netVersionFileName None) + ".dll" |> GetAssemblyVersionString 
 
 let build appDir tmpDir targetDir label projecType =
     let tmpDir = (appDir + tmpDir)
@@ -126,7 +126,7 @@ let clean () =
     |> CleanDirs
 
 let zip netDir =
-    let sourceDir = None |> buildDir None
+    let sourceDir = None |> buildDir None 
     let destDir = None |> deployDir
     
     let dirInfo = System.IO.DirectoryInfo(destDir)

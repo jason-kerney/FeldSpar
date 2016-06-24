@@ -22,30 +22,30 @@
     <files>
         <file src="content\FeldSpar_Example.fs.txt" target="content\FeldSpar_Example.fs.txt" />
         <file src="content\Program.fs" target="content\Program.fs" />
-        <file src="lib\40\FeldSparFramework.40.dll" target="lib\40\FeldSparFramework.40.dll" />
-        <file src="lib\40\FeldSparFramework.40.dll.config" target="lib\40\FeldSparFramework.40.dll.config" />
-        <file src="lib\40\FeldSparFramework.40.pdb" target="lib\40\FeldSparFramework.40.pdb" />
-        <file src="lib\40\FeldSparFramework.40.XML" target="lib\40\FeldSparFramework.40.XML" />
-        <file src="lib\45\FeldSparFramework.45.dll" target="lib\45\FeldSparFramework.45.dll" />
-        <file src="lib\45\FeldSparFramework.45.dll.config" target="lib\45\FeldSparFramework.45.dll.config" />
-        <file src="lib\45\FeldSparFramework.45.pdb" target="lib\45\FeldSparFramework.45.pdb" />
-        <file src="lib\45\FeldSparFramework.45.XML" target="lib\45\FeldSparFramework.45.XML" />
-        <file src="lib\451\FeldSparFramework.451.dll" target="lib\451\FeldSparFramework.451.dll" />
-        <file src="lib\451\FeldSparFramework.451.dll.config" target="lib\451\FeldSparFramework.451.dll.config" />
-        <file src="lib\451\FeldSparFramework.451.pdb" target="lib\451\FeldSparFramework.451.pdb" />
-        <file src="lib\451\FeldSparFramework.451.XML" target="lib\451\FeldSparFramework.451.XML" />
-        <file src="lib\452\FeldSparFramework.452.dll" target="lib\452\FeldSparFramework.452.dll" />
-        <file src="lib\452\FeldSparFramework.452.dll.config" target="lib\452\FeldSparFramework.452.dll.config" />
-        <file src="lib\452\FeldSparFramework.452.pdb" target="lib\452\FeldSparFramework.452.pdb" />
-        <file src="lib\452\FeldSparFramework.452.XML" target="lib\452\FeldSparFramework.452.XML" />
-        <file src="lib\46\FeldSparFramework.46.dll" target="lib\46\FeldSparFramework.46.dll" />
-        <file src="lib\46\FeldSparFramework.46.dll.config" target="lib\46\FeldSparFramework.46.dll.config" />
-        <file src="lib\46\FeldSparFramework.46.pdb" target="lib\46\FeldSparFramework.46.pdb" />
-        <file src="lib\46\FeldSparFramework.46.XML" target="lib\46\FeldSparFramework.46.XML" />
-        <file src="lib\461\FeldSparFramework.461.dll" target="lib\461\FeldSparFramework.461.dll" />
-        <file src="lib\461\FeldSparFramework.461.dll.config" target="lib\461\FeldSparFramework.461.dll.config" />
-        <file src="lib\461\FeldSparFramework.461.pdb" target="lib\461\FeldSparFramework.461.pdb" />
-        <file src="lib\461\FeldSparFramework.461.XML" target="lib\461\FeldSparFramework.461.XML" />
+        <file src="lib\40\FeldSparFramework.dll" target="lib\Net40\FeldSparFramework.dll" />
+        <file src="lib\40\FeldSparFramework.dll.config" target="lib\Net40\FeldSparFramework.dll.config" />
+        <file src="lib\40\FeldSparFramework.pdb" target="lib\Net40\FeldSparFramework.pdb" />
+        <file src="lib\40\FeldSparFramework.XML" target="lib\Net40\FeldSparFramework.XML" />
+        <file src="lib\45\FeldSparFramework.dll" target="lib\Net45\FeldSparFramework.dll" />
+        <file src="lib\45\FeldSparFramework.dll.config" target="lib\Net45\FeldSparFramework.dll.config" />
+        <file src="lib\45\FeldSparFramework.pdb" target="lib\Net45\FeldSparFramework.pdb" />
+        <file src="lib\45\FeldSparFramework.XML" target="lib\Net45\FeldSparFramework.XML" />
+        <file src="lib\451\FeldSparFramework.dll" target="lib\Net451\FeldSparFramework.dll" />
+        <file src="lib\451\FeldSparFramework.dll.config" target="lib\Net451\FeldSparFramework.dll.config" />
+        <file src="lib\451\FeldSparFramework.pdb" target="lib\Net451\FeldSparFramework.pdb" />
+        <file src="lib\451\FeldSparFramework.XML" target="lib\Net451\FeldSparFramework.XML" />
+        <file src="lib\452\FeldSparFramework.dll" target="lib\Net452\FeldSparFramework.dll" />
+        <file src="lib\452\FeldSparFramework.dll.config" target="lib\Net452\FeldSparFramework.dll.config" />
+        <file src="lib\452\FeldSparFramework.pdb" target="lib\Net452\FeldSparFramework.pdb" />
+        <file src="lib\452\FeldSparFramework.XML" target="lib\Net452\FeldSparFramework.XML" />
+        <file src="lib\46\FeldSparFramework.dll" target="lib\Net46\FeldSparFramework.dll" />
+        <file src="lib\46\FeldSparFramework.dll.config" target="lib\Net46\FeldSparFramework.dll.config" />
+        <file src="lib\46\FeldSparFramework.pdb" target="lib\Net46\FeldSparFramework.pdb" />
+        <file src="lib\46\FeldSparFramework.XML" target="lib\Net46\FeldSparFramework.XML" />
+        <file src="lib\461\FeldSparFramework.dll" target="lib\Net461\FeldSparFramework.dll" />
+        <file src="lib\461\FeldSparFramework.dll.config" target="lib\Net461\FeldSparFramework.dll.config" />
+        <file src="lib\461\FeldSparFramework.pdb" target="lib\Net461\FeldSparFramework.pdb" />
+        <file src="lib\461\FeldSparFramework.XML" target="lib\Net461\FeldSparFramework.XML" />
         <file src="tools\install.ps1" target="tools\install.ps1" />
     </files>
 </package>
