@@ -214,6 +214,10 @@ Target "BuildConsole451" (fun _ ->
     Some(net451) |> buildConsole
 )
 
+Target "BuildConsole452" (fun _ ->
+    Some(net452) |> buildConsole
+)
+
 Target "BuildConsole46" (fun _ ->
     Some(net46) |> buildConsole
 )
@@ -357,6 +361,7 @@ Target "46" DoNothing
     ==> "451"
 
 "BuildApp452"
+    ==> "BuildConsole452"
     ==> "452"
 
 "BuildApp46"
