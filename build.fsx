@@ -7,6 +7,7 @@ open System.IO
 RestorePackages ()
 
 // Properties
+let net461 = "461"
 let net46  = "46"
 let net451 = "451"
 let net452 = "452"
@@ -20,7 +21,6 @@ let netVersionFileName = function
 let fSharpProjects = function
     | None -> ""
     | Some(netVersionFileName) -> "*" + netVersionFileName + ".*.fsproj"
-
 
 let getSubFolder st next =
     match st with
