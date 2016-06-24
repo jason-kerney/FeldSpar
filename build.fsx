@@ -7,9 +7,10 @@ open System.IO
 RestorePackages ()
 
 // Properties
-let net46 = "46"
-let net45 = "45"
-let net40 = "40"
+let net46  = "46"
+let net451 = "451"
+let net45  = "45"
+let net40  = "40"
 
 let netVersionFileName = function
     | None -> ""
@@ -187,6 +188,10 @@ Target "BuildApp45" (fun _ ->
     Some(net45) |> buildApp
 )
 
+Target "BuildApp451" (fun _ ->
+    Some(net451) |> buildApp
+)
+
 Target "BuildApp40" (fun _ ->
     Some(net40) |> buildApp
 )
@@ -276,6 +281,7 @@ Target "Nuget" (fun _ ->
 
 Target "40" DoNothing
 Target "45" DoNothing
+Target "451" DoNothing
 Target "46" DoNothing
 Target "Build" DoNothing
 
@@ -287,6 +293,10 @@ Target "Build45" (fun _ ->
     run "45"
 )
 
+Target "Build451" (fun _ ->
+    run "451"
+)
+
 Target "Build46" (fun _ ->
     run "46"
 )
@@ -295,6 +305,7 @@ Target "Build46" (fun _ ->
 "Clean"
     ==> "Build40"
     ==> "Build45"
+    ==> "Build451"
     ==> "Build46"
     ==> "Build"
 
@@ -314,6 +325,9 @@ Target "Build46" (fun _ ->
     ==> "BuildTest45"
     ==> "Test45"
     ==> "45"
+
+"BuildApp451"
+    ==> "451"
 
 "BuildApp46"
     ==> "BuildConsole46"
