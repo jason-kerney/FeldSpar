@@ -26,6 +26,9 @@ module DotNetFrameworkTests =
                 #if NET45
                     let test = getVersion test Net45
                 #endif
+                #if NET451
+                    let test = getVersion test Net451
+                #endif
                 #if NET46
                     let test = getVersion test Net46
                 #endif
