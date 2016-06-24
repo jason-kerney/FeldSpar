@@ -94,6 +94,13 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FeldSparFramework\FeldSpar.461.Framework.fsproj">
+      <Name>FeldSpar.461.Framework</Name>
+      <Project>{7581972b-6184-4e6d-a424-0bf49af05009}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
