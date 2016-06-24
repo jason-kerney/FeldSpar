@@ -204,6 +204,10 @@ Target "BuildConsole45" (fun _ ->
     Some(net45) |> buildConsole
 )
 
+Target "BuildConsole451" (fun _ ->
+    Some(net451) |> buildConsole
+)
+
 Target "BuildConsole46" (fun _ ->
     Some(net46) |> buildConsole
 )
@@ -279,12 +283,6 @@ Target "Nuget" (fun _ ->
     ()
 )
 
-Target "40" DoNothing
-Target "45" DoNothing
-Target "451" DoNothing
-Target "46" DoNothing
-Target "Build" DoNothing
-
 Target "Build40" (fun _ ->
     run "40"
 )
@@ -300,6 +298,12 @@ Target "Build451" (fun _ ->
 Target "Build46" (fun _ ->
     run "46"
 )
+
+Target "Build" DoNothing
+Target "40" DoNothing
+Target "45" DoNothing
+Target "451" DoNothing
+Target "46" DoNothing
 
 // Dependencies
 "Clean"
@@ -327,6 +331,7 @@ Target "Build46" (fun _ ->
     ==> "45"
 
 "BuildApp451"
+    ==> "BuildConsole451"
     ==> "451"
 
 "BuildApp46"
