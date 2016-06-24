@@ -46,6 +46,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.452.Framework", "F
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.452.ContinuousIntegration", "FeldSpar.ContinuousIntegration\FeldSpar.452.ContinuousIntegration.fsproj", "{CAD846DC-CBBB-4EA4-A622-B446511601C8}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.452.Tests", "FeldSpar.Tests\FeldSpar.452.Tests.fsproj", "{9079A283-0A93-4E60-8192-DAA88BC67130}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -220,6 +222,18 @@ Global
 		{CAD846DC-CBBB-4EA4-A622-B446511601C8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CAD846DC-CBBB-4EA4-A622-B446511601C8}.Release|x86.ActiveCfg = Release|Any CPU
 		{CAD846DC-CBBB-4EA4-A622-B446511601C8}.Release|x86.Build.0 = Release|Any CPU
+		{9079A283-0A93-4E60-8192-DAA88BC67130}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9079A283-0A93-4E60-8192-DAA88BC67130}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9079A283-0A93-4E60-8192-DAA88BC67130}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9079A283-0A93-4E60-8192-DAA88BC67130}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9079A283-0A93-4E60-8192-DAA88BC67130}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9079A283-0A93-4E60-8192-DAA88BC67130}.Debug|x86.Build.0 = Debug|Any CPU
+		{9079A283-0A93-4E60-8192-DAA88BC67130}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9079A283-0A93-4E60-8192-DAA88BC67130}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9079A283-0A93-4E60-8192-DAA88BC67130}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9079A283-0A93-4E60-8192-DAA88BC67130}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9079A283-0A93-4E60-8192-DAA88BC67130}.Release|x86.ActiveCfg = Release|Any CPU
+		{9079A283-0A93-4E60-8192-DAA88BC67130}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

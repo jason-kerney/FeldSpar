@@ -233,6 +233,10 @@ Target "BuildTest45" (fun _ ->
 Target "BuildTest451" (fun _ ->
     Some(net451) |> buildTest
 )
+
+Target "BuildTest452" (fun _ ->
+    Some(net452) |> buildTest
+)
          
 Target "BuildTest46" (fun _ ->
     Some(net46) |> buildTest
@@ -362,6 +366,7 @@ Target "46" DoNothing
 
 "BuildApp452"
     ==> "BuildConsole452"
+    ==> "BuildTest452"
     ==> "452"
 
 "BuildApp46"
