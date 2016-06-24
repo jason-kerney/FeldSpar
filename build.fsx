@@ -88,6 +88,7 @@ let buildApp netDir =
     let projects = fSharpProjects netDir
     let release = releaseDir netDir
 
+    printfn "Building '%s'" projects
     build target release destination "AppBuild-Output:" projects
 
 
@@ -191,6 +192,10 @@ Target "BuildApp45" (fun _ ->
 
 Target "BuildApp451" (fun _ ->
     Some(net451) |> buildApp
+)
+
+Target "BuildApp452" (fun _ ->
+    Some(net452) |> buildApp
 )
 
 Target "BuildApp40" (fun _ ->
@@ -304,6 +309,10 @@ Target "Build451" (fun _ ->
     run "451"
 )
 
+Target "Build452" (fun _ ->
+    run "452"
+)
+
 Target "Build46" (fun _ ->
     run "46"
 )
@@ -312,6 +321,7 @@ Target "Build" DoNothing
 Target "40" DoNothing
 Target "45" DoNothing
 Target "451" DoNothing
+Target "452" DoNothing
 Target "46" DoNothing
 
 // Dependencies
@@ -319,6 +329,7 @@ Target "46" DoNothing
     ==> "Build40"
     ==> "Build45"
     ==> "Build451"
+    ==> "Build452"
     ==> "Build46"
     ==> "Build"
 
@@ -344,6 +355,9 @@ Target "46" DoNothing
     ==> "BuildTest451"
     ==> "Test451"
     ==> "451"
+
+"BuildApp452"
+    ==> "452"
 
 "BuildApp46"
     ==> "BuildConsole46"
