@@ -66,18 +66,6 @@
     <Compile Include="ExpectationTests.fs" />
     <Compile Include="DotNetFrameworkTests.fs" />
     <Compile Include="Program.fs" />
-    <Content Include="A_test_to_check_verification.approved.txt" />
-    <Content Include="Find_All_Tests_through_Reflection.approved.txt" />
-    <Content Include="testFindTests.approved.txt" />
-    <Content Include="testExeptionTestReturnsExptionFailure.approved.txt" />
-    <Content Include="Fizz_Buzzer_returns_the_correct_Fizz_Buzz_or_FizzBuzz_for_every_number_up_to_500.approved.txt" />
-    <Content Include="basicVerificationTest.approved.txt" />
-    <Content Include="Can_Create_multiple_Tests_From_one_Theory_Test.approved.txt" />
-    <Content Include="Combinatory_Gold_Standard_Testing.approved.txt" />
-    <Content Include="Combinitory_Gold_Standard_Testing.approved.txt" />
-    <Content Include="Test_that_shuffle_works_correctly.approved.txt" />
-    <Content Include="Can_Build_Report_from_Execution_Summaries.approved.txt" />
-    <Content Include="Report_exports_to_JSON.approved.txt" />
     <Content Include="app.config" />
   </ItemGroup>
   <ItemGroup>
