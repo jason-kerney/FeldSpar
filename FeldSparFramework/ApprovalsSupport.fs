@@ -8,12 +8,30 @@ open FeldSpar.Framework.TestSummaryUtilities
     Please Check them out at:
         https://github.com/approvals/ApprovalTests.Net/
 *)
+
+type GetQuery<'a> = 'a -> string
+type QueryParts<'a> = 'a * GetQuery<'a>
+type QueryIntfo<'a> =
+    {
+        QueryResult : 'a;
+        GetQuery : GetQuery<'a>;
+        ExecuteQuery : string -> string;
+    }
+
 module ApprovalsSupport = 
+    open ApprovalTests
     open ApprovalTests.Core
     open ApprovalTests.Reporters
+    open ApprovalUtilities.Persistence
     open System.IO
 
     let thanksUrl = "https://github.com/approvals/ApprovalTests.Net/"
+
+    let getQueryWith (getQuery: GetQuery<'a>) (queryResults : 'a) : QueryParts<'a> =
+        (queryResults, getQuery)
+
+    let executeQueryWith (executeQuery : string -> string) ((queryResults, qetQuery) : QueryParts<'a>) =
+        { QueryResult = queryResults; GetQuery = qetQuery; ExecuteQuery = executeQuery }
 
     type FindReporterResult =
         | FoundReporter of IApprovalFailureReporter
@@ -114,6 +132,13 @@ module ApprovalsSupport =
 
     let getBinaryFileApprover env extentionWithoutDot result =
         ApprovalTests.Approvers.FileApprover(getBinaryFileWriter extentionWithoutDot result, getNamer env)
+
+    let getQueryApprover env (query : ApprovalUtilities.Persistence.IExecutableQuery) =
+        let getQueryWriter (query : ApprovalUtilities.Persistence.IExecutableQuery) =
+            ApprovalTests.Writers.WriterFactory.CreateTextWriter (query.GetQuery ())
+
+        ApprovalTests.Approvers.FileApprover(getQueryWriter query, getNamer env)
+        
 
     let getStreamFileApprover env extentionWithoutDot (result:Stream) =
         ApprovalTests.Approvers.FileApprover(getBinaryStreamWriter extentionWithoutDot result, getNamer env)

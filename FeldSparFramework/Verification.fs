@@ -110,6 +110,25 @@ module Checks =
     let checkAgainstStandardObjectAsString env test =
         checkAgainstStandardObjectAsStringWithCleaner env cleanNothing test
 
+    let checkQueryResultAgainstStandard (env:TestEnvironment) { QueryResult = queryResult; GetQuery = getQuery; ExecuteQuery = executeQuery } =
+        let query =
+            {
+                new ApprovalUtilities.Persistence.IExecutableQuery with
+                    member __.ExecuteQuery str = executeQuery str
+                    member __.GetQuery () = getQuery queryResult
+            }
+
+        let env = 
+            let reporter = fun () -> ApprovalTests.Reporters.ExecutableQueryFailure(query, getReporter env) :> IApprovalFailureReporter
+
+            { env with
+                Reporters = reporter :: env.Reporters
+            }
+
+        let approver = getQueryApprover env query
+
+        checkAgainstStandard env approver
+        
     /// <summary>
     /// Gold standard testing. Compares the given binary array against a saved binary file to determine if they match.
     /// </summary>
