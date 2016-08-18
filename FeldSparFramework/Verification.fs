@@ -110,6 +110,14 @@ module Checks =
     let checkAgainstStandardObjectAsString env test =
         checkAgainstStandardObjectAsStringWithCleaner env cleanNothing test
 
+
+    
+    let getQueryWith (getQuery: GetQuery<'a>) (queryResults : 'a) : QueryParts<'a> =
+        (queryResults, getQuery)
+
+    let executeQueryWith (executeQuery : string -> string) ((queryResults, qetQuery) : QueryParts<'a>) =
+        { QueryResult = queryResults; GetQuery = qetQuery; ExecuteQuery = executeQuery }
+
     let checkQueryResultAgainstStandard (env:TestEnvironment) { QueryResult = queryResult; GetQuery = getQuery; ExecuteQuery = executeQuery } =
         let query =
             {

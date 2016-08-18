@@ -38,3 +38,15 @@ module StandardsVerificationTests =
 
             checkQueryResultAgainstStandard env query
         )
+
+    let ``Can build the test of a query`` = 
+        Test(fun env ->
+            let queryResult = "Hello World"
+            let getQuery (x: string) = x
+            let executeQuery (s: string) = s.ToUpperInvariant ()
+
+            queryResult
+                |> getQueryWith getQuery
+                |> executeQueryWith executeQuery
+                |> checkQueryResultAgainstStandard env
+        )

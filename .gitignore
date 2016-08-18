@@ -220,6 +220,7 @@ pip-log.txt
 #############
 
 *.recieved*
+*.queryresults*
 
 #############
 # FAKE F#
