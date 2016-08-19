@@ -88,3 +88,23 @@ module ExpectationTests =
                 |> expectsToContain sub
                 |> expectsToBe Success
         )
+
+    let ``expectsNotToContain will pass if any element of a sequence differs`` =
+        Test(fun _ ->
+            let root = seq { for y in 1..10 do yield y}
+            let partial = [8; 10; 12]
+
+            root
+                |> expectsToNotContain partial
+                |> expectsToBe Success
+        )
+
+    let ``expectsNotToContain will fail if all elements are contained`` =
+        Test(fun _ ->
+            let root = seq { for y in 1..10 do yield y.ToString ()}
+            let partial = ["1"; "3"; "10"]
+
+            root
+                |> expectsToNotContain partial
+                |> expectsToBe Success
+        )

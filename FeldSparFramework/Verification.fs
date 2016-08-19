@@ -95,6 +95,14 @@ module Checks =
         containsAll |> expectationCheck subitems "%A expected to be contained in %A" items
 
     /// <summary>
+    /// Verifies that at least one element in one sequence is not contained in an element of anouther sequence.
+    /// </summary>
+    /// <param name="itemsB">The sequence with at least on non containing element</param>
+    /// <param name="itemsA">The sequence that will not contain at least one item of the other</param>
+    let expectsToNotContain (itemsB: 'a seq) (itemsA: 'a seq) =
+        (fun a b -> a |> containsAll b |> not) |> expectationCheck itemsB "%A expected not to be contained completely in %A" itemsA
+
+    /// <summary>
     /// Tests a given value to determine if it is null
     /// </summary>
     /// <param name="actual">The value being tested</param>
