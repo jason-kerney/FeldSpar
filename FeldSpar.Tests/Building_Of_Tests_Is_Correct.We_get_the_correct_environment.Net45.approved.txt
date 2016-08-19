@@ -6,4 +6,5 @@
  Assembly =
   FeldSpar.45.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;
  AssemblyPath = "...\FeldSpar.Tests\bin\...";
+ FeldSparNetFramework = Net45;
  Reporters = [];}"

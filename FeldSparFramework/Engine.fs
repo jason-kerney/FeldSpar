@@ -55,6 +55,7 @@ module Runner =
             GoldStandardPath           = path;
             Assembly                   = token.Assembly;
             AssemblyPath               = token.AssemblyPath;
+            FeldSparNetFramework       = currentFramework;
             Reporters                  = config.Reporters;
         }
 

@@ -1,46 +1,44 @@
 ﻿namespace FeldSpar.Console.Tests
-open FeldSpar.Console.Helpers
-open FeldSpar.Console.Helpers.Data
 open FeldSpar.Framework
-open FeldSpar.Framework.TestSummaryUtilities
-open FeldSpar.Framework.Engine
 open FeldSpar.Framework.Verification
-open FeldSpar.Framework.Verification.ChecksClean
-open FeldSpar.Framework.Verification.ApprovalsSupport
 
 module DotNetFrameworkTests =
+    let testFrameworkVersion = 
+        let getVersion t v =
+            if t () = None then
+                fun () -> Some(v)
+            else
+                t
+
+        let test : unit -> SupportedFrameworks option = fun () -> None
+    #if NET40
+        let test = getVersion test Net40
+    #endif
+    #if NET45
+        let test = getVersion test Net45
+    #endif
+    #if NET451
+        let test = getVersion test Net451
+    #endif
+    #if NET452
+        let test = getVersion test Net452
+    #endif
+    #if NET46
+        let test = getVersion test Net46
+    #endif
+    #if NET461
+        let test = getVersion test Net461
+    #endif
+
+        test ()
+
     let ``Can Detect the correct version`` =
         Test(fun _ ->
-                         
-                let expectedVersion =
-                    let getVersion t v =
-                        if t () = None then
-                            fun () -> Some(v)
-                        else
-                            t
+                Some(currentFramework) |> expectsToBe testFrameworkVersion
+        )
 
-                    let test : unit -> SupportedFrameworks option = fun () -> None
-                #if NET40
-                    let test = getVersion test Net40
-                #endif
-                #if NET45
-                    let test = getVersion test Net45
-                #endif
-                #if NET451
-                    let test = getVersion test Net451
-                #endif
-                #if NET452
-                    let test = getVersion test Net452
-                #endif
-                #if NET46
-                    let test = getVersion test Net46
-                #endif
-                #if NET461
-                    let test = getVersion test Net461
-                #endif
-
-                    test ()
-
-                Some(currentFramework) |> expectsToBe expectedVersion
+    let ``Environment has correct version`` =
+        Test(fun env ->
+            Some(env.FeldSparNetFramework) |> expectsToBe testFrameworkVersion
         )
 

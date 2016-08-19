@@ -67,6 +67,7 @@ type TestEnvironment =
         GoldStandardPath           : string;
         Assembly                   : Reflection.Assembly;
         AssemblyPath               : string;
+        FeldSparNetFramework       : SupportedFrameworks;
         Reporters                  : (unit -> IApprovalFailureReporter) List;
     }
 
