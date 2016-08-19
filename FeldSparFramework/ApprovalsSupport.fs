@@ -1,6 +1,5 @@
 ﻿namespace FeldSpar.Framework.Verification
 open FeldSpar.Framework
-open FeldSpar.Framework.TestSummaryUtilities
 
 (*
     This would not be possible without the help of Llewellyn Falco and his Approval Tests
@@ -19,19 +18,11 @@ type QueryIntfo<'a> =
     }
 
 module ApprovalsSupport = 
-    open ApprovalTests
     open ApprovalTests.Core
     open ApprovalTests.Reporters
-    open ApprovalUtilities.Persistence
     open System.IO
 
     let thanksUrl = "https://github.com/approvals/ApprovalTests.Net/"
-
-    let getQueryWith (getQuery: GetQuery<'a>) (queryResults : 'a) : QueryParts<'a> =
-        (queryResults, getQuery)
-
-    let executeQueryWith (executeQuery : string -> string) ((queryResults, qetQuery) : QueryParts<'a>) =
-        { QueryResult = queryResults; GetQuery = qetQuery; ExecuteQuery = executeQuery }
 
     type FindReporterResult =
         | FoundReporter of IApprovalFailureReporter
@@ -52,17 +43,17 @@ module ApprovalsSupport =
 
     let private getStringFileWriter result = 
         { new IApprovalWriter with 
-            member this.GetApprovalFilename(baseName) = sprintf "%s.approved.txt" baseName
-            member this.GetReceivedFilename(baseName) = sprintf "%s.recieved.txt" baseName
-            member this.WriteReceivedFile(fullPathForRecievedFile) = 
+            member __.GetApprovalFilename(baseName) = sprintf "%s.approved.txt" baseName
+            member __.GetReceivedFilename(baseName) = sprintf "%s.recieved.txt" baseName
+            member __.WriteReceivedFile(fullPathForRecievedFile) = 
                 result |> writeTextTo fullPathForRecievedFile
         }
 
     let private getBinaryFileWriter extentionWithoutDot result =
         { new IApprovalWriter with
-            member this.GetApprovalFilename(baseName) = sprintf "%s.approved.%s" baseName extentionWithoutDot
-            member this.GetReceivedFilename(baseName) = sprintf "%s.recieved.%s" baseName extentionWithoutDot
-            member this.WriteReceivedFile(fullPathForRecievedFile) = 
+            member __.GetApprovalFilename(baseName) = sprintf "%s.approved.%s" baseName extentionWithoutDot
+            member __.GetReceivedFilename(baseName) = sprintf "%s.recieved.%s" baseName extentionWithoutDot
+            member __.WriteReceivedFile(fullPathForRecievedFile) = 
                 result |> writeBinaryTo fullPathForRecievedFile
         }
 
@@ -99,8 +90,8 @@ module ApprovalsSupport =
         let path = getPath env
 
         {  new IApprovalNamer with
-            member this.SourcePath with get () = path
-            member this.Name with get () = env.CanonicalizedContainerName + "." + env.CanonicalizedName
+            member __.SourcePath with get () = path
+            member __.Name with get () = env.CanonicalizedContainerName + "." + env.CanonicalizedName
         }
 
     let createReporter<'a when 'a:> IApprovalFailureReporter> () =
