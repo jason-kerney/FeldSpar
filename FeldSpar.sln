@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FeldSpar.46.Framework", "FeldSparFramework\FeldSpar.46.Framework.fsproj", "{AD56B1EE-515D-40D2-8217-4B4335C0A37B}"
 EndProject

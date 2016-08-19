@@ -110,6 +110,48 @@ module Checks =
     let checkAgainstStandardObjectAsString env test =
         checkAgainstStandardObjectAsStringWithCleaner env cleanNothing test
 
+
+    ///<summary>
+    ///First step in building a gold standard query test. This defines how to get the query from the results.
+    ///</summary>
+    ///<param name="getQuery">the function that converts query results into a query</param>
+    ///<param name="queryResults">The data the query returns</param>
+    ///<returns>Query Parts containing a Tupple of query results and the method to convert them into a query.</returns>
+    let getQueryWith (getQuery: GetQuery<'a>) (queryResults : 'a) : QueryParts<'a> =
+        (queryResults, getQuery)
+
+    /// <summary>
+    /// Second step in biulding a gold standard query test. This defines how to execute a string query
+    /// </summary>
+    /// <param name="executeQuery">the function that executes the query</param>
+    /// <returns>A query info that is used to check the query against the standard.</returns>
+    let executeQueryWith (executeQuery : string -> string) ((queryResults, qetQuery) : QueryParts<'a>) =
+        { QueryResult = queryResults; GetQuery = qetQuery; ExecuteQuery = executeQuery }
+
+    /// <summary>
+    /// This performs a gold standard test against a query. If the query does not match the standard it then runs the standard and the current query
+    /// giving the user both sets of results to compare.
+    /// </summary>
+    /// <param name="env">Environment information used in determining the gold standerd to compare against.</param>
+    let checkQueryResultAgainstStandard (env:TestEnvironment) { QueryResult = queryResult; GetQuery = getQuery; ExecuteQuery = executeQuery } =
+        let query =
+            {
+                new ApprovalUtilities.Persistence.IExecutableQuery with
+                    member __.ExecuteQuery str = executeQuery str
+                    member __.GetQuery () = getQuery queryResult
+            }
+
+        let env = 
+            let reporter = fun () -> ApprovalTests.Reporters.ExecutableQueryFailure(query, getReporter env) :> IApprovalFailureReporter
+
+            { env with
+                Reporters = reporter :: env.Reporters
+            }
+
+        let approver = getQueryApprover env query
+
+        checkAgainstStandard env approver
+        
     /// <summary>
     /// Gold standard testing. Compares the given binary array against a saved binary file to determine if they match.
     /// </summary>
