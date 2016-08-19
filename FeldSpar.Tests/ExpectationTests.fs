@@ -108,3 +108,23 @@ module ExpectationTests =
                 |> expectsToNotContain partial
                 |> expectsToBe Success
         )
+
+    let ``expectsToOnlyContain will pass if 2 sequences contain the same eliments no matter order`` =
+        Test(fun _ ->
+            let root = "ldllo WorHe";
+            let sub = ['H'; 'e'; 'l'; 'l'; 'o'; ' '; 'W'; 'o'; 'r'; 'l'; 'd'];
+
+            root
+                |> expectsToContainOnly sub
+                |> expectsToBe Success
+        )
+
+    let ``expectsToOnlyContain will fail if the items a has aone less`` =
+        Test(fun _ ->
+            let itemsA = "Hello Word";
+            let itemsB = ['H'; 'e'; 'l'; 'l'; 'o'; ' '; 'W'; 'o'; 'r'; 'l'; 'd'];
+
+            itemsA
+                |> expectsToContainOnly itemsB
+                |> expectsToBe (Failure(ExpectationFailure("['H'; 'e'; 'l'; 'l'; 'o'; ' '; 'W'; 'o'; 'r'; 'l'; 'd'] expected to have only the items of \"Hello Word\"")))
+        )

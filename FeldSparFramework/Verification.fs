@@ -103,6 +103,28 @@ module Checks =
         (fun a b -> a |> containsAll b |> not) |> expectationCheck itemsB "%A expected not to be contained completely in %A" itemsA
 
     /// <summary>
+    /// Verifies that 2 sequences contain all the same things without order
+    /// </summary>
+    /// <param name="itemsB">One list expected to have the same items as anouther</param>
+    /// <param name="itemsA">One list expected to have the same items as anouther</param>
+    let expectsToContainOnly (itemsB: 'a seq) (itemsA: 'a seq) =
+        let sequencesContainSameElements aItems bItems = 
+            let doseNotExistIn items item =
+                items
+                    |> Seq.contains item
+                    |> not
+
+            let aThings = aItems |> Seq.countBy id
+            let bThings = bItems |> Seq.countBy id
+
+            let aDiffs = aThings |> Seq.filter (doseNotExistIn bThings) |> Seq.length
+            let bDiffs = bThings |> Seq.filter (doseNotExistIn aThings) |> Seq.length
+
+            aDiffs = 0 && bDiffs = 0
+
+        sequencesContainSameElements |> expectationCheck itemsB "%A expected to have only the items of %A" itemsA
+
+    /// <summary>
     /// Tests a given value to determine if it is null
     /// </summary>
     /// <param name="actual">The value being tested</param>
