@@ -64,6 +64,10 @@ module ApprovalsSupport =
         result.Read(data, 0, data.Length) |> ignore
         getBinaryFileWriter extentionWithoutDot data
 
+    /// <summary>
+    /// Returns the path used for gold standard verification
+    /// </summary>
+    /// <param name="env">The test environment information</param>
     let getPath (env:TestEnvironment) =
         let trace = System.Diagnostics.StackTrace(true)
 
@@ -94,6 +98,9 @@ module ApprovalsSupport =
             member __.Name with get () = env.CanonicalizedContainerName + "." + env.CanonicalizedName
         }
 
+    /// <summary>
+    /// Dynamicly instantiates an approval reporter
+    /// </summary>
     let createReporter<'a when 'a:> IApprovalFailureReporter> () =
         System.Activator.CreateInstance<'a>() :> IApprovalFailureReporter
 
@@ -105,12 +112,20 @@ module ApprovalsSupport =
         else
             MultiReporter(reporters |> List.toSeq) :> IApprovalFailureReporter
 
+    /// <summary>
+    /// Gets the reporters from the environment
+    /// </summary>
+    /// <param name="env">The test environment information</param>
     let getReporter (env : TestEnvironment)= 
         match env.Reporters with
         | [] -> 
             QuietReporter() :> IApprovalFailureReporter
         | reporters -> reporters |> buildReporter
 
+    /// <summary>
+    /// Creates an updated test environment with an additional reporter
+    /// </summary>
+    /// <param name="env">The test environment information</param>
     let addReporter<'a when 'a :> IApprovalFailureReporter> (env:TestEnvironment) =
         let reporter = fun () -> System.Activator.CreateInstance<'a>() :> IApprovalFailureReporter
 
@@ -118,19 +133,40 @@ module ApprovalsSupport =
             Reporters = reporter :: env.Reporters
         }
 
+    /// <summary>
+    /// Returns a file approver for handling strings
+    /// </summary>
+    /// <param name="env">The test environment information</param>
+    /// <param name="result">the result of the test to check against a gold standard</param>
     let getStringFileApprover env result =
         ApprovalTests.Approvers.FileApprover(getStringFileWriter result, getNamer env) :> IApprovalApprover
 
+    /// <summary>
+    /// Returns a file approver for handling binary files
+    /// </summary>
+    /// <param name="env">The test environment information</param>
+    /// <param name="extentionWithoutDot">the file extension without the leading dot</param>
+    /// <param name="result">the result of the test to check against a gold standard</param>
     let getBinaryFileApprover env extentionWithoutDot result =
         ApprovalTests.Approvers.FileApprover(getBinaryFileWriter extentionWithoutDot result, getNamer env)
 
+    /// <summary>
+    /// Ceates an approver for handling queries
+    /// </summary>
+    /// <param name="env">The test environment information</param>
+    /// <param name="query">The query to check agianst a gold standard</param>
     let getQueryApprover env (query : ApprovalUtilities.Persistence.IExecutableQuery) =
         let getQueryWriter (query : ApprovalUtilities.Persistence.IExecutableQuery) =
             ApprovalTests.Writers.WriterFactory.CreateTextWriter (query.GetQuery ())
 
         ApprovalTests.Approvers.FileApprover(getQueryWriter query, getNamer env)
         
-
+    /// <summary>
+    /// Get an approver for handling a file steam
+    /// </summary>
+    /// <param name="env">The test environment information</param>
+    /// <param name="extentionWithoutDot">The file extension without the leading dot</param>
+    /// <param name="result">the result of the test to check against a gold standard</param>
     let getStreamFileApprover env extentionWithoutDot (result:Stream) =
         ApprovalTests.Approvers.FileApprover(getBinaryStreamWriter extentionWithoutDot result, getNamer env)
 
