@@ -124,6 +124,22 @@ module Checks =
 
         sequencesContainSameElements |> expectationCheck itemsB "%A expected to have only the items of %A" itemsA
 
+    let expectsToNotContainAnyOf (itemsB: 'a seq) (itemsA: 'a seq) =
+        let sequencesDoesNotContainAnyOfTheSameElements aItems bItems = 
+            let doseExistIn items item =
+                items
+                    |> Seq.contains item
+
+            let aThings = aItems |> Seq.countBy id
+            let bThings = bItems |> Seq.countBy id
+
+            let aDiffs = aThings |> Seq.filter (doseExistIn bThings) |> Seq.length
+            let bDiffs = bThings |> Seq.filter (doseExistIn aThings) |> Seq.length
+
+            aDiffs = 0 && bDiffs = 0
+            
+        sequencesDoesNotContainAnyOfTheSameElements |> expectationCheck itemsB "%A was expepcting not to have any of the items of %A" itemsA
+
     /// <summary>
     /// Tests a given value to determine if it is null
     /// </summary>

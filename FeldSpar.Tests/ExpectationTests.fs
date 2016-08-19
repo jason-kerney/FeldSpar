@@ -128,3 +128,24 @@ module ExpectationTests =
                 |> expectsToContainOnly itemsB
                 |> expectsToBe (Failure(ExpectationFailure("['H'; 'e'; 'l'; 'l'; 'o'; ' '; 'W'; 'o'; 'r'; 'l'; 'd'] expected to have only the items of \"Hello Word\"")))
         )
+
+
+    let ``expectsToNotContainAnyOf will pass if all items are different`` =
+        Test(fun _ ->
+            let itemsA = [1; 2; 3]
+            let itemsB = [6; 7; 8]
+
+            itemsA
+                |> expectsToNotContainAnyOf itemsB
+                |> expectsToBe Success
+        )
+
+    let ``expectsToNotContainAnyOf will fail if any item is shared between 2 collections`` =
+        Test(fun _ ->
+            let str1 = "Hello"
+            let str2 = "Web"
+
+            str1
+                |> expectsToNotContainAnyOf str2
+                |> expectsToBe (Failure(ExpectationFailure("\"Web\" was expepcting not to have any of the items of \"Hello\"")))
+        )
