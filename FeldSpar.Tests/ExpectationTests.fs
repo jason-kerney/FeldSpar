@@ -59,3 +59,32 @@ module ExpectationTests =
                 result |> expectsNotToBe Success
         )
 
+    let ``expectToContain will pass when given a sub list`` =
+        Test(fun _ ->
+            let list = ["a"; "b"; "c"; "d"; "e"]
+            let sublist = ["b"; "c"; "d"]
+
+            list 
+                |> expectsToContain sublist
+                |> expectsToBe Success
+        )
+
+    let ``expectToContain will fail when given a sub list that has a new item`` =
+        Test(fun _ ->
+            let list = [1; 2; 3; 4; 5; 6]
+            let sublist = [2; 3; 100; 4]
+
+            list 
+                |> expectsToContain sublist
+                |> expectsToBe (Failure(ExpectationFailure("[2; 3; 100; 4] expected to be contained in [1; 2; 3; 4; 5; 6]")))
+        )
+
+    let ``expectToContain will pass win a sub sequence is out of order`` =
+        Test(fun _ ->
+            let root = "Hello World"
+            let sub = "WHo"
+
+            root 
+                |> expectsToContain sub
+                |> expectsToBe Success
+        )

@@ -76,6 +76,24 @@ module Checks =
     let expectsToBeFalse actual =
         actual |> expectsToBe false
 
+    let private containsAll sub root =
+        let found = 
+            sub
+            |> Seq.filter(fun t -> root |> Seq.contains t)
+            |> Seq.length
+
+        let count = sub |> Seq.length
+
+        found = count
+
+    /// <summary>
+    /// Verifies that one sequence contains all elements of anouther sequence in any order
+    /// </summary>
+    /// <param name="subitems">The sequence which expect to be contained</param>
+    /// <param name="items">The sequence who expects to contain</param>
+    let expectsToContain (subitems: 'a seq) (items: 'a seq) =
+        containsAll |> expectationCheck subitems "%A expected to be contained in %A" items
+
     /// <summary>
     /// Tests a given value to determine if it is null
     /// </summary>
