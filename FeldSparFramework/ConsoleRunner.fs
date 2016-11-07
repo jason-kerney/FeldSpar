@@ -4,6 +4,10 @@ open FeldSpar.Framework.TestSummaryUtilities
 open System
 
 module ConsoleRunner =
+    type Verbosity =
+        | HideDetails
+        | ShowDetails
+
     let getConsoleColor status =
         match status with
         | Found(_) -> ConsoleColor.Gray
@@ -92,12 +96,13 @@ module ConsoleRunner =
 
         printfn "Displaying Results (%d Failed of %d)" (failedTests |> List.length) (tests |> List.length)
 
-        if showDetails
-        then
+        match showDetails with
+        | ShowDetails ->
             failedTests 
                 |> reportResults 
                 |> seperateResults
                 |> printReports
+        | HideDetails -> ()
 
         (token.AssemblyName, tests)
         

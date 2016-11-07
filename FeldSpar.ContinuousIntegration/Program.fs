@@ -101,7 +101,9 @@ type Launcher () =
 
             let argsNew = parser.Parse(args)
 
-            let ignoreConfig = argsNew.Contains(<@ UseReporters @>) |> not
+            let configUsage = 
+                if argsNew.Contains(<@ UseReporters @>) then UseAssemblyConfiguration
+                else IgnoreAssemblyConfiguration
 
             let assebmlyValidation a =
                 let ext = IO.Path.GetExtension a
@@ -115,11 +117,11 @@ type Launcher () =
                 if compareVerbosity a
                 then
                     let a = a.ToUpper()
-                    if a = "MAX" then (runAndReportAll ignoreConfig true)
-                    elif a = "RESULTS" then (runAndReportResults ignoreConfig false)
-                    elif a = "ERRORS" then (runAndReportFailure ignoreConfig true)
-                    elif a = "DETAIL" then (runAndReportNone ignoreConfig true)
-                    else (runAndReportNone ignoreConfig false)
+                    if a = "MAX" then (runAndReportAll configUsage ShowDetails)
+                    elif a = "RESULTS" then (runAndReportResults configUsage HideDetails)
+                    elif a = "ERRORS" then (runAndReportFailure configUsage ShowDetails)
+                    elif a = "DETAIL" then (runAndReportNone configUsage ShowDetails)
+                    else (runAndReportNone configUsage HideDetails)
                 else
                     failwith (sprintf "verbosity must be one of: %A" vebosityLevels)
 
@@ -133,7 +135,7 @@ type Launcher () =
                 if argsNew.Contains(<@ Verbosity @>)
                 then
                     argsNew.PostProcessResult(<@ Verbosity @>, verbosityCheck)
-                else (runAndReportNone ignoreConfig false)
+                else (runAndReportNone configUsage HideDetails)
 
             let savePath =
                 let saveJSONReport = argsNew.Contains <@ Report_Location @>

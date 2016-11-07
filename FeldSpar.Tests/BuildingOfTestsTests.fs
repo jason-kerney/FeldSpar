@@ -175,7 +175,7 @@ module ``Building Of Tests Is Correct`` =
                                                 )
 
                 let testTemplatesa = 
-                    findTests true (env |> loadToken) 
+                    findTests IgnoreAssemblyConfiguration (env |> loadToken) 
                         |> Seq.sortBy(fun { TestName = description; TestCase =  _} -> description) 
                         |> Seq.map(fun { TestName = description; TestCase = _} -> "(" + description + ")")
                 let testTemplatesb = testTemplatesa |> Seq.toList

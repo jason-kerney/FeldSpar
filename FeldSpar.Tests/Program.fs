@@ -1,6 +1,7 @@
 ﻿namespace FeldSpar.Console.Tests
 open FeldSpar.Framework
 open FeldSpar.Framework.ConsoleRunner
+open FeldSpar.Framework.Engine
 open FeldSpar.Framework.Verification.ApprovalsSupport
 open ApprovalTests
 
@@ -40,6 +41,6 @@ open ApprovalTests
                 member this.GetExportedTypes () = assembly.GetExportedTypes()
             }
 
-        runAndReportFailure false true currentToken |> ignore
+        runAndReportFailure UseAssemblyConfiguration ShowDetails currentToken |> ignore
 
         System.Console.ReadKey true |> ignore

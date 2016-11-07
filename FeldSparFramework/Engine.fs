@@ -29,6 +29,10 @@ type RunConfiguration =
         AssemblyConfiguration: Configuration option;
     }
 
+type ConfigurationUsage =
+    | IgnoreAssemblyConfiguration
+    | UseAssemblyConfiguration
+
 [<AutoOpen>]
 module Runner =
     open System.Diagnostics
@@ -135,8 +139,9 @@ module Runner =
     let findConfiguration ignoreAssemblyConfig (token:IToken) = 
         let empty = { Token = token; AssemblyConfiguration = Some(Config(fun () -> emptyGlobal)) }
 
-        if ignoreAssemblyConfig then empty
-        else
+        match ignoreAssemblyConfig with
+        | IgnoreAssemblyConfiguration -> empty
+        | UseAssemblyConfiguration ->
             let configs = token |> findTestProperties (fun (_, p) -> p.PropertyType = typeof<Configuration>)
 
             if configs.Length = 0

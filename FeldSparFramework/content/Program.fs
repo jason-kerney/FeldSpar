@@ -39,6 +39,6 @@ open ApprovalTests
                 member this.GetExportedTypes () = assembly.GetExportedTypes()
             }
 
-        runAndReportFailure false true currentToken |> ignore
+        runAndReportFailure UseAssemblyConfiguration ShowDetails currentToken |> ignore
 
         System.Console.ReadKey true |> ignore
