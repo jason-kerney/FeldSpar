@@ -60,6 +60,7 @@
     <Compile Include="ExploritoryTests.fs" />
     <Compile Include="StandardsVerificationTests.fs" />
     <Compile Include="BuildingOfTestsTests.fs" />
+    <Compile Include="SetupAndTearDownTests.fs" />
     <Compile Include="NaturalSortTests.fs" />
     <Compile Include="FilteringTests.fs" />
     <Compile Include="ExpectationTests.fs" />

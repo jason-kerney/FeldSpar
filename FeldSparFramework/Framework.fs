@@ -318,3 +318,9 @@ module Utilities =
             Reports = reports;
         }
 
+
+    type SetupFlow<'a> =
+        | ContinueFlow of TestResult * 'a * TestEnvironment
+
+    let beforeTest (setup : TestEnvironment -> TestResult * 'a * TestEnvironment) = 
+        fun env -> ContinueFlow (setup env) 
