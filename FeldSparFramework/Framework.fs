@@ -321,6 +321,14 @@ module Utilities =
 
     type SetupFlow<'a> =
         | ContinueFlow of TestResult * 'a * TestEnvironment
+        | SetupFailure of FailureType
 
     let beforeTest (setup : TestEnvironment -> TestResult * 'a * TestEnvironment) = 
-        fun env -> ContinueFlow (setup env) 
+        fun env -> 
+            try 
+                let result, data, newEnv = (setup env)
+                match result with
+                | Success ->  ContinueFlow (result,data, newEnv)
+                | Failure(reason) -> SetupFailure(reason)
+            with
+            | e -> SetupFailure(ExceptionFailure e)

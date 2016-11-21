@@ -79,3 +79,6 @@ Test[77] is ((filterByFailures should remove any non failing tests summaries fro
 Test[78] is ((isNull fails if nof null))
 Test[79] is ((isNull succeeds if null))
 Test[80] is ((return (Success, data, test environment) when setul is successful))
+Test[81] is ((return a TestEnvironment -> SetupFlow<int> when beforeTest is called and it returns int data))
+Test[82] is ((returns TestFlow.SetupFailure when the setup returns something other then success))
+Test[83] is ((returns TestFlow.SetupFailure when the setup throws exception))
