@@ -9,6 +9,7 @@ type FailureType =
     | ExceptionFailure of Exception
     | Ignored of String
     | StandardNotMet of String
+    | SetupFailure of FailureType
 
 type TestResult =
     | Success
@@ -321,7 +322,7 @@ module Utilities =
 
     type SetupFlow<'a> =
         | ContinueFlow of TestResult * 'a * TestEnvironment
-        | SetupFailure of FailureType
+        | FlowFailed of FailureType
 
     let beforeTest (setup : TestEnvironment -> TestResult * 'a * TestEnvironment) = 
         fun env -> 
@@ -329,6 +330,16 @@ module Utilities =
                 let result, data, newEnv = (setup env)
                 match result with
                 | Success ->  ContinueFlow (result,data, newEnv)
-                | Failure(reason) -> SetupFailure(reason)
+                | Failure (reason) -> FlowFailed (SetupFailure reason)
             with
-            | e -> SetupFailure(ExceptionFailure e)
+            | e -> FlowFailed (SetupFailure (ExceptionFailure e))
+
+    let theTest (test : TestEnvironment -> 'a  -> TestResult) (setup : TestEnvironment -> SetupFlow<'a>) : TestEnvironment -> SetupFlow<'a> =
+        fun env ->
+            match setup env with
+            | ContinueFlow (result, data, newEnv) ->
+                let result = test newEnv data
+                match result with
+                | Success -> ContinueFlow(result, data, newEnv)
+                | Failure (reason) -> FlowFailed (reason)
+            | result -> result

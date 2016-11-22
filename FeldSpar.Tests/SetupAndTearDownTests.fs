@@ -12,20 +12,21 @@ open FeldSpar.Framework.Verification.ApprovalsSupport
 open FeldSpar.Framework.Utilities
 
 module ``Setup and teardown should`` =
-    let getContinue r = 
+    let getFlowContinue r = 
         match r with
         | ContinueFlow(r, d, c) -> (r, d, c)
         | _ -> failwith "Unexpected result from setup"
 
-    let getSetupFailure r =
+    let getFlowFailure r =
         match r with
-        | SetupFailure(reason) -> reason
+        | FlowFailed(reason) -> reason
         | _ -> failwith "Unexpected result from setup"
 
-    let ``return a TestEnvironment -> SetupFlow<int> when beforeTest is called and it returns int data`` =
+    let successfullSetup = beforeTest (fun context -> Success, 42, context)
+
+    let ``return a TestEnvironment -> SetupFlow<'a> when beforeTest is called and it returns int data`` =
         Test(fun env ->
-            let setup = 
-                beforeTest (fun context -> Success, 42, context)
+            let setup = successfullSetup
 
             (setup env).GetType () |> expectsToBe (ContinueFlow(Success, 42, env).GetType ())
         )
@@ -37,7 +38,7 @@ module ``Setup and teardown should`` =
 
             let setupResult = setup env
 
-            let (testResult, data, context) = getContinue setupResult
+            let (testResult, data, context) = getFlowContinue setupResult
 
             verify 
                 {
@@ -58,7 +59,7 @@ module ``Setup and teardown should`` =
             let setup =
                 beforeTest (fun env -> Success, "data", {env with TestName = env.TestName + "_Setup" })
 
-            let (_, _, context) = getContinue (setup env)
+            let (_, _, context) = getFlowContinue (setup env)
 
             context.TestName |> expectsToBe (env.TestName + "_Setup")
         ) 
@@ -69,9 +70,9 @@ module ``Setup and teardown should`` =
             let setup = 
                 beforeTest(fun env -> Failure(failure), 32, env )
 
-            let result = setup env |> getSetupFailure
+            let result = setup env |> getFlowFailure
 
-            result |> expectsToBe failure
+            result |> expectsToBe (SetupFailure(failure))
         )
 
     let ``returns TestFlow.SetupFailure when the setup throws exception`` =
@@ -82,14 +83,28 @@ module ``Setup and teardown should`` =
                     failwith msg
                 )
 
-            let result = setup env |> getSetupFailure
+            let result = setup env |> getFlowFailure
 
             let reason = 
                 match result with
-                | ExceptionFailure(r) -> r.Message
+                | SetupFailure(ExceptionFailure(r)) -> r.Message
                 | _ -> failwith "Unexpected Result"
 
             reason |> expectsToBe msg
         )
 
+    let ``combines a test and a setup to return TestEnvironment -> SetupFlow<'a>`` =
+        Test(fun env ->
+            let test = successfullSetup
+                        |> theTest (fun _env _data -> Success)
 
+            (test env).GetType () |> expectsToBe (ContinueFlow(Success, 42, env).GetType ())
+        )
+
+    let ``returns the failure when the test fails`` =
+        Test(fun env ->
+            let test = successfullSetup
+                        |> theTest (fun _ _ -> Failure(GeneralFailure("The Test Failed")))
+
+            test env |> getFlowFailure |> expectsToBe (GeneralFailure("The Test Failed"))
+        )
