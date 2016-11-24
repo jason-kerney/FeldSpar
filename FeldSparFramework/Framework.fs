@@ -73,18 +73,18 @@ type TestEnvironment =
     }
 
 
-type TestTemplat = TestEnvironment -> TestResult
+type TestTemplate = TestEnvironment -> TestResult
 
 
 /// <summary>
 /// A type represeting a unit test
 /// </summary>
-type Test = | Test of (TestTemplat)
+type Test = | Test of (TestTemplate)
 
 /// <summary>
 /// A type representing an ignored unit test
 /// </summary>
-type IgnoredTest = | ITest of (TestTemplat)
+type IgnoredTest = | ITest of (TestTemplate)
 
 /// <summary>
 /// A type to allow the dynamic loading of configuration if it is used
@@ -98,7 +98,7 @@ type Configuration = | Config of (unit -> AssemblyConfiguration)
 type TheoryCaseTemplate<'a> =
     {
         UnitDescription : 'a -> string;
-        UnitTest : 'a -> TestTemplat;
+        UnitTest : 'a -> TestTemplate;
     }
     
 /// <summary>
@@ -177,13 +177,27 @@ module Utilities =
     /// </summary>
     /// <param name="result">Dhe result from which to get the message.</param>
     let getMessage result = 
-        match result with
-        | Success -> String.Empty
-        | Failure(StandardNotMet(m)) -> m
-        | Failure(GeneralFailure(m)) -> m
-        | Failure(ExceptionFailure(ex)) -> sprintf "%A" ex
-        | Failure(ExpectationFailure(m)) -> m
-        | Failure(Ignored(m)) -> m
+        let rec getMessage result msg =
+            match result with
+            | Success -> String.Empty
+            | Failure(StandardNotMet(m)) -> msg + m
+            | Failure(GeneralFailure(m)) -> msg + m
+            | Failure(ExceptionFailure(ex)) -> sprintf "%s%A" msg ex
+            | Failure(ExpectationFailure(m)) -> msg + m
+            | Failure(Ignored(m)) -> msg + m
+            | Failure(SetupFailure(failure)) ->
+                getMessage (Failure failure) "Before test failed with " 
+
+        getMessage result ""
+
+    let rec rebuild failure msg = 
+        match failure with
+        | GeneralFailure(_) -> GeneralFailure(msg)
+        | ExpectationFailure(_) -> ExpectationFailure(msg)
+        | ExceptionFailure(ex) -> ExceptionFailure(ex)
+        | Ignored(_) -> Ignored(msg)
+        | StandardNotMet(path) -> StandardNotMet(path)
+        | SetupFailure(failure) -> SetupFailure (rebuild failure msg)
 
     /// <summary>
     /// Adds an additional comment to the beginnig of a failure message
@@ -195,16 +209,9 @@ module Utilities =
         | Success | Failure(StandardNotMet(_)) | Failure(ExceptionFailure(_)) -> result
         | Failure(failType) ->
             let msg = comment + "\n" + (result |> getMessage )
-            let fail = 
-                match failType with
-                | GeneralFailure(_) -> GeneralFailure(msg)
-                | ExpectationFailure(_) -> ExpectationFailure(msg)
-                | ExceptionFailure(ex) -> ExceptionFailure(ex)
-                | Ignored(_) -> Ignored(msg)
-                | StandardNotMet(path) -> StandardNotMet(path)
+            let fail = rebuild failType msg
 
             Failure(fail)
-            
 
     /// <summary>
     /// Returns a Failure result with failure type of 'Ignored' and with the desired message
@@ -319,27 +326,32 @@ module Utilities =
             Reports = reports;
         }
 
-
     type SetupFlow<'a> =
         | ContinueFlow of TestResult * 'a * TestEnvironment
         | FlowFailed of FailureType
 
+    let flowIt (execution : TestEnvironment -> TestResult * 'a * TestEnvironment) (onFailure: FailureType -> FailureType) env =
+        try
+            let result, data, newEnv = (execution env)
+            match result with
+            | Success -> ContinueFlow (result, data, newEnv)
+            | Failure(reason) -> reason |> onFailure |> FlowFailed
+        with
+        | e -> e |> ExceptionFailure |> onFailure |> FlowFailed
+
     let beforeTest (setup : TestEnvironment -> TestResult * 'a * TestEnvironment) = 
         fun env -> 
-            try 
-                let result, data, newEnv = (setup env)
-                match result with
-                | Success ->  ContinueFlow (result,data, newEnv)
-                | Failure (reason) -> FlowFailed (SetupFailure reason)
-            with
-            | e -> FlowFailed (SetupFailure (ExceptionFailure e))
+            flowIt setup SetupFailure env
 
     let theTest (test : TestEnvironment -> 'a  -> TestResult) (setup : TestEnvironment -> SetupFlow<'a>) : TestEnvironment -> SetupFlow<'a> =
         fun env ->
             match setup env with
             | ContinueFlow (result, data, newEnv) ->
-                let result = test newEnv data
-                match result with
-                | Success -> ContinueFlow(result, data, newEnv)
-                | Failure (reason) -> FlowFailed (reason)
+                let noop x = x
+                let testWrapper env = test env data, data, newEnv
+
+                flowIt testWrapper noop env
             | result -> result
+
+    let afterTheTest (teardown : TestEnvironment -> TestResult -> 'a -> TestResult) (test : TestEnvironment -> SetupFlow<'a>) : TestTemplate =
+        fun (env : TestEnvironment) -> Success

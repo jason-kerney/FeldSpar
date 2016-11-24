@@ -22,11 +22,12 @@ module ``Setup and teardown should`` =
         | FlowFailed(reason) -> reason
         | _ -> failwith "Unexpected result from setup"
 
-    let successfullSetup = beforeTest (fun context -> Success, 42, context)
+    let successfulSetup = beforeTest (fun context -> Success, 42, context)
+    let successfulTest = (fun _env _data -> Success)
 
     let ``return a TestEnvironment -> SetupFlow<'a> when beforeTest is called and it returns int data`` =
         Test(fun env ->
-            let setup = successfullSetup
+            let setup = successfulSetup
 
             (setup env).GetType () |> expectsToBe (ContinueFlow(Success, 42, env).GetType ())
         )
@@ -95,16 +96,73 @@ module ``Setup and teardown should`` =
 
     let ``combines a test and a setup to return TestEnvironment -> SetupFlow<'a>`` =
         Test(fun env ->
-            let test = successfullSetup
-                        |> theTest (fun _env _data -> Success)
+            let test = successfulSetup
+                        |> theTest successfulTest
 
             (test env).GetType () |> expectsToBe (ContinueFlow(Success, 42, env).GetType ())
         )
 
     let ``returns the failure when the test fails`` =
         Test(fun env ->
-            let test = successfullSetup
+            let test = successfulSetup
                         |> theTest (fun _ _ -> Failure(GeneralFailure("The Test Failed")))
 
             test env |> getFlowFailure |> expectsToBe (GeneralFailure("The Test Failed"))
         )
+
+    let ``returns the setup failure without running the test if the setup fails`` =
+        Test(fun env ->
+            let mutable called = false
+            
+            let failure = GeneralFailure("This is an error")
+            let setup = 
+                beforeTest(fun env -> Failure(failure), 32, env )
+
+            let test = 
+                setup
+                |> theTest 
+                    (fun _ _ -> 
+                        called <- true
+                        failwith "this should not run"
+                    )
+
+            let result = test env |> getFlowFailure
+
+            verify
+                {
+                    let! success = result |> expectsToBe (SetupFailure (failure))
+                    let! success = called |> expectsToBe false |> withFailComment "the test was run when it shouldn't have been"
+                    return Success
+                }
+
+        )
+
+    let ``returns an exception failure if the test throws an exception`` =
+        Test(fun env ->
+            let expectedMessage = "the test explodes"
+            let test =
+                successfulSetup
+                |> theTest (fun _ _ -> failwith expectedMessage)
+
+            let reason = 
+                test env 
+                |> getFlowFailure
+
+            let actualMessage = 
+                match reason with
+                | ExceptionFailure (ex) -> ex.Message
+                | _ -> failwith "Unexpected test resualt"
+
+            actualMessage |> expectsToBe expectedMessage
+        )
+
+    let ``return TestTemplate when setup, test and teardown are combined`` =
+        Test(fun env ->
+            let _test : TestEnvironment -> TestResult = 
+                successfulSetup
+                |> theTest successfulTest
+                |> afterTheTest (fun env result data -> Success)
+
+            Success
+        )
+        

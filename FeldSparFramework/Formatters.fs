@@ -29,7 +29,7 @@ module Basic =
     /// </summary>
     /// <param name="prefix">something to appent to the front of the string.</param>
     /// <param name="result">The result to convert</param>
-    let printResult prefix result =
+    let rec printResult prefix result =
         match result with
         | Success -> sprintf "\%s%A" prefix result
         | Failure(ExpectationFailure(m)) -> sprintf "%sExpectation Failure: %s" prefix m
@@ -37,6 +37,7 @@ module Basic =
         | Failure(ExceptionFailure(ex)) -> sprintf "%sException Failure: %A" prefix ex
         | Failure(Ignored(m)) -> sprintf "%sIgnored: %s" prefix m
         | Failure(StandardNotMet(path)) -> sprintf "%sResult did not meet standards at %A" prefix path
+        | Failure(SetupFailure(failure)) -> printResult (sprintf "%sBefore test failed with " prefix) (Failure failure)
 
     /// <summary>
     /// Converts an ExecutionSummary into a friendlystring

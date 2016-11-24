@@ -54,12 +54,16 @@ module TestSummaryUtilities =
                             (
                                 fun { TestName = name; FailureType = failureType } ->
                                     let failMsg = 
-                                        match failureType with
-                                        | GeneralFailure(msg)     -> sprintf "General Failure ('%s')" msg
-                                        | ExceptionFailure(ex)    -> sprintf "Exception Thrown:\n%A" ex
-                                        | ExpectationFailure(msg) -> sprintf "Expectation Not Met ('%s')" msg
-                                        | Ignored(msg)            -> sprintf "Ignored ('%s')" msg
-                                        | StandardNotMet(path)    -> sprintf "Standard was not Met at %A" path
+                                        let rec getFailMessage failType message =
+                                            match failType with
+                                            | GeneralFailure(msg)     -> sprintf "%sGeneral Failure ('%s')" message msg
+                                            | ExceptionFailure(ex)    -> sprintf "%sException Thrown:\n%A" message ex
+                                            | ExpectationFailure(msg) -> sprintf "%sExpectation Not Met ('%s')" message msg
+                                            | Ignored(msg)            -> sprintf "%sIgnored ('%s')" message msg
+                                            | StandardNotMet(path)    -> sprintf "%sStandard was not Met at %A" message path
+                                            | SetupFailure(failure)   -> getFailMessage failure "Before test failed with "
+
+                                        getFailMessage failureType ""
 
                                     let failMsg = failMsg.Replace("\"", "'")
 

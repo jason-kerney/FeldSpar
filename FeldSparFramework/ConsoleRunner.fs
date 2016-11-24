@@ -33,13 +33,21 @@ module ConsoleRunner =
             let display status =
                 printfn "\t\t%s: '%s'" status token.TestName
 
-            match result with
-            | Success -> display "Success"
-            | Failure(Ignored(_)) -> display "Ignored"
-            | Failure(ExpectationFailure(_)) -> display "Expectation Failure"
-            | Failure(ExceptionFailure(_)) -> display "Exception Failure"
-            | Failure(GeneralFailure(_)) -> display "General Failure"
-            | Failure(StandardNotMet(_)) -> display "Standard not met Failure"
+            let getResultReport result =
+                let rec getResultReport result msg =
+                    match result with
+                    | Success -> display (msg + "Success")
+                    | Failure(Ignored(_)) -> display (msg + "Ignored")
+                    | Failure(ExpectationFailure(_)) -> display (msg + "Expectation Failure")
+                    | Failure(ExceptionFailure(_)) -> display (msg + "Exception Failure")
+                    | Failure(GeneralFailure(_)) -> display (msg + "General Failure")
+                    | Failure(StandardNotMet(_)) -> display (msg + "Standard not met Failure")
+                    | Failure(SetupFailure(failure)) -> getResultReport (Failure failure) "Setup failured with "
+                    //| Failure(SetupFailure(failure)) -> getResultReport (Failure failure) "Setup failured with "
+
+                getResultReport result ""
+
+            getResultReport result
 
         Console.ForegroundColor <- oColor
 
