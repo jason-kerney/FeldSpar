@@ -125,6 +125,7 @@ type TestInformation =
 
 type UnitTest = 
     {
+        Container: string;
         TestName: string;
         TestCase: unit -> ExecutionSummary;
     }
@@ -328,16 +329,19 @@ module Utilities =
 
     type SetupFlow<'a> =
         | ContinueFlow of TestResult * 'a * TestEnvironment
-        | FlowFailed of FailureType
+        | FlowFailed of FailureType * 'a Option
 
     let flowIt (execution : TestEnvironment -> TestResult * 'a * TestEnvironment) (onFailure: FailureType -> FailureType) env =
+        let getNone failure : FailureType * 'a Option = failure, None
+        let getSome data failure = failure, Some (data)
+
         try
             let result, data, newEnv = (execution env)
             match result with
             | Success -> ContinueFlow (result, data, newEnv)
-            | Failure(reason) -> reason |> onFailure |> FlowFailed
+            | Failure(reason) -> reason |> onFailure |> getSome data |> FlowFailed
         with
-        | e -> e |> ExceptionFailure |> onFailure |> FlowFailed
+        | e -> e |> ExceptionFailure |> onFailure |> getNone |> FlowFailed
 
     let beforeTest (setup : TestEnvironment -> TestResult * 'a * TestEnvironment) = 
         fun env -> 
@@ -353,5 +357,10 @@ module Utilities =
                 flowIt testWrapper noop env
             | result -> result
 
-    let afterTheTest (teardown : TestEnvironment -> TestResult -> 'a -> TestResult) (test : TestEnvironment -> SetupFlow<'a>) : TestTemplate =
-        fun (env : TestEnvironment) -> Success
+    let afterTheTest (teardown : TestEnvironment -> TestResult -> 'a Option -> TestResult) (test : TestEnvironment -> SetupFlow<'a>) : TestTemplate =
+        fun env ->
+            match test env with
+            | ContinueFlow (result, data, newEnv) ->
+                teardown newEnv result (Some data)
+            | FlowFailed (failure, data) -> 
+                teardown env (Failure failure) data

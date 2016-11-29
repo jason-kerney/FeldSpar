@@ -11,7 +11,7 @@ open FeldSpar.Framework.Verification.ChecksClean
 open FeldSpar.Framework.Verification.ApprovalsSupport
 open FeldSpar.Framework.Utilities
 
-module ``Setup and teardown should`` =
+module SetupAndTearDownTestingSupport = 
     let getFlowContinue r = 
         match r with
         | ContinueFlow(r, d, c) -> (r, d, c)
@@ -19,20 +19,24 @@ module ``Setup and teardown should`` =
 
     let getFlowFailure r =
         match r with
-        | FlowFailed(reason) -> reason
+        | FlowFailed(reason, _) -> reason
         | _ -> failwith "Unexpected result from setup"
 
     let successfulSetup = beforeTest (fun context -> Success, 42, context)
+    let throwsSetup = beforeTest<string> (fun _env -> failwith "setup threw exception")
     let successfulTest = (fun _env _data -> Success)
 
-    let ``return a TestEnvironment -> SetupFlow<'a> when beforeTest is called and it returns int data`` =
+module ``Setup should`` =
+    open SetupAndTearDownTestingSupport
+
+    let ``return a TestEnvironment -> SetupFlow<'a> when beforeTest is called`` =
         Test(fun env ->
             let setup = successfulSetup
 
             (setup env).GetType () |> expectsToBe (ContinueFlow(Success, 42, env).GetType ())
         )
 
-    let ``return (Success, data, test environment) when setul is successful`` =
+    let ``return (Success, data, test environment) when successful`` =
         Test(fun env ->
             let setup = 
                 beforeTest (fun context -> Success, "data", context)
@@ -94,7 +98,10 @@ module ``Setup and teardown should`` =
             reason |> expectsToBe msg
         )
 
-    let ``combines a test and a setup to return TestEnvironment -> SetupFlow<'a>`` =
+module ``A test with a setup should`` =
+    open SetupAndTearDownTestingSupport
+
+    let ``return TestEnvironment -> SetupFlow<'a>`` =
         Test(fun env ->
             let test = successfulSetup
                         |> theTest successfulTest
@@ -102,7 +109,7 @@ module ``Setup and teardown should`` =
             (test env).GetType () |> expectsToBe (ContinueFlow(Success, 42, env).GetType ())
         )
 
-    let ``returns the failure when the test fails`` =
+    let ``return the failure when the test fails`` =
         Test(fun env ->
             let test = successfulSetup
                         |> theTest (fun _ _ -> Failure(GeneralFailure("The Test Failed")))
@@ -110,7 +117,7 @@ module ``Setup and teardown should`` =
             test env |> getFlowFailure |> expectsToBe (GeneralFailure("The Test Failed"))
         )
 
-    let ``returns the setup failure without running the test if the setup fails`` =
+    let ``return the setup failure without running the test if the setup fails`` =
         Test(fun env ->
             let mutable called = false
             
@@ -137,7 +144,7 @@ module ``Setup and teardown should`` =
 
         )
 
-    let ``returns an exception failure if the test throws an exception`` =
+    let ``return an exception failure if the test throws an exception`` =
         Test(fun env ->
             let expectedMessage = "the test explodes"
             let test =
@@ -156,13 +163,100 @@ module ``Setup and teardown should`` =
             actualMessage |> expectsToBe expectedMessage
         )
 
+module ``Teardown should`` =
+    open SetupAndTearDownTestingSupport
+
     let ``return TestTemplate when setup, test and teardown are combined`` =
         Test(fun env ->
-            let _test : TestEnvironment -> TestResult = 
+            let _test : TestTemplate = 
                 successfulSetup
                 |> theTest successfulTest
-                |> afterTheTest (fun env result data -> Success)
+                |> afterTheTest (fun _env _result _data -> Success)
 
             Success
         )
-        
+
+    let ``return success when everything passes`` =
+        Test(fun env ->
+            let test =
+                successfulSetup
+                |> theTest successfulTest
+                |> afterTheTest (fun _env _result _data -> Success)
+
+            test env
+        )
+
+    let ``is called if everything passes`` =
+        Test(fun env ->
+            let mutable value = 0
+            let test =
+                successfulSetup
+                |> theTest successfulTest
+                |> afterTheTest
+                    (fun _env _result _data ->
+                        value <- 42
+                        Success
+                    )
+
+            test env |> ignore
+
+            value |> expectsToBe 42 |> withFailComment "teardown was not called"
+        )
+
+    let ``is called even if setup fails`` =
+        Test(fun env ->
+            let mutable called = false
+            let test =
+                throwsSetup
+                |> theTest successfulTest
+                |> afterTheTest 
+                    (fun _env _result _data ->
+                        called <- true
+                        Success
+                    ) 
+
+            test env |> ignore
+
+            called |> expectsToBe true |> withFailComment "teardown not called"
+        )
+
+    let ``is called with no data if setup throws an exception`` =
+        Test(fun env ->
+            let test =
+                throwsSetup
+                |> theTest successfulTest
+                |> afterTheTest 
+                    (fun _env _result data ->
+                        data |> expectsToBe None
+                    )
+
+            test env
+        )
+
+    let ``get the failure when setup fails`` =
+        Test(fun env ->
+            let failMessage = "setup failed"
+            let test =
+                beforeTest (fun env -> failResult failMessage, 42, env)
+                |> theTest successfulTest
+                |> afterTheTest
+                    (fun _env result _data ->
+                        (result) |> expectsToBe (Failure (SetupFailure (GeneralFailure failMessage)))
+                    )
+
+            test env
+        )
+
+    let ``recieve the setup data when setup fails with a fail result`` =
+        Test(fun env ->
+            let givenData = "data from setup"
+            let test =
+                beforeTest (fun env -> failResult "setup failed", givenData, env)
+                |> theTest successfulTest
+                |> afterTheTest
+                    (fun _env _result data ->
+                        data |> expectsToBe (Some givenData)
+                    )
+
+            test env
+        )

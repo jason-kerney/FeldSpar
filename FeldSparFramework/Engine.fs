@@ -111,7 +111,7 @@ module Runner =
                             testingCode ()
                         )
                         
-        { TestName = testName; TestCase = testCase }
+        { Container = env.ContainerName; TestName = testName; TestCase = testCase }
         
     /// <summary>
     /// Converts Execution summaries to strings for reporting on
