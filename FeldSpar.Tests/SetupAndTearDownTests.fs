@@ -222,41 +222,64 @@ module ``Teardown should`` =
 
     let ``be called with no data if setup throws an exception`` =
         Test(fun env ->
+            let mutable setupData : string Option = Some ("beginning data")
             let test =
                 throwsSetup
                 |> theTest successfulTest
                 |> afterTheTest 
                     (fun _env _result data ->
-                        data |> expectsToBe None
+                        setupData <- data
+                        Success
                     )
 
-            test env
+            test env |> ignore
+
+            setupData |> expectsToBe None
         )
 
     let ``get the failure when setup fails`` =
         Test(fun env ->
+            let mutable testResult = Success
             let failMessage = "setup failed"
             let test =
                 beforeTest (fun env -> failResult failMessage, 42, env)
                 |> theTest successfulTest
                 |> afterTheTest
                     (fun _env result _data ->
-                        (result) |> expectsToBe (Failure (SetupFailure (GeneralFailure failMessage)))
+                        testResult <- result
+                        Success
                     )
 
-            test env
+            test env |> ignore 
+
+            testResult |> expectsToBe (Failure (SetupFailure (GeneralFailure failMessage)))
         )
 
     let ``recieve the setup data when setup fails with a fail result`` =
         Test(fun env ->
             let givenData = "data from setup"
+            let mutable dataFromTest = Some "Not Good Data"
             let test =
                 beforeTest (fun env -> failResult "setup failed", givenData, env)
                 |> theTest successfulTest
                 |> afterTheTest
                     (fun _env _result data ->
-                        data |> expectsToBe (Some givenData)
+                        dataFromTest <- data
+                        Success
                     )
 
-            test env
+            test env |> ignore
+            dataFromTest |> expectsToBe (Some givenData)
+        )
+
+    let ``return with then setup failure if setup fails but teardown succeeds`` =
+        Test(fun env ->
+            let failMessage = "setup failed"
+            let test =
+                beforeTest (fun env -> failResult failMessage, (), env)
+                |> theTest successfulTest
+                |> afterTheTest (fun _env _result _data -> Success)
+
+            let result = test env
+            result |> expectsToBe (Failure (SetupFailure (GeneralFailure failMessage)))
         )

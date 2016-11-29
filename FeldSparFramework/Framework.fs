@@ -363,4 +363,7 @@ module Utilities =
             | ContinueFlow (result, data, newEnv) ->
                 teardown newEnv result (Some data)
             | FlowFailed (failure, data) -> 
-                teardown env (Failure failure) data
+                let testFailure = Failure failure
+                match teardown env testFailure data with
+                | Success -> testFailure
+                | tearDownFailure -> failwith "after test failure not implimented"
