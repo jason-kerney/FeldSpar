@@ -186,7 +186,7 @@ module ``Teardown should`` =
             test env
         )
 
-    let ``is called if everything passes`` =
+    let ``be called if everything passes`` =
         Test(fun env ->
             let mutable value = 0
             let test =
@@ -203,7 +203,7 @@ module ``Teardown should`` =
             value |> expectsToBe 42 |> withFailComment "teardown was not called"
         )
 
-    let ``is called even if setup fails`` =
+    let ``be called even if setup fails`` =
         Test(fun env ->
             let mutable called = false
             let test =
@@ -220,7 +220,7 @@ module ``Teardown should`` =
             called |> expectsToBe true |> withFailComment "teardown not called"
         )
 
-    let ``is called with no data if setup throws an exception`` =
+    let ``be called with no data if setup throws an exception`` =
         Test(fun env ->
             let test =
                 throwsSetup
