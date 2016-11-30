@@ -352,8 +352,11 @@ module Utilities =
             match setup env with
             | ContinueFlow (result, data, newEnv) ->
                 let noop x = x
-                let testWrapper env = test env data, data, newEnv
-
+                let testWrapper env = 
+                    try
+                        test env data, data, newEnv
+                    with 
+                    | e -> ExceptionFailure e |> Failure, data, newEnv
                 flowIt testWrapper noop env
             | result -> result
 
