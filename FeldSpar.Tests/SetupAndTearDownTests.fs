@@ -98,6 +98,15 @@ module ``Setup should`` =
             reason |> expectsToBe msg
         )
 
+module ``A test should`` =
+    open SetupAndTearDownTestingSupport
+
+    let ``not require a setup`` =
+        Test(fun env ->
+            let template : TestEnvironment -> SetupFlow<'a> = startWithTheTest (fun env -> Success)
+            Success
+        )
+
 module ``A test with a setup should`` =
     open SetupAndTearDownTestingSupport
 
