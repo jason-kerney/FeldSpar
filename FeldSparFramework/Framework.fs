@@ -372,4 +372,8 @@ module Utilities =
                 | tearDownFailure -> failwith "after test failure not implimented"
 
     let startWithTheTest (test: TestEnvironment -> TestResult) : TestEnvironment -> SetupFlow<unit> =
-        fun env -> FlowFailed ("startWithTheTest is not implemented" |> GeneralFailure, Some ())
+        fun env -> 
+            let result = test env
+            match result with
+            | Success -> ContinueFlow (Success, (), env)
+            | Failure(failure) -> FlowFailed (failure, Some ())

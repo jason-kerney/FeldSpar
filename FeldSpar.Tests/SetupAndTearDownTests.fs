@@ -26,6 +26,34 @@ module SetupAndTearDownTestingSupport =
     let throwsSetup = beforeTest<string> (fun _env -> failwith "setup threw exception")
     let successfulTest = (fun _env _data -> Success)
 
+    let expectsToBeSuccessful actual =
+        match actual with
+        | ContinueFlow (Success, _, _) -> Success
+        | failure -> 
+            sprintf "%A expected to be ContinueFlow (Success, _, _)" failure
+            |> ExpectationFailure 
+            |> Failure
+
+    let expectsToBeFailure actual =
+        match actual with
+        | ContinueFlow _ -> 
+            sprintf "ContinueFlow expetcted to be FlowFailed"
+            |> ExpectationFailure
+            |> Failure
+        | _ -> Success
+
+    let expectsToBeFailureWith ((failure: FailureType), (data : 'a)) actual =
+        match actual with
+        | ContinueFlow _ -> 
+            sprintf "(ContinueFlow expetcted to be FlowFailed"
+            |> ExpectationFailure
+            |> Failure
+        | FlowFailed (actualFailure, actualData) when failure = actualFailure && actualData = data-> Success
+        | FlowFailed (actualFailure, actualData) -> 
+            sprintf "FlowFailed (%A, %A) expected to be FlowFailed (%A, %A)" actualFailure actualData failure data
+            |> ExpectationFailure
+            |> Failure
+
 module ``Setup should`` =
     open SetupAndTearDownTestingSupport
 
@@ -62,11 +90,16 @@ module ``Setup should`` =
     let ``be able to return a differnt environment then what was passed in`` =
         Test(fun env ->
             let setup =
-                beforeTest (fun env -> Success, "data", {env with TestName = env.TestName + "_Setup" })
+                beforeTest (fun env -> Success, "data", {env with TestName = "_Setup" })
 
             let (_, _, context) = getFlowContinue (setup env)
 
-            context.TestName |> expectsToBe (env.TestName + "_Setup")
+            verify
+                {
+                    let! a = context.TestName |> expectsToBe "_Setup"
+                    let! b = context.TestName |> expectsNotToBe env.TestName
+                    return Success
+                }
         ) 
 
     let ``returns TestFlow.SetupFailure when the setup returns something other then success`` =
@@ -75,9 +108,9 @@ module ``Setup should`` =
             let setup = 
                 beforeTest(fun env -> Failure(failure), 32, env )
 
-            let result = setup env |> getFlowFailure
+            let result = setup env
 
-            result |> expectsToBe (SetupFailure(failure))
+            result |> expectsToBeFailureWith (SetupFailure failure, Some 32)
         )
 
     let ``returns TestFlow.SetupFailure when the setup throws exception`` =
@@ -103,8 +136,27 @@ module ``A test should`` =
 
     let ``not require a setup`` =
         Test(fun env ->
-            let template : TestEnvironment -> SetupFlow<'a> = startWithTheTest (fun env -> Success)
+            let template : TestEnvironment -> SetupFlow<unit> = startWithTheTest (fun _env -> Success)
             Success
+        )
+
+module ``A test without a setup should`` =
+    open SetupAndTearDownTestingSupport
+    
+    let ``return success if the test is successful`` =
+        Test(fun env ->
+            let test = startWithTheTest (fun _env -> Success)
+            let actual = test env
+
+            actual |> expectsToBeSuccessful
+        )
+
+    let ``returns the failure if the test fails`` =
+        Test(fun env ->
+            let test = startWithTheTest (fun _env -> failResult "the test failed")
+            let actual = test env
+            
+            actual |> expectsToBeFailureWith (GeneralFailure "the test failed", Some ())
         )
 
 module ``A test with a setup should`` =
@@ -112,18 +164,29 @@ module ``A test with a setup should`` =
 
     let ``return TestEnvironment -> SetupFlow<'a>`` =
         Test(fun env ->
-            let test = successfulSetup
-                        |> theTest successfulTest
+            let _test : TestEnvironment -> SetupFlow<int> = 
+                successfulSetup
+                |> theTest successfulTest
 
-            (test env).GetType () |> expectsToBe (ContinueFlow(Success, 42, env).GetType ())
+            Success
+        )
+
+    let ``returns success when the test returns success`` =
+        Test(fun env ->
+            let test = 
+                successfulSetup
+                |> theTest successfulTest
+
+            test env |> expectsToBeSuccessful
         )
 
     let ``return the failure when the test fails`` =
         Test(fun env ->
+            let actualFailure = GeneralFailure("The Test Failed")
             let test = successfulSetup
-                        |> theTest (fun _ _ -> Failure(GeneralFailure("The Test Failed")))
+                        |> theTest (fun _ _ -> Failure(actualFailure))
 
-            test env |> getFlowFailure |> expectsToBe (GeneralFailure("The Test Failed"))
+            test env |> expectsToBeFailureWith (actualFailure, Some 42)
         )
 
     let ``return the setup failure without running the test if the setup fails`` =
@@ -142,11 +205,11 @@ module ``A test with a setup should`` =
                         failwith "this should not run"
                     )
 
-            let result = test env |> getFlowFailure
+            let result = test env
 
             verify
                 {
-                    let! success = result |> expectsToBe (SetupFailure (failure))
+                    let! success = result |> expectsToBeFailureWith (SetupFailure (failure), Some 32)
                     let! success = called |> expectsToBe false |> withFailComment "the test was run when it shouldn't have been"
                     return Success
                 }
