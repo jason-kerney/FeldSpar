@@ -373,7 +373,10 @@ module Utilities =
 
     let startWithTheTest (test: TestEnvironment -> TestResult) : TestEnvironment -> SetupFlow<unit> =
         fun env -> 
-            let result = test env
-            match result with
-            | Success -> ContinueFlow (Success, (), env)
-            | Failure(failure) -> FlowFailed (failure, Some ())
+            try
+                let result = test env
+                match result with
+                | Success -> ContinueFlow (Success, (), env)
+                | Failure(failure) -> FlowFailed (failure, Some ())
+            with
+            | e -> FlowFailed (e |> ExceptionFailure, Some ())

@@ -159,6 +159,22 @@ module ``A test without a setup should`` =
             actual |> expectsToBeFailureWith (GeneralFailure "the test failed", Some ())
         )
 
+    let ``calls teardown even if it throws an exception`` =
+        Test(fun env ->
+            let mutable wasCalled = false
+            let test = 
+                startWithTheTest (fun _env -> failwith "test exploded")
+                |> afterTheTest 
+                    (fun _env _resualt _data ->
+                        wasCalled <- true
+                        Success
+                    )
+
+            test env |> ignore
+
+            wasCalled |> expectsToBe true |> withFailComment "Teardown was not called"
+        )
+
 module ``A test with a setup should`` =
     open SetupAndTearDownTestingSupport
 
