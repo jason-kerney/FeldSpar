@@ -380,3 +380,10 @@ module Utilities =
                 | Failure(failure) -> FlowFailed (failure, Some ())
             with
             | e -> FlowFailed (e |> ExceptionFailure, Some ())
+
+    let endWithTest (test : TestEnvironment -> 'a  -> TestResult) (setup : TestEnvironment -> SetupFlow<'a>) =
+        fun env ->
+            let setupResult = setup env
+            match setupResult with
+            | ContinueFlow (result, data, newEnv) -> test newEnv data
+            | FlowFailed (result, _) -> result |> Failure

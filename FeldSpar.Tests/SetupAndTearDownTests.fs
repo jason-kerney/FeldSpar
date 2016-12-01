@@ -136,8 +136,61 @@ module ``A test should`` =
 
     let ``not require a setup`` =
         Test(fun env ->
-            let template : TestEnvironment -> SetupFlow<unit> = startWithTheTest (fun _env -> Success)
+            let _test : TestEnvironment -> SetupFlow<unit> = startWithTheTest (fun _env -> Success)
+
             Success
+        )
+
+
+    let ``not require a teardown`` =
+        Test(fun env ->
+            let _test : TestTemplate = 
+                successfulSetup
+                |> endWithTest (fun _env _data -> Success)
+
+            Success
+        )
+
+module ``A test without a teardown should`` =
+    open SetupAndTearDownTestingSupport
+    
+    let ``return success if the test is successful`` =
+        Test(fun env ->
+            let test = 
+                successfulSetup
+                |> endWithTest (fun _env _data -> Success)
+
+            test env |> expectsToBe Success
+        )
+
+    let ``should be called if the setup succeeds`` =
+        Test(fun env ->
+            let mutable wasCalled = false
+            let test =
+                successfulSetup
+                |> endWithTest 
+                    (fun _env _data ->
+                        wasCalled <- true
+                        Success
+                    )
+
+            test env |> ignore
+            wasCalled |> expectsToBe true |> withFailComment "the test wasn't called"
+        )
+
+    let ``should not be called if setup fails`` =
+        Test(fun env ->
+            let mutable wasCalled = false
+            let test =
+                beforeTest (fun env -> failResult "setup failed", (), env)
+                |> endWithTest (fun _env _data ->
+                    wasCalled <- true
+                    Success
+                )
+
+            test env |> ignore
+
+            wasCalled |> expectsToBe false |> withFailComment "test was called even though setup failed"
         )
 
 module ``A test without a setup should`` =
