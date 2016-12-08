@@ -1,6 +1,6 @@
 ﻿namespace FeldSpar.Console.Tests
 
-module Example =
+module ``F# fizzbuzz example should`` =
     open FeldSpar.Framework
     open FeldSpar.Framework.Verification
     open FeldSpar.Framework.Verification.ChecksClean
@@ -13,17 +13,17 @@ module Example =
         | buzz when buzz % 5 = 0 -> "Buzz"
         |_ -> v.ToString()
 
-    let ``Fizz Buzzer returns 1 when given a one`` =
+    let ``return "1" when given 1`` =
         Test(fun env ->
                 1 |> FizzBuzzer |> expectsToBe "1"
             )
 
-    let ``Fizz Buzzer returns Fizz when given 3`` =
+    let ``return "Fizz" when given 3`` =
         Test(fun env -> 
                 3 |> FizzBuzzer |> expectsToBe "Fizz"
             )
 
-    let ``Fizz Buzzer returns 'Fizz' for multiples of 3 up to 10`` =
+    let ``return "Fizz" for all multiples of 3 up to 10`` =
         Test(fun env ->
                 let numbers = seq {  for i in 1 .. 10 do 
                                      if i % 3 = 0
@@ -39,14 +39,14 @@ module Example =
                     }
             )
 
-    let ``Fizz Buzzer return Buzz for 5`` =
+    let ``return "Buzz" when given 5`` =
         Test(fun env ->
                 let result = 5 |> FizzBuzzer
 
                 result |> expectsToBe "Buzz" |> withFailComment "5 should have been turned into 'Buzz'"
             )
 
-    let ``Fizz Buzzer returns 'Buzz' for all multiples of 5 up to 10`` =
+    let ``return "Buzz" for all multiples of 5 up to 10`` =
         Test(fun env ->
                 let numbers = seq { for i in 1 .. 10 do
                                     if i % 5 = 0
@@ -62,14 +62,14 @@ module Example =
                     }
             )
 
-    let ``Fizz Buzzer returns 'FizzBuzz' for 15`` =
+    let ``return "FizzBuzz" for 15`` =
         Test(fun env -> 
                 let result = 15 |> FizzBuzzer
 
                 result |> expectsToBe "FizzBuzz"
             )
 
-    let ``Fizz Buzzer returns 'FizzBuzz' for all numbers that are multiples of 3 and 5 up to 32`` =
+    let ``return "FizzBuzz" for all multiples of 15 up to 32`` =
         Test(fun env ->
                 let numbers = seq { for i in 1 .. 32 do 
                                     if i % 15 = 0
@@ -85,7 +85,7 @@ module Example =
                     }
             )
 
-    let ``Fizz Buzzer returns the correct Fizz Buzz or FizzBuzz for every number up to 500`` =
+    let ``return "FizzBuzz" for all multiples of 15, "Buzz" for remaining multiples of 5 and "Fizz" for all remaining multiples of 3 up to 500`` =
         Test(fun env ->
                 let numbers = seq { for i in 1..100 do
                                     yield (i, i |> FizzBuzzer) } 
