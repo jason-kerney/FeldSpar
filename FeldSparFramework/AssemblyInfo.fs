@@ -2,8 +2,8 @@
 open System.Reflection
 open System.Resources
 
-[<assembly: AssemblyVersion("1.2.0.1")>]
-[<assembly: AssemblyFileVersion("1.2.0.1")>]
+[<assembly: AssemblyVersion("1.2.0.2")>]
+[<assembly: AssemblyFileVersion("1.2.0.2")>]
 [<assembly: AssemblyProduct("FeldSpar F# Unit testing framework")>]
 [<assembly: NeutralResourcesLanguageAttribute("en")>]
 ()

@@ -1,6 +1,7 @@
 ﻿namespace FeldSpar.Console.Tests
 open FeldSpar.Framework
 open FeldSpar.Framework.ConsoleRunner
+open FeldSpar.Framework.Engine
 open FeldSpar.Framework.Verification.ApprovalsSupport
 open ApprovalTests
 
