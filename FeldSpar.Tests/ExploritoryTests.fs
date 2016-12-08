@@ -10,7 +10,7 @@ open System
 module ExploritoryTests =
     let ``Division Theory`` = 
         {
-            UnitDescription = (fun n -> sprintf " (%f * %f) / %f = %f" n n n n)
+            UnitDescription = (fun n -> sprintf "(%f * %f) / %f = %f" n n n n)
             UnitTest = (fun n _ ->
                             let v1 = n ** 2.0
                             let result = v1 / n
@@ -21,7 +21,7 @@ module ExploritoryTests =
           
     let ``Whole Doubles from 1.0 to 20.0`` = seq { 1.0..20.0 }  
 
-    let ``Here is a second theory test`` =
+    let ``Here is a second theory test.`` =
         Theory({
                         Data = ``Whole Doubles from 1.0 to 20.0``
                         Base = ``Division Theory``

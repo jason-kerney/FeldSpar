@@ -219,7 +219,7 @@ module Runner =
     let convertTheoryToTests (Theory({Data = data; Base = {UnitDescription = getUnitDescription; UnitTest = testTemplate}})) containerName baseName =
         data
             |> Seq.map(fun datum -> (datum, datum |> testTemplate))
-            |> Seq.map(fun (datum, testTemplate) -> { TestContainerName = containerName; TestName = sprintf "%s.%s" baseName (getUnitDescription datum); Test = Test(testTemplate); })
+            |> Seq.map(fun (datum, testTemplate) -> { TestContainerName = containerName; TestName = sprintf "%s %s" baseName (getUnitDescription datum); Test = Test(testTemplate); })
             |> Seq.toArray
 
     let private getTestsFromPropery (containerName, prop:PropertyInfo) =
@@ -239,7 +239,7 @@ module Runner =
                 let g = t.GetGenericArguments() 
                 let converterForTheoryTests = converterForTheoryTestsMethodInfo.MakeGenericMethod(g)
 
-                converterForTheoryTests.Invoke(null, [|prop.GetValue(null, null); t.Name; prop.Name|]) :?> (TestInformation)[]
+                converterForTheoryTests.Invoke(null, [|prop.GetValue(null, null); containerName; prop.Name|]) :?> (TestInformation)[]
             | _ -> raise (ArgumentException("Incorrect property found by engine"))
             
     let private getConfigurationError (containerName:string, prop:PropertyInfo) =
