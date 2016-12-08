@@ -7,7 +7,7 @@ open FeldSpar.Framework.Verification.ChecksClean
 open FeldSpar.Framework.Verification.ApprovalsSupport
 open System
 
-module ExploritoryTests =
+module ``F# division theory test should`` =
     let ``Division Theory`` = 
         {
             UnitDescription = (fun n -> sprintf "(%f * %f) / %f = %f" n n n n)
@@ -21,45 +21,17 @@ module ExploritoryTests =
           
     let ``Whole Doubles from 1.0 to 20.0`` = seq { 1.0..20.0 }  
 
-    let ``Here is a second theory test.`` =
+    let ``divide and multiply and get the original number:`` =
         Theory({
                         Data = ``Whole Doubles from 1.0 to 20.0``
                         Base = ``Division Theory``
             })
 
-    let ``This is a theory Test`` =
-        Theory({
-                    Data = [
-                                (1, "1");
-                                (2, "2");
-                                (3, "Fizz");
-                                (5,"Buzz");
-                                (6, "Fizz");
-                                (10,"Buzz");
-                                (15,"FizzBuzz")
-                    ] |> List.toSeq
-                    Base = 
-                    {
-                        UnitDescription = (fun (n,s) -> sprintf "test converts %d into \"%s\"" n s)
-                        UnitTest = 
-                            (fun (n, expected) _ ->
-                                let result = 
-                                    match n with
-                                    | v when v % 15 = 0 -> "FizzBuzz"
-                                    | v when v % 5 = 0 -> "Buzz"
-                                    | v when v % 3 = 0 -> "Fizz"
-                                    | v -> v.ToString()
-
-                                result |> expectsToBe expected
-                            )
-                    }
-            })
-
-        
-    let ``This is an ignored test`` =
+module ``FeldSpar can`` =
+    let ``ignore a test at compile time`` =
         ITest(fun env -> Success)
 
-    let ``Test that shuffle works correctly`` =
+    let ``use a shuffle function to determine test order`` =
         Test(fun env ->
                 let numbers = seq { for i in 1..100 do yield i } |> Seq.toArray
 
@@ -76,7 +48,7 @@ module ExploritoryTests =
                 result |> checkAgainstStandardObjectAsCleanedString envNew
             )
 
-    let ``Combinatory Gold Standard Testing`` =
+    let ``perform combinitoriy gold standard testing`` =
         Test
             (
                 fun env ->

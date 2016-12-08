@@ -101,3 +101,31 @@ module ``F# fizzbuzz example should`` =
                                     
                 numbers |> checkAgainstStringStandardCleaned env
             )
+
+    let ``correcty convert`` =
+        Theory({
+                    Data = [
+                                (1, "1");
+                                (2, "2");
+                                (3, "Fizz");
+                                (5,"Buzz");
+                                (6, "Fizz");
+                                (10,"Buzz");
+                                (15,"FizzBuzz")
+                    ] |> List.toSeq
+                    Base = 
+                    {
+                        UnitDescription = (fun (n,s) -> sprintf "%d into \"%s\"" n s)
+                        UnitTest = 
+                            (fun (n, expected) _ ->
+                                let result = 
+                                    match n with
+                                    | v when v % 15 = 0 -> "FizzBuzz"
+                                    | v when v % 5 = 0 -> "Buzz"
+                                    | v when v % 3 = 0 -> "Fizz"
+                                    | v -> v.ToString()
+
+                                result |> expectsToBe expected
+                            )
+                    }
+            })
