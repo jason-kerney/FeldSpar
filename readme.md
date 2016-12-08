@@ -40,9 +40,6 @@
 * _(done)_ Add Read Me
 * _(done)_ Add Example File on install
 
-### 8. Add incremental tests
-This allows for dependent tests that represents complex workflows.
-
 ## Design Considerations
 ### **NO** Exception Driven Workflows
 > OO based test frameworks use `Assert` to designate a failure. This works because it generates an exception which forces an early exit without `if` `then` `else` or `case` statements.
