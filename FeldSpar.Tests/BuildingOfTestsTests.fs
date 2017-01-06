@@ -10,7 +10,7 @@ open FeldSpar.Framework.Verification
 open FeldSpar.Framework.Verification.ChecksClean
 open FeldSpar.Framework.Verification.ApprovalsSupport
 
-module ``Building Of Tests Is Correct`` =
+module ``Building of tests should`` =
     let private summaries = (
         "internal tests",
         [
@@ -40,25 +40,25 @@ module ``Building Of Tests Is Correct`` =
             };
         ])
 
-    let ``Summaries are correct`` =
+    let ``have structured summaries`` =
         Test(fun env ->
             summaries |> checkAgainstStandardObjectAsCleanedString env
         ) 
 
-    let ``Can Build Report from Execution Summaries`` =
+    let ``build a report from the Execution Summaries`` =
         Test(fun env ->
             let report = summaries |> buildOutputReport
             report |> checkAgainstStandardObjectAsCleanedString env
         )
 
-    let ``We get the correct environment`` = 
+    let ``get a representitive environment`` = 
         Test(fun env ->
             let sut = { env with GoldStandardPath = "...\\FeldSpar.Tests\\"; AssemblyPath = "...\\FeldSpar.Tests\\bin\\..."; Reporters = [] }
             let env = { env with CanonicalizedName = env.CanonicalizedName + (sprintf ".%A" currentFramework)}
             sut |> checkAgainstStandardObjectAsCleanedString env
         )
 
-    let ``Can Build Report from Execution Summaries Sorted by numeric Values`` =
+    let ``build a report from execution summaries that are sorted naturally`` =
         Test(fun env ->
             let summaries = (
                 "internal tests",

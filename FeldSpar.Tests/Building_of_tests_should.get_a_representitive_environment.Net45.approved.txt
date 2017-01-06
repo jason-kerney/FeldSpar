@@ -1,7 +1,7 @@
-﻿"{ContainerName = "Building Of Tests Is Correct";
- CanonicalizedContainerName = "Building_Of_Tests_Is_Correct";
- TestName = "We get the correct environment";
- CanonicalizedName = "We_get_the_correct_environment";
+﻿"{ContainerName = "Building of tests should";
+ CanonicalizedContainerName = "Building_of_tests_should";
+ TestName = "get a representitive environment";
+ CanonicalizedName = "get_a_representitive_environment";
  GoldStandardPath = "...\FeldSpar.Tests\";
  Assembly =
   FeldSpar.45.Tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;

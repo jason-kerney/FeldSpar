@@ -3,7 +3,7 @@ open FeldSpar.Framework
 open FeldSpar.Framework.Verification
 open ApprovalTests.Reporters
 
-module StandardsVerificationTests =
+module ``When checking against standards FeldSpar should`` =
     type Color = | White | Brown | Black | TooCool
     type TestingType =
         {
@@ -12,7 +12,7 @@ module StandardsVerificationTests =
             Dojo:string*Color
         }
     
-    let ``A test to check verification`` = 
+    let ``be usable from within a verify block`` = 
         Test((fun env ->
                 let itemUnderTest = 
                     sprintf "%A%s"
@@ -29,7 +29,7 @@ module StandardsVerificationTests =
                     }
             ))
 
-    let ``Can test a query`` = 
+    let ``check against a query rather then results`` = 
         Test(fun env ->
             let getQuery (x: int) = x.ToString ()
             let executeQuery (s: string) = s
@@ -39,7 +39,7 @@ module StandardsVerificationTests =
             checkQueryResultAgainstStandard env query
         )
 
-    let ``Can build the test of a query`` = 
+    let ``test a query and show results of old and new on failure`` = 
         Test(fun env ->
             let queryResult = "Hello World"
             let getQuery (x: string) = x
