@@ -1,0 +1,14 @@
+﻿{TestContainerName = "Script";
+ TestName = "A failing test";
+ TestCanonicalizedName = "A_failing_test";
+ TestResults = Failure (GeneralFailure "This test fails");}
+
+{TestContainerName = "Script";
+ TestName = "A passing test";
+ TestCanonicalizedName = "A_passing_test";
+ TestResults = Success;}
+
+{TestContainerName = "Script";
+ TestName = "An ignored test";
+ TestCanonicalizedName = "An_ignored_test";
+ TestResults = Failure (Ignored "This test is ignored");}

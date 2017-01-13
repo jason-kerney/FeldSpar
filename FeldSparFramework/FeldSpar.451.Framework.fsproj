@@ -70,6 +70,7 @@
     <Compile Include="Formatters.fs" />
     <Compile Include="Engine.fs" />
     <Compile Include="ConsoleRunner.fs" />
+    <Compile Include="ScriptSupport.fs" />
     <None Include="app.config" />
     <Compile Include="AssemblyInfo.fs" />
     <Content Include="packages.config" />

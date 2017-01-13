@@ -65,6 +65,7 @@
     <Compile Include="FilteringTests.fs" />
     <Compile Include="ExpectationTests.fs" />
     <Compile Include="DotNetFrameworkTests.fs" />
+    <Compile Include="ScriptSupport.fs" />
     <Compile Include="Program.fs" />
     <Content Include="app.config" />
   </ItemGroup>

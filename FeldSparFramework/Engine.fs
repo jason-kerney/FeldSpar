@@ -69,7 +69,7 @@ module Runner =
     let private fileRunningReport (env:TestEnvironment) report =
         Running({TestName = env.TestName; }) |> report 
 
-    let private fileFinishedReport testName report (result:TestResult) =
+    let internal fileFinishedReport testName report (result:TestResult) =
         Finished({TestName = testName; }, result) |> report 
 
     /// <summary>
@@ -185,7 +185,7 @@ module Runner =
 
         shuffle 0
 
-    let private shuffleTests (tests:TestInformation []) =
+    let internal shuffleTests (tests:TestInformation []) =
         let rnd = System.Random()
         let getNext = (fun (min, max) -> rnd.Next(min, max))
 
