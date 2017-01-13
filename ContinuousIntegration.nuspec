@@ -10,7 +10,7 @@
         <projectUrl>https://github.com/jason-kerney/FeldSpar</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>An opinionated fully functional testing framework for F#</description>
-        <releaseNotes>Added the ability to test queries against gold statndards. Added the ability to verify collections with expectations.</releaseNotes>
+        <releaseNotes>Added the ability to test scripts</releaseNotes>
         <copyright>Copyright 2014</copyright>
         <tags>F#, FSharp, F-Sharp, Unit Testing, Tests</tags>
         <dependencies>
