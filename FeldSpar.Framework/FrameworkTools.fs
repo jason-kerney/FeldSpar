@@ -19,24 +19,7 @@ module FrameworkTools =
 
         let test : unit -> SupportedFrameworks option = fun () -> None
 
-    #if NET40
-        let test = getVersion test Net40
-    #endif
-    #if NET45
-        let test = getVersion test Net45
-    #endif
-    #if NET451
-        let test = getVersion test Net451
-    #endif
-    #if NET452
-        let test = getVersion test Net452
-    #endif
-    #if NET46
-        let test = getVersion test Net46
-    #endif
-    #if NET461
         let test = getVersion test Net461
-    #endif
 
         match test () with
         | None -> raise (new System.ApplicationException("Invalid .Net Framework"))

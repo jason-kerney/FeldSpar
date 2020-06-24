@@ -14,9 +14,10 @@ module Program =
             Reporters = [
                             fun _ -> 
                                     Searching
-                                        |> findFirstReporter<Reporters.DiffReporter>
-                                        |> findFirstReporter<Reporters.WinMergeReporter>
-                                        |> findFirstReporter<Reporters.NotepadLauncher>
+                                        //|> findFirstReporter<Reporters.DiffReporter>
+                                        //|> findFirstReporter<Reporters.WinMergeReporter>
+                                        //|> findFirstReporter<Reporters.InlineTextReporter>
+                                        |> findFirstReporter<Reporters.AllFailingTestsClipboardReporter>
                                         |> unWrapReporter
                                             
                             fun _ -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;
@@ -43,4 +44,6 @@ module Program =
 
     runAndReportFailure UseAssemblyConfiguration ShowDetails currentToken |> ignore
 
-    System.Console.ReadKey true |> ignore
+    printf "\nDone!"
+
+    //System.Console.ReadKey true |> ignore

@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Library1.fs" />
+    <Compile Include="FrameworkTools.fs" />
+    <Compile Include="TryParser.fs" />
+    <Compile Include="Sorting.fs" />
+    <Compile Include="Framework.fs" />
+    <Compile Include="TestResultUtilities.fs" />
+    <Compile Include="TestSummaryUtilities.fs" />
+    <Compile Include="ApprovalsSupport.fs" />
+    <Compile Include="CleanVerification.fs" />
+    <Compile Include="Verification.fs" />
+    <Compile Include="Formatters.fs" />
+    <Compile Include="Engine.fs" />
+    <Compile Include="ConsoleRunner.fs" />
+    <Compile Include="ScriptSupport.fs" />
+    <None Include="Script.fsx" />
+  </ItemGroup>
+
+  <ItemGroup />
+
+  <ItemGroup>
+    <PackageReference Include="ApprovalTests" Version="5.2.5" />
+    <PackageReference Include="ApprovalUtilities" Version="5.2.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="4.7.2" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Helpers.fs" />
+    <Compile Include="Example.fs" />
+    <Compile Include="ExploritoryTests.fs" />
+    <Compile Include="StandardsVerificationTests.fs" />
+    <Compile Include="BuildingOfTestsTests.fs" />
+    <Compile Include="SetupAndTearDownTests.fs" />
+    <Compile Include="NaturalSortTests.fs" />
+    <Compile Include="FilteringTests.fs" />
+    <Compile Include="ScriptSupport.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup />
+
+  <ItemGroup>
+    <PackageReference Include="ApprovalTests" Version="5.2.5" />
+    <PackageReference Include="ApprovalUtilities" Version="5.2.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FeldSpar.Framework\Framework.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="4.7.2" />
+  </ItemGroup>
+
+</Project>

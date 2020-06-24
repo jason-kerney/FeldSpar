@@ -1,11 +1,15 @@
-﻿"{AssemblyName = "internal tests";
- Reports =
-  seq
-    [{TestContainerName =
-       "Can Build Report from Execution Summaries Sorted by numeric Values";
-      Failures =
-       [|{TestName = "Summary 12";
-          FailureType = ExpectationFailure "5 expected to be 4";};
-         {TestName = "Summary 4";
-          FailureType = GeneralFailure "Something unknown happened";}|];
-      Successes = [|"Summary 11"; "Summary 3"|];}];}"
+﻿"{ AssemblyName = "internal tests"
+  Reports =
+           seq
+             [{ TestContainerName =
+                                   "Can Build Report from Execution Summaries Sorted by numeric Values"
+                Failures =
+                          [|{ TestName = "Summary 12"
+                              FailureType =
+                                           ExpectationFailure
+                                             "5 expected to be 4" };
+                            { TestName = "Summary 4"
+                              FailureType =
+                                           GeneralFailure
+                                             "Something unknown happened" }|]
+                Successes = [|"Summary 11"; "Summary 3"|] }] }"
