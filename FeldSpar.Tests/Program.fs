@@ -14,9 +14,9 @@ module Program =
             Reporters = [
                             fun _ -> 
                                     Searching
-                                        //|> findFirstReporter<Reporters.DiffReporter>
-                                        //|> findFirstReporter<Reporters.WinMergeReporter>
-                                        //|> findFirstReporter<Reporters.InlineTextReporter>
+                                        |> findFirstReporter<Reporters.DiffReporter>
+                                        |> findFirstReporter<Reporters.WinMergeReporter>
+                                        |> findFirstReporter<Reporters.InlineTextReporter>
                                         |> findFirstReporter<Reporters.AllFailingTestsClipboardReporter>
                                         |> unWrapReporter
                                             

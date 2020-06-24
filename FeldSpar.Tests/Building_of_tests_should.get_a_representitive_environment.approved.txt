@@ -1,0 +1,8 @@
+﻿"{ ContainerName = "Building of tests should"
+  CanonicalizedContainerName = "Building_of_tests_should"
+  TestName = "get a representitive environment"
+  CanonicalizedName = "get_a_representitive_environment"
+  GoldStandardPath = "...\FeldSpar.Tests\"
+  Assembly = Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  AssemblyPath = "...\FeldSpar.Tests\bin\..."
+  Reporters = [] }"
