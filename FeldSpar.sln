@@ -7,6 +7,8 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Framework", "FeldSpar.Frame
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Tests", "FeldSpar.Tests\Tests.fsproj", "{ECC88DD1-8A0C-4B55-B205-D5D59E0529D8}"
 EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "ContinuousIntegration", "FeldSpar.ContinuousIntegration\ContinuousIntegration.fsproj", "{8D046C66-0460-4792-B36F-B44313A3064A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,18 @@ Global
 		{ECC88DD1-8A0C-4B55-B205-D5D59E0529D8}.Release|x64.Build.0 = Release|Any CPU
 		{ECC88DD1-8A0C-4B55-B205-D5D59E0529D8}.Release|x86.ActiveCfg = Release|Any CPU
 		{ECC88DD1-8A0C-4B55-B205-D5D59E0529D8}.Release|x86.Build.0 = Release|Any CPU
+		{8D046C66-0460-4792-B36F-B44313A3064A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D046C66-0460-4792-B36F-B44313A3064A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D046C66-0460-4792-B36F-B44313A3064A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8D046C66-0460-4792-B36F-B44313A3064A}.Debug|x64.Build.0 = Debug|Any CPU
+		{8D046C66-0460-4792-B36F-B44313A3064A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8D046C66-0460-4792-B36F-B44313A3064A}.Debug|x86.Build.0 = Debug|Any CPU
+		{8D046C66-0460-4792-B36F-B44313A3064A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D046C66-0460-4792-B36F-B44313A3064A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D046C66-0460-4792-B36F-B44313A3064A}.Release|x64.ActiveCfg = Release|Any CPU
+		{8D046C66-0460-4792-B36F-B44313A3064A}.Release|x64.Build.0 = Release|Any CPU
+		{8D046C66-0460-4792-B36F-B44313A3064A}.Release|x86.ActiveCfg = Release|Any CPU
+		{8D046C66-0460-4792-B36F-B44313A3064A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
