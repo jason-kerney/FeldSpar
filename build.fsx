@@ -20,15 +20,18 @@ let buildDir = "./_build/"
 let testDir = "./_test/"
 let deployDir = "./_deploy/"
 
-let forkReport (a : string seq) =
-    a |> Seq.iter (printfn "%s")
+let forkReport lbl (a : 'a seq) =
+    a |> Seq.iter (printfn "%s %A" lbl)
+    a
+
+let forkReportList lbl a =
+    a |> Seq.ofList |> forkReport lbl |> ignore
     a
 
 Target.create "Clean" (fun _ ->
-    !! "./**/bin/**"
-    ++ "./**/obj/**"
-    ++ "./**/bin"
+    !! "./**/bin"
     ++ "./**/obj"
+    |> forkReport "Cleaning"
     |> Shell.cleanDirs 
 
     [buildDir; testDir; deployDir] |> Shell.cleanDirs
@@ -36,22 +39,45 @@ Target.create "Clean" (fun _ ->
 
 Target.create "Build" (fun _ ->
     ["./FeldSpar.sln"]
-    |> forkReport
+    |> forkReportList "building"
     |> Seq.iter (DotNet.build (fun op -> { op with Configuration = DotNet.BuildConfiguration.Debug }))
+)
 
-    !! "./**/bin/"
-    |> Seq.map (System.IO.DirectoryInfo)
-    |> Seq.map (DirectoryInfo.getMatchingFiles "*.dll;*.exe;*.txt")
-    |> List.ofSeq
-    |> List.map (List.ofSeq)
-    |> List.fold (List.append) []
-    |> List.iter (fun fi -> fi.CopyTo (buildDir) |> ignore)
+Target.create "TestCopy" (fun _ ->
+    "./FeldSpar.Tests/bin/Debug/"
+    |> System.IO.DirectoryInfo
+    |> fun di ->
+        di.GetDirectories ()
+        |> forkReport "Moving"
+        |> Seq.iter (fun dii -> dii.MoveTo (sprintf "%s%s" testDir dii.Name))
+
+        di.GetFiles ()
+        |> forkReport "Moving"
+        |> Seq.iter (fun fi -> fi.MoveTo (sprintf "%s%s" testDir fi.Name))
+
+    //|> Seq.map (System.IO.FileInfo)
+    //|> Seq.iter (fun fi -> fi.CopyTo (sprintf "%s/%s" testDir fi.Name) |> ignore)
+)
+
+Target.create "Test" (fun _ -> 
+    let testApp = "./FeldSpar.Tests.exe"
+    Shell.pushd (sprintf "%snetcoreapp3.1" testDir)
+    let result = 
+        CreateProcess.fromRawCommandLine testApp ""
+        |> CreateProcess.withWorkingDirectory "."
+        |> Proc.run
+    Shell.popd ()
+    if result.ExitCode = 0 then ()
+    else
+        failwith (sprintf "Bad tests %A" result)
 )
 
 Target.create "All" ignore
 
 "Clean"
   ==> "Build"
+  ==> "TestCopy"
+  ==> "Test"
   ==> "All"
 
 Target.runOrDefault "All"
