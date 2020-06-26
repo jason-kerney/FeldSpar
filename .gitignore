@@ -231,3 +231,4 @@ _test/
 _build/
 _deploy/
 .fake/
+fake-dotnetcore-portable/
