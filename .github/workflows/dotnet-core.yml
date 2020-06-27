@@ -20,6 +20,7 @@ jobs:
     - name: intall Paket
       run: dotnet tool install paket
     - name: install Fake-Cli
+      run: dotnet tool install fake-cli -g
     - name: Install dependencies
       run: dotnet restore
     - name: Build
