@@ -2,8 +2,6 @@
 =========
 > An opinionated test framework designed to be functional from the ground up.
 
-###[![Build status](https://ci.appveyor.com/api/projects/status/b5xo1bn8nxr7h06q?svg=true)](https://ci.appveyor.com/project/jason-kerney/feldspar)
-
 ## Available on Nuget
 
 ### [![NuGet Status](http://img.shields.io/nuget/v/FeldSparFramework.svg?style=flat)](https://www.nuget.org/packages/FeldSparFramework/) -- Framework
