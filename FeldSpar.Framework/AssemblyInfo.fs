@@ -1,4 +1,4 @@
-﻿module AssemblyInfo
+module AssemblyInfo
 open System.Reflection
 open System.Resources
 
