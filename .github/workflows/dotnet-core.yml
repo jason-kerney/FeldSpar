@@ -30,4 +30,4 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet fake build --target Build
+      run: fake build.fsx --target Build
