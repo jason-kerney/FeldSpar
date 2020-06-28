@@ -2,6 +2,8 @@
 =========
 > An opinionated test framework designed to be functional from the ground up.
 
+![.NET Core](https://github.com/jason-kerney/FeldSpar/workflows/.NET%20Core/badge.svg)
+
 ## Available on Nuget
 
 ### [![NuGet Status](http://img.shields.io/nuget/v/FeldSparFramework.svg?style=flat)](https://www.nuget.org/packages/FeldSparFramework/) -- Framework
