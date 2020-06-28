@@ -19,12 +19,16 @@ jobs:
         dotnet-version: 3.1.101
     - name: preparing to install dotnet tools
       run: dotnet new tool-manifest
-    - name: intall Paket
+    - name: install Paket
       run: dotnet tool install paket
     - name: install Fake-Cli
       run: dotnet tool install fake-cli -g
     - name: restore tools
       run: dotnet tool restore
+    - name: init Paket
+      run: dotnet paket init
+    - name: paket restore
+      run: dotnet paket restore
     - name: Install dependencies
       run: dotnet restore
     - name: Build
