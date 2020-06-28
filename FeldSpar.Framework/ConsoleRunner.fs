@@ -20,8 +20,8 @@ module ConsoleRunner =
                             fun _ -> 
                                     Searching
                                         |> findFirstReporter<Reporters.DiffReporter>
-                                        |> findFirstReporter<Reporters.WinMergeReporter>
-                                        |> findFirstReporter<Reporters.NotepadLauncher>
+                                        |> findFirstReporter<Reporters.MeldReporter>
+                                        |> findFirstReporter<Reporters.InlineTextReporter>
                                         |> unWrapReporter
                                         
                             fun _ -> Reporters.ClipboardReporter() :> Core.IApprovalFailureReporter;

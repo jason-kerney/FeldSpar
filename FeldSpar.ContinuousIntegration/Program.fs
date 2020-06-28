@@ -7,39 +7,33 @@ open FeldSpar.Framework.TestSummaryUtilities
 open FeldSpar.Framework.Verification.ApprovalsSupport
 
 open ApprovalTests
-open Nessos.UnionArgParser
+open Argu
 
-[<AutoOpen>]
-module Extras =    
-    let vebosityLevels = ["Max"; "Results"; "Errors"; "Detail"]
+
+type VebosityLevels = 
+    | Max = 1
+    | Results = 2
+    | Errors = 3
+    | Detail = 4
+    | None = 0
 
 
 type CommandArguments =
-    | [<Mandatory>][<AltCommandLine("--a")>]Test_Assembly of string
-    | [<AltCommandLine("--r")>]Report_Location of string
-    | [<AltCommandLine("--v")>]Verbosity of string
-    | [<AltCommandLine("--ur")>]UseReporters
+    | [<Mandatory>][<AltCommandLine("-a")>]Test_Assembly of string
+    | [<AltCommandLine("-r")>]Report_Location of string
+    | [<AltCommandLine("-v")>]Verbosity of VebosityLevels
+    | [<AltCommandLine("-ur")>]UseReporters
 with
     interface IArgParserTemplate with
         member s.Usage =
             match s with
             | Report_Location _ -> "This flag indicates that a JSON report is to be generated at the given location"
             | Test_Assembly _ -> "This is the location of the test library. It can be a *.dll or a *.exe file"
-            | Verbosity _ -> sprintf "This sets the verbosity level for the run. Possible levels are: %A" vebosityLevels
+            | Verbosity _ -> sprintf "This sets the verbosity level for the run. Possible levels are: %A" [ "Max"; "Results"; "Errors"; "Detail" ]
             | UseReporters _ -> "This enables the use of reporters configured in the test"
 
 [<AutoOpen>]
 module Processors = 
-    /// <summary>
-    /// compares a sting to determin if it is a valid verbosity level. This comparison is case insensitive
-    /// </summary>
-    /// <param name="verbosity">the string to compare</param>
-    let compareVerbosity (verbosity:string) =
-        let verbosity = verbosity.ToUpper()
-        vebosityLevels 
-            |> List.map (fun s -> s.ToUpper()) 
-            |> List.exists (fun v -> v = verbosity)
-
     let fileWriter path text = IO.File.WriteAllText(path, text)
 
     /// <summary>
@@ -97,7 +91,7 @@ module Processors =
 type Launcher () =
     let run args =
         try
-            let parser = UnionArgParser.Create<CommandArguments>()
+            let parser = ArgumentParser.Create<CommandArguments>()
 
             let argsNew = parser.Parse(args)
 
@@ -105,7 +99,7 @@ type Launcher () =
                 if argsNew.Contains(<@ UseReporters @>) then UseAssemblyConfiguration
                 else IgnoreAssemblyConfiguration
 
-            let assebmlyValidation a =
+            let assebmlyValidation (a : string) =
                 let ext = IO.Path.GetExtension a
                 if not ([".exe"; ".dll"] |> List.exists (fun e -> e = ext)) then failwith "invalid file extension must be *.dll or *.exe"
 
@@ -113,18 +107,13 @@ type Launcher () =
 
                 a
 
-            let verbosityCheck a = 
-                if compareVerbosity a
-                then
-                    let a = a.ToUpper()
-                    if a = "MAX" then (runAndReportAll configUsage ShowDetails)
-                    elif a = "RESULTS" then (runAndReportResults configUsage HideDetails)
-                    elif a = "ERRORS" then (runAndReportFailure configUsage ShowDetails)
-                    elif a = "DETAIL" then (runAndReportNone configUsage ShowDetails)
-                    else (runAndReportNone configUsage HideDetails)
-                else
-                    failwith (sprintf "verbosity must be one of: %A" vebosityLevels)
-
+            let verbosityCheck (a : VebosityLevels) = 
+                match a with
+                | VebosityLevels.Max -> (runAndReportAll configUsage ShowDetails)
+                | VebosityLevels.Results -> (runAndReportResults configUsage HideDetails)
+                | VebosityLevels.Errors -> (runAndReportFailure configUsage ShowDetails)
+                | VebosityLevels.Detail -> (runAndReportNone configUsage ShowDetails)
+                | _ -> (runAndReportNone configUsage HideDetails)
 
             let tokenGetter = 
                 getToken

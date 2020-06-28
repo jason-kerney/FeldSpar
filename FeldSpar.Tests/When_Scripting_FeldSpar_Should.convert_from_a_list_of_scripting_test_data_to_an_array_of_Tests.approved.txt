@@ -1,11 +1,11 @@
-﻿{ContainerName = "Script";
- TestTestName = "A successful test";
- TestResult = Success;}
+﻿{ ContainerName = "Script"
+  TestTestName = "A successful test"
+  TestResult = Success }
 
-{ContainerName = "Script";
- TestTestName = "A failing test";
- TestResult = Failure (GeneralFailure "a failing test");}
+{ ContainerName = "Script"
+  TestTestName = "A failing test"
+  TestResult = Failure (GeneralFailure "a failing test") }
 
-{ContainerName = "Script";
- TestTestName = "An Ignored Test";
- TestResult = Failure (Ignored "Test not yet implemented");}
+{ ContainerName = "Script"
+  TestTestName = "An Ignored Test"
+  TestResult = Failure (Ignored "Test not yet implemented") }

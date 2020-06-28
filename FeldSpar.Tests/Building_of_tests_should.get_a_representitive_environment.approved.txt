@@ -3,7 +3,7 @@
   TestName = "get a representitive environment"
   CanonicalizedName = "get_a_representitive_environment"
   GoldStandardPath = "...\FeldSpar.Tests\"
-  Assembly = Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  Assembly =
+            FeldSpar.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   AssemblyPath = "...\FeldSpar.Tests\bin\..."
-  FeldSparNetFramework = Net461
   Reporters = [] }"
