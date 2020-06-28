@@ -3,6 +3,7 @@ nuget Fake.DotNet.Cli
 nuget Fake.IO.FileSystem
 nuget Fake.Api.GitHub
 nuget Fake.DotNet.AssemblyInfoFile
+nuget Fake.DotNet.NuGet
 nuget Fake.Core.Target //"
 #load ".fake/build.fsx/intellisense.fsx"
 
@@ -20,43 +21,108 @@ Target.initEnvironment ()
 let frameworkVer = SemVer.parse "1.2.0.3"
 let ciVer = SemVer.parse "1.2.0.2"
 
-// Properties
-let fSharpProjects = "*.fsproj"
-let releaseDir = "bin/Release/"
+type BuildType =
+    | Debug
+    override this.ToString () =
+        match this with
+        | Debug -> "Debug"
 
+// Properties
 let buildDir = "./_build/"
 let testDir = "./_test/"
-let deployDir = "./_deploy/"
+let deployDir = "./deploy/"
 
-let forkReport lbl (a : 'a seq) =
-    a |> Seq.iter (printfn "%s %A" lbl)
-    a
+let forkReport lable thing =
+    printfn "%s %A" lable thing
+    thing
 
-let forkReportList lbl a =
-    a |> Seq.ofList |> forkReport lbl |> ignore
-    a
-
+let nugetDeployDir = 
+    let t = "C:/Nuget.Local/"
+    if System.IO.Directory.Exists t then t
+    else deployDir
+    
 Target.create "Clean" (fun _ ->
     !! "./**/bin"
     ++ "./**/obj"
-    |> forkReport "Cleaning"
     |> Shell.cleanDirs 
 
     [buildDir; testDir; deployDir] |> Shell.cleanDirs
 )
 
+let setVerson folderName version =
+    let fVer = sprintf "%A" version
+    [ 
+        Fake.DotNet.AssemblyInfoFile.Attribute ( "AssemblyVersion", fVer, "System.Reflection", "System.String" )
+        Fake.DotNet.AssemblyInfoFile.Attribute ( "AssemblyFileVersion", fVer, "System.Reflection", "System.String" )
+    ] 
+    |> Seq.ofList 
+    |> Fake.DotNet.AssemblyInfoFile.updateAttributes (sprintf "./%s/AssemblyInfo.fs" folderName)
+
+Target.create "SetVersions" (fun _ ->
+    frameworkVer.AsString |> setVerson "FeldSpar.Framework"
+    ciVer.AsString |> setVerson "FeldSpar.ContinuousIntegration"
+)
+
 Target.create "Build" (fun _ ->
-    let fVer = sprintf "%A" (frameworkVer.AsString)
-    let frameworkAttributes = 
-        [ 
-            Fake.DotNet.AssemblyInfoFile.Attribute ( "AssemblyVersion", fVer, "System.Reflection", "System.String" )
-            Fake.DotNet.AssemblyInfoFile.Attribute ( "AssemblyFileVersion", fVer, "System.Reflection", "System.String" )
-        ] |> Seq.ofList
-
-    Fake.DotNet.AssemblyInfoFile.updateAttributes "./FeldSpar.Framework/AssemblyInfo.fs" frameworkAttributes
-
     ["./FeldSpar.sln"]
     |> Seq.iter (DotNet.build (fun op -> { op with Configuration = DotNet.BuildConfiguration.Debug;  }))
+)
+
+let copyDirectory target (source:System.IO.DirectoryInfo) =
+     let targetPath = System.IO.Path.Combine (target, source.Name)
+     System.IO.Directory.CreateDirectory targetPath |> ignore
+
+     source.GetFiles ()
+     |> Array.map (fun f -> f, System.IO.Path.Combine(targetPath, f.Name))
+     |> Array.map(fun (f, t) -> f.CopyTo(t))
+
+let getBuildDir folder = 
+    sprintf "%s/%s" buildDir folder
+
+let copyBuildFiles folder =
+    let buildTarget = Debug
+    let target = getBuildDir folder
+    let lib = sprintf "%s/lib" target 
+    let source = buildTarget.ToString ()
+
+    !! ("./" + folder + "/**/content")
+    ++ ("./" + folder + "/**/tools")
+    |> Seq.map System.IO.DirectoryInfo
+    |> Seq.iter (fun di -> copyDirectory target di |> ignore)
+
+    !! ("./" + folder + "/bin/" + source + "/**/*.dll")
+    ++ ("./" + folder + "/bin/" + source + "/**/*.exe")
+    |> Seq.map (fun p -> lib |> System.IO.DirectoryInfo, System.IO.FileInfo p)
+    |> Seq.map (fun (di, fi) -> 
+            let rec getFolders (current : System.IO.DirectoryInfo) acc =
+                if current.Parent.Name = source then acc
+                else
+                    let p = sprintf "%s%s/" current.Name acc
+                    getFolders current.Parent p
+
+            let f = getFolders fi.Directory ""
+            let path = sprintf "%s/%s" di.FullName f
+            let d = System.IO.DirectoryInfo path
+
+            if not d.Exists then d.Create ()
+
+            fi.Name |> sprintf "%s%s" path, fi
+        )
+    |> Seq.iter (fun (p, fi) -> fi.CopyTo p |> ignore)
+
+Target.create "BuildCopy" (fun _ ->
+    "FeldSpar.Framework" |> copyBuildFiles
+    "FeldSpar.ContinuousIntegration" |> copyBuildFiles
+)
+
+Target.create "DeployCopy" (fun _ ->
+    let frameworkBuild = "FeldSpar.Framework" |> getBuildDir
+    let ciBuild = "FeldSpar.ContinuousIntegration" |> getBuildDir
+
+    "./FeldSparFramework.nuspec"
+    |> System.IO.FileInfo
+    |> fun fi -> (frameworkBuild |> System.IO.DirectoryInfo, fi)
+    |> fun (di, fi) -> sprintf "%s/%s" di.FullName fi.Name |> fi.CopyTo |> ignore
 )
 
 Target.create "TestCopy" (fun _ ->
@@ -108,9 +174,12 @@ Target.create "Zip" (fun _ ->
 Target.create "All" ignore
 
 "Clean"
+  ==> "SetVersions"
   ==> "Build"
+  ==> "BuildCopy"
   ==> "TestCopy"
   ==> "Test"
+  ==> "DeployCopy"
   ==> "All"
 
-Target.runOrDefault "All"
+Target.runOrDefault "Test"

@@ -1,9 +1,9 @@
-﻿module AssemblyInfo
+module AssemblyInfo
 open System.Reflection
 open System.Resources
 
-[<assembly: AssemblyVersion("1.2.0.0")>]
-[<assembly: AssemblyFileVersion("1.2.0.0")>]
-[<assembly: AssemblyProduct("Console runner for FeldSpar F# Unit testing framework")>]
+[<assembly: AssemblyVersion("1.2.0.2")>]
+[<assembly: AssemblyFileVersion("1.2.0.2")>]
+[<assembly: AssemblyProduct("FeldSpar F# Unit Test Runner for your CI Environment")>]
 [<assembly: NeutralResourcesLanguageAttribute("en")>]
 ()
