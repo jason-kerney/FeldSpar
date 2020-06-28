@@ -18,7 +18,7 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: preparing to install dotnet tools
-      run: dotnet new tool-manifest
+      run: dotnet new tool-manifest --force
     - name: install Paket
       run: dotnet tool install paket
     - name: install Fake-Cli
