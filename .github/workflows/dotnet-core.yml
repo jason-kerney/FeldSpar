@@ -17,6 +17,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
+    - name: preparing to install dotnet tools
+      run: dotnet new tool-manifest
     - name: intall Paket
       run: dotnet tool install paket
     - name: install Fake-Cli
