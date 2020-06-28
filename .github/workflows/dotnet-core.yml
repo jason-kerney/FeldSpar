@@ -27,8 +27,6 @@ jobs:
       run: dotnet tool restore
     - name: init Paket
       run: dotnet paket init
-    - name: paket restore
-      run: dotnet paket restore
     - name: Install dependencies
       run: dotnet restore
     - name: Build
