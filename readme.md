@@ -2,7 +2,7 @@
 =========
 > An opinionated test framework designed to be functional from the ground up.
 
-![.NET Core](https://github.com/jason-kerney/FeldSpar/workflows/.NET%20Core/badge.svg)
+![.NET Core Build](https://github.com/jason-kerney/FeldSpar/workflows/.NET%20Core%20Build/badge.svg)
 
 ## Available on Nuget
 
