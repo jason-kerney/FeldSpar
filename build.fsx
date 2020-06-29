@@ -113,9 +113,26 @@ let copyBuildFiles folder =
 Target.create "BuildCopy" (fun _ ->
     "FeldSpar.Framework" |> copyBuildFiles
     
-    let ciSource = System.IO.DirectoryInfo "./FeldSpar.ContinuousIntegration/bin/Debug/netcoreapp3.1"
+    //let ciSource = System.IO.DirectoryInfo "./FeldSpar.ContinuousIntegration/bin/Debug/netcoreapp3.1"
     let ciTarget = "FeldSpar.ContinuousIntegration" |> getBuildDir |> sprintf "%s/lib" |> System.IO.DirectoryInfo
-    Fake.IO.DirectoryInfo.copyRecursiveTo true ciTarget ciSource |> ignore
+    //Fake.IO.DirectoryInfo.copyRecursiveTo true ciTarget ciSource |> ignore
+
+    !! "./FeldSpar.ContinuousIntegration/bin/Debug/**/ApprovalTests.dll"
+    ++ "./FeldSpar.ContinuousIntegration/bin/Debug/**/ApprovalUtilities.dll"
+    ++ "./FeldSpar.ContinuousIntegration/bin/Debug/**/Argu.dll"
+    ++ "./FeldSpar.ContinuousIntegration/bin/Debug/**/FeldSpar.ContinuousIntegration.dll"
+    ++ "./FeldSpar.ContinuousIntegration/bin/Debug/**/FeldSpar.ContinuousIntegration.exe"
+    ++ "./FeldSpar.ContinuousIntegration/bin/Debug/**/*.json"
+    ++ "./FeldSpar.ContinuousIntegration/bin/Debug/**/FSharp.Core.dll"
+    ++ "./FeldSpar.ContinuousIntegration/bin/Debug/**/FeldSparFramework.dll"
+    |> Seq.iter (fun n -> 
+        let fi = System.IO.FileInfo n
+        let fiTarget = fi.Name |> sprintf "%s/%s" ciTarget.FullName
+
+        if not ciTarget.Exists then ciTarget.Create ()
+
+        fi.CopyTo fiTarget |> ignore
+    )
 )
 
 Target.create "DeployCopy" (fun _ ->
