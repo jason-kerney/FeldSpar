@@ -18,8 +18,8 @@ open Fake.Api
 
 Target.initEnvironment ()
 
-let frameworkVer = SemVer.parse "1.2.0.3"
-let ciVer = SemVer.parse "1.2.0.2"
+let frameworkVer = SemVer.parse "2.0.0"
+let ciVer = SemVer.parse "2.0.0"
 
 type BuildType =
     | Debug
@@ -112,7 +112,10 @@ let copyBuildFiles folder =
 
 Target.create "BuildCopy" (fun _ ->
     "FeldSpar.Framework" |> copyBuildFiles
-    "FeldSpar.ContinuousIntegration" |> copyBuildFiles
+    
+    let ciSource = System.IO.DirectoryInfo "./FeldSpar.ContinuousIntegration/bin/Debug/netcoreapp3.1"
+    let ciTarget = "FeldSpar.ContinuousIntegration" |> getBuildDir |> sprintf "%s/lib" |> System.IO.DirectoryInfo
+    Fake.IO.DirectoryInfo.copyRecursiveTo true ciTarget ciSource |> ignore
 )
 
 Target.create "DeployCopy" (fun _ ->
@@ -122,7 +125,14 @@ Target.create "DeployCopy" (fun _ ->
     "./FeldSparFramework.nuspec"
     |> System.IO.FileInfo
     |> fun fi -> (frameworkBuild |> System.IO.DirectoryInfo, fi)
-    |> fun (di, fi) -> sprintf "%s/%s" di.FullName fi.Name |> fi.CopyTo |> ignore
+    |> fun (di, fi) -> sprintf "%s/%s" di.FullName fi.Name |> fi.CopyTo 
+    |> ignore
+    
+    "./ContinuousIntegration.nuspec"
+    |> System.IO.FileInfo
+    |> fun fi -> (ciBuild |> System.IO.DirectoryInfo, fi)
+    |> fun (di, fi) -> sprintf "%s/%s" di.FullName fi.Name |> fi.CopyTo 
+    |> ignore
 )
 
 Target.create "TestCopy" (fun _ ->
