@@ -160,7 +160,7 @@ Target.create "DeployCopy" (fun _ ->
         let di = System.IO.DirectoryInfo deployDir
         let target = fi.Name |> sprintf "%s/%s" di.FullName
 
-        fi.CopyTo target |> ignore
+        fi.MoveTo target |> ignore
     )
 )
 
