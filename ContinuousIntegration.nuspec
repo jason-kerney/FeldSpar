@@ -4,23 +4,25 @@
         <id>FeldSpar.ContinuousIntegration</id>
         <version>$version$</version>
         <title>FeldSpar Test Framework for F#</title>
-        <authors>R. Jason Kerney</authors>
-        <owners>R. Jason Kerney</owners>
-        <licenseUrl>https://github.com/jason-kerney/FeldSpar/blob/master/LICENSE.txt</licenseUrl>
-        <projectUrl>https://github.com/jason-kerney/FeldSpar</projectUrl>
+        <authors>JasonKerney</authors>
+        <owners>JasonKerney</owners>
+        <releaseNotes>Targeted DotNet Core 3.0</releaseNotes>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>An opinionated fully functional testing framework for F#</description>
-        <releaseNotes>Added the ability to test scripts</releaseNotes>
+        <license type="expression">MIT</license>
+        <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+        <projectUrl>https://github.com/jason-kerney/FeldSpar</projectUrl>
+        <description>A CI helper for running tests written in with the FeldSpar unit testing framework</description>
         <copyright>Copyright 2014</copyright>
-        <tags>F#, FSharp, F-Sharp, Unit Testing, Tests</tags>
-      <dependencies>
-        <group targetFramework=".NETCoreApp3.1">
-          <dependency id="FeldSparFramework" version="2.0.0" exclude="Build,Analyzers" />
-          <dependency id="ApprovalUtilities" version="5.2.5" exclude="Build,Analyzers" />
-          <dependency id="Argu" version="6.1.1" exclude="Build,Analyzers" />
-          <dependency id="FSharp.Core" version="4.7.2" exclude="Build,Analyzers" />
-        </group>
-      </dependencies>
+        <tags>F# FSharp F-Sharp UnitTest UnitTesting Tests UnitTests Testing CI CD ContinuousIntigration ContinuousDeployment</tags>
+        <repository url="https://github.com/jason-kerney/FeldSpar" />
+        <dependencies>
+          <group targetFramework=".NETCoreApp3.1">
+            <dependency id="FeldSparFramework" version="2.0.0" exclude="Build,Analyzers" />
+            <dependency id="ApprovalUtilities" version="5.2.5" exclude="Build,Analyzers" />
+            <dependency id="Argu" version="6.1.1" exclude="Build,Analyzers" />
+            <dependency id="FSharp.Core" version="4.7.2" exclude="Build,Analyzers" />
+          </group>
+        </dependencies>
     </metadata>
     <files>
       <file src="lib\FeldSpar.ContinuousIntegration.deps.json" target="lib\FeldSpar.ContinuousIntegration.deps.json" />

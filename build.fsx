@@ -1,10 +1,12 @@
 #r "paket:
 nuget Fake.DotNet.Cli
 nuget Fake.IO.FileSystem
+nuget Fake.IO.Zip
 nuget Fake.Api.GitHub
 nuget Fake.DotNet.AssemblyInfoFile
-nuget Fake.DotNet.NuGet
+nuget Fake.Core.XML
 nuget Fake.Core.Target //"
+
 #load ".fake/build.fsx/intellisense.fsx"
 
 open Fake.Core
@@ -13,8 +15,8 @@ open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Fake.Core.TargetOperators
-open Fake.DotNet.NuGet
 open Fake.Api
+open Fake.Core.Xml
 
 Target.initEnvironment ()
 
@@ -30,16 +32,18 @@ type BuildType =
 // Properties
 let buildDir = "./_build/"
 let testDir = "./_test/"
-let deployDir = "./deploy/"
+let deployDir = "./_deploy/"
 
 let forkReport lable thing =
     printfn "%s %A" lable thing
     thing
 
 let nugetDeployDir = 
-    let t = "C:/Nuget.Local/"
-    if System.IO.Directory.Exists t then t
-    else deployDir
+    let p = 
+        let t = "C:/Nuget.Local/"
+        if System.IO.Directory.Exists t then t
+        else deployDir
+    System.IO.DirectoryInfo p
     
 Target.create "Clean" (fun _ ->
     !! "./**/bin"
@@ -49,18 +53,15 @@ Target.create "Clean" (fun _ ->
     [buildDir; testDir; deployDir] |> Shell.cleanDirs
 )
 
-let setVerson folderName version =
-    let fVer = sprintf "%A" version
-    [ 
-        Fake.DotNet.AssemblyInfoFile.Attribute ( "AssemblyVersion", fVer, "System.Reflection", "System.String" )
-        Fake.DotNet.AssemblyInfoFile.Attribute ( "AssemblyFileVersion", fVer, "System.Reflection", "System.String" )
-    ] 
-    |> Seq.ofList 
-    |> Fake.DotNet.AssemblyInfoFile.updateAttributes (sprintf "./%s/AssemblyInfo.fs" folderName)
+let setVersion projectPath versionString =
+    let proj = Xml.loadDoc projectPath
+    let proj = Xml.replaceXPathInnerText "/Project/PropertyGroup/Version" versionString proj
+    proj.Save projectPath
+
 
 Target.create "SetVersions" (fun _ ->
-    frameworkVer.AsString |> setVerson "FeldSpar.Framework"
-    ciVer.AsString |> setVerson "FeldSpar.ContinuousIntegration"
+    setVersion "./FeldSpar.Framework/Framework.fsproj" frameworkVer.AsString
+    setVersion "./FeldSpar.ContinuousIntegration/ContinuousIntegration.fsproj" ciVer.AsString
 )
 
 Target.create "Build" (fun _ ->
@@ -176,6 +177,12 @@ Target.create "Test" (fun _ ->
         failwith (sprintf "Bad tests %A" result)
 )
 
+Target.create "CreatePackage" (fun _ ->
+    Shell.Exec ("nuget", @"pack ..\_build\FeldSpar.Framework\FeldSparFramework.nuspec -IncludeReferencedProjects -Version " + frameworkVer.AsString, deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack ..\_build\FeldSpar.ContinuousIntegration\ContinuousIntegration.nuspec -IncludeReferencedProjects -Version " + ciVer.AsString, deployDir) |> ignore
+    ()
+)
+
 ////Example
 //Target.create "GitHubRelease" (fun _ ->
 //    let token =
@@ -195,7 +202,33 @@ Target.create "Test" (fun _ ->
 //)
 
 Target.create "Zip" (fun _ ->
-    ()
+    let frameworkSource = sprintf "%s/FeldSpar.Framework" buildDir
+    let ciSource = sprintf "%s/FeldSpar.ContinuousIntegration" buildDir
+    let version =
+        if frameworkVer < ciVer then ciVer
+        else frameworkVer
+
+    [   !! (sprintf "%s/**/*" frameworkSource)
+            |> Zip.filesAsSpecs frameworkSource
+            |> Zip.moveToFolder "FeldSpar.Framework"
+        !! (sprintf "%s/**/*" ciSource)
+            |> Zip.filesAsSpecs ciSource
+            |> Zip.moveToFolder "FeldSpar.ContinuousIntegration"
+    ]
+    |> Seq.concat
+    |> Zip.zipSpec (sprintf @"%s.%s.zip" deployDir version.AsString)
+)
+
+Target.create "LocalDeploy" (fun _ ->
+    !! (sprintf "%s/**" deployDir)
+    |> Shell.cleanDirs
+
+    !! (sprintf "%s/*.nupkg" deployDir)
+    |> Seq.iter (fun p -> 
+        let fi = System.IO.FileInfo p
+        let target = sprintf "%s/%s" nugetDeployDir.FullName fi.Name
+        fi.MoveTo target
+    )
 )
 
 Target.create "All" ignore
@@ -204,9 +237,12 @@ Target.create "All" ignore
   ==> "SetVersions"
   ==> "Build"
   ==> "BuildCopy"
+  ==> "Zip"
   ==> "TestCopy"
   ==> "Test"
   ==> "DeployCopy"
+  ==> "CreatePackage"
+  ==> "LocalDeploy"
   ==> "All"
 
 Target.runOrDefault "Test"

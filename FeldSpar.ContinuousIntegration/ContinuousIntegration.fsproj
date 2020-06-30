@@ -1,27 +1,32 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>FeldSpar.ContinuousIntegration</AssemblyName>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors>JasonKerney</Authors>
+    <Company>None</Company>
+    <Description>A CI helper for running tests written in with the FeldSpar unit testing framework</Description>
+    <Copyright>Copyright 2014</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/jason-kerney/FeldSpar</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jason-kerney/FeldSpar</RepositoryUrl>
+    <PackageTags>F# FSharp F-Sharp UnitTest UnitTesting Tests UnitTests Testing CI CD ContinuousIntigration ContinuousDeployment</PackageTags>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Version>2.0.0</Version>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="ApprovalUtilities" Version="5.2.5" />
     <PackageReference Include="Argu" Version="6.1.1" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\FeldSpar.Framework\Framework.fsproj" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Update="FSharp.Core" Version="4.7.2" />
   </ItemGroup>
-
 </Project>

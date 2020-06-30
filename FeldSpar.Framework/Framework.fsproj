@@ -1,10 +1,18 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>FeldSparFramework</AssemblyName>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Version>2.0.0</Version>
+    <Description>An opinionated fully functional testing framework for F#</Description>
+    <Copyright>Copyright 2014</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/jason-kerney/FeldSpar</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jason-kerney/FeldSpar</RepositoryUrl>
+    <PackageTags>F# FSharp F-Sharp UnitTest UnitTesting Tests UnitTests Testing</PackageTags>
+    <Company>None</Company>
+    <Authors>JasonKerney</Authors>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Library1.fs" />
@@ -22,16 +30,12 @@
     <Compile Include="ScriptSupport.fs" />
     <None Include="Script.fsx" />
   </ItemGroup>
-
   <ItemGroup />
-
   <ItemGroup>
     <PackageReference Include="ApprovalTests" Version="5.2.5" />
     <PackageReference Include="ApprovalUtilities" Version="5.2.5" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Update="FSharp.Core" Version="4.7.2" />
   </ItemGroup>
-
 </Project>
