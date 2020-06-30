@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>FeldSparFramework</id>
         <version>$version$</version>
@@ -16,15 +16,17 @@
         <tags>F# FSharp F-Sharp UnitTest UnitTesting Tests UnitTests Testing</tags>
         <repository url="https://github.com/jason-kerney/FeldSpar" />
         <dependencies>
-            <dependency id="ApprovalUtilities" version="(5.2.5, )" />
-            <dependency id="ApprovalTests" version="(5.2.5, )" />
-            <dependency id="FSharp.Core" version="(4.0.0.0, )" />
+          <group targetFramework=".netstandard2.0">
+            <dependency id="ApprovalUtilities" version="5.2.5" />
+            <dependency id="ApprovalTests" version="5.2.5" />
+            <dependency id="FSharp.Core" version="4.0.0.0" />
+          </group>
         </dependencies>
     </metadata>
     <files>
         <file src="content\FeldSpar_Example.fs.txt" target="content\FeldSpar_Example.fs.txt" />
         <file src="content\Program.fs" target="content\Program.fs" />
-        <file src="lib\FeldSparFramework.dll" target="lib\FeldSparFramework.dll" />
+        <file src="lib\FeldSparFramework.dll" target="lib\netstandard2.0\FeldSparFramework.dll" />
         <file src="tools\install.ps1" target="tools\install.ps1" />
     </files>
 </package>

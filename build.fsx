@@ -112,6 +112,7 @@ let copyBuildFiles folder =
     |> Seq.iter (fun (p, fi) -> fi.CopyTo p |> ignore)
 
 Target.create "BuildCopy" (fun _ ->
+    System.Threading.Thread.Sleep 500
     "FeldSpar.Framework" |> copyBuildFiles
     
     //let ciSource = System.IO.DirectoryInfo "./FeldSpar.ContinuousIntegration/bin/Debug/netcoreapp3.1"
@@ -134,9 +135,7 @@ Target.create "BuildCopy" (fun _ ->
 
         fi.CopyTo fiTarget |> ignore
     )
-)
 
-Target.create "DeployCopy" (fun _ ->
     let frameworkBuild = "FeldSpar.Framework" |> getBuildDir
     let ciBuild = "FeldSpar.ContinuousIntegration" |> getBuildDir
 
@@ -151,6 +150,18 @@ Target.create "DeployCopy" (fun _ ->
     |> fun fi -> (ciBuild |> System.IO.DirectoryInfo, fi)
     |> fun (di, fi) -> sprintf "%s/%s" di.FullName fi.Name |> fi.CopyTo 
     |> ignore
+)
+
+Target.create "DeployCopy" (fun _ ->
+    !! (sprintf "%s/**/*.nupkg" buildDir)
+    ++ (sprintf "%s/**/*.zip" buildDir)
+    |> Seq.iter (fun p ->
+        let fi = System.IO.FileInfo p
+        let di = System.IO.DirectoryInfo deployDir
+        let target = fi.Name |> sprintf "%s/%s" di.FullName
+
+        fi.CopyTo target |> ignore
+    )
 )
 
 Target.create "TestCopy" (fun _ ->
@@ -178,8 +189,8 @@ Target.create "Test" (fun _ ->
 )
 
 Target.create "CreatePackage" (fun _ ->
-    Shell.Exec ("nuget", @"pack ..\_build\FeldSpar.Framework\FeldSparFramework.nuspec -IncludeReferencedProjects -Version " + frameworkVer.AsString, deployDir) |> ignore
-    Shell.Exec ("nuget", @"pack ..\_build\FeldSpar.ContinuousIntegration\ContinuousIntegration.nuspec -IncludeReferencedProjects -Version " + ciVer.AsString, deployDir) |> ignore
+    Shell.Exec ("nuget", @"pack .\FeldSpar.Framework\FeldSparFramework.nuspec -IncludeReferencedProjects -Version " + frameworkVer.AsString, buildDir) |> ignore
+    Shell.Exec ("nuget", @"pack .\FeldSpar.ContinuousIntegration\ContinuousIntegration.nuspec -IncludeReferencedProjects -Version " + ciVer.AsString, buildDir) |> ignore
     ()
 )
 
@@ -202,8 +213,8 @@ Target.create "CreatePackage" (fun _ ->
 //)
 
 Target.create "Zip" (fun _ ->
-    let frameworkSource = sprintf "%s/FeldSpar.Framework" buildDir
-    let ciSource = sprintf "%s/FeldSpar.ContinuousIntegration" buildDir
+    let frameworkSource = sprintf "%s/FeldSpar.Framework" buildDir |> System.IO.DirectoryInfo |> fun di -> di.FullName
+    let ciSource = sprintf "%s/FeldSpar.ContinuousIntegration" buildDir |> System.IO.DirectoryInfo |> fun di -> di.FullName
     let version =
         if frameworkVer < ciVer then ciVer
         else frameworkVer
@@ -216,7 +227,7 @@ Target.create "Zip" (fun _ ->
             |> Zip.moveToFolder "FeldSpar.ContinuousIntegration"
     ]
     |> Seq.concat
-    |> Zip.zipSpec (sprintf @"%s.%s.zip" deployDir version.AsString)
+    |> Zip.zipSpec (sprintf @"%s/FeldSpar.%s.zip" buildDir version.AsString)
 )
 
 Target.create "LocalDeploy" (fun _ ->
@@ -240,8 +251,8 @@ Target.create "All" ignore
   ==> "Zip"
   ==> "TestCopy"
   ==> "Test"
-  ==> "DeployCopy"
   ==> "CreatePackage"
+  ==> "DeployCopy"
   ==> "LocalDeploy"
   ==> "All"
 
