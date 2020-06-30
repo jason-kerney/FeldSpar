@@ -13,17 +13,20 @@
         <releaseNotes>Added the ability to test scripts</releaseNotes>
         <copyright>Copyright 2014</copyright>
         <tags>F#, FSharp, F-Sharp, Unit Testing, Tests</tags>
-        <dependencies>
-            <group>
-                <dependency id="ApprovalUtilities" version="(3.0.10, )" />
-                <dependency id="ApprovalTests" version="(3.0.10, )" />
-				<dependency id="FeldSparFramework" version="($version$, )" />
-				<dependency id="UnionArgParser" version="(0.8.2, )" />
-				<dependency id="FSharp.Core" version="(4.0.0.0, )" />
-            </group>
-        </dependencies>
+      <dependencies>
+        <group targetFramework=".NETCoreApp3.1">
+          <dependency id="FeldSparFramework" version="2.0.0" exclude="Build,Analyzers" />
+          <dependency id="ApprovalUtilities" version="5.2.5" exclude="Build,Analyzers" />
+          <dependency id="Argu" version="6.1.1" exclude="Build,Analyzers" />
+          <dependency id="FSharp.Core" version="4.7.2" exclude="Build,Analyzers" />
+        </group>
+      </dependencies>
     </metadata>
     <files>
-        <file src="lib\40\FeldSpar.40.Console.XML" target="lib\40\FeldSpar.40.Console.XML" />
+      <file src="lib\FeldSpar.ContinuousIntegration.deps.json" target="lib\FeldSpar.ContinuousIntegration.deps.json" />
+      <file src="lib\FeldSpar.ContinuousIntegration.dll" target="lib\FeldSpar.ContinuousIntegration.dll" />
+      <file src="lib\FeldSpar.ContinuousIntegration.exe" target="lib\FeldSpar.ContinuousIntegration.exe" />
+      <file src="lib\FeldSpar.ContinuousIntegration.runtimeconfig.dev.json" target="lib\FeldSpar.ContinuousIntegration.runtimeconfig.dev.json" />
+      <file src="lib\FeldSpar.ContinuousIntegration.runtimeconfig.json" target="lib\FeldSpar.ContinuousIntegration.runtimeconfig.json" />
 	</files>
 </package>
