@@ -238,7 +238,7 @@ Target.create "LocalDeploy" (fun _ ->
     |> Seq.iter (fun p -> 
         let fi = System.IO.FileInfo p
         let target = sprintf "%s/%s" nugetDeployDir.FullName fi.Name
-        fi.MoveTo target
+        fi.CopyTo target |> ignore
     )
 )
 
