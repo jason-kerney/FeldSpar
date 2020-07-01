@@ -34,8 +34,8 @@ let buildDir = "./_build/"
 let testDir = "./_test/"
 let deployDir = "./_deploy/"
 
-let forkReport lable thing =
-    printfn "%s %A" lable thing
+let fork f thing =
+    f thing
     thing
 
 let nugetDeployDir = 
@@ -155,13 +155,8 @@ Target.create "BuildCopy" (fun _ ->
 Target.create "DeployCopy" (fun _ ->
     !! (sprintf "%s/**/*.nupkg" buildDir)
     ++ (sprintf "%s/**/*.zip" buildDir)
-    |> Seq.iter (fun p ->
-        let fi = System.IO.FileInfo p
-        let di = System.IO.DirectoryInfo deployDir
-        let target = fi.Name |> sprintf "%s/%s" di.FullName
-
-        fi.MoveTo target |> ignore
-    )
+    |> fork (Seq.iter (printfn "\t%s"))
+    |> Shell.copy deployDir
 )
 
 Target.create "TestCopy" (fun _ ->
@@ -231,15 +226,14 @@ Target.create "Zip" (fun _ ->
 )
 
 Target.create "LocalDeploy" (fun _ ->
-    !! (sprintf "%s/**" deployDir)
+    printfn "--------> Deploy to: %s" deployDir
+
+    [nugetDeployDir.FullName]
     |> Shell.cleanDirs
 
     !! (sprintf "%s/*.nupkg" deployDir)
-    |> Seq.iter (fun p -> 
-        let fi = System.IO.FileInfo p
-        let target = sprintf "%s/%s" nugetDeployDir.FullName fi.Name
-        fi.CopyTo target |> ignore
-    )
+    |> fork (Seq.iter (printfn "\t%s <- %A" deployDir))
+    |> Shell.copy nugetDeployDir.FullName
 )
 
 Target.create "All" ignore

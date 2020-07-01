@@ -25,10 +25,10 @@
         </dependencies>
     </metadata>
     <files>
-      <file src="lib\FeldSpar.ContinuousIntegration.deps.json" target="lib\FeldSpar.ContinuousIntegration.deps.json" />
-      <file src="lib\FeldSpar.ContinuousIntegration.dll" target="lib\FeldSpar.ContinuousIntegration.dll" />
-      <file src="lib\FeldSpar.ContinuousIntegration.exe" target="lib\FeldSpar.ContinuousIntegration.exe" />
-      <file src="lib\FeldSpar.ContinuousIntegration.runtimeconfig.dev.json" target="lib\FeldSpar.ContinuousIntegration.runtimeconfig.dev.json" />
-      <file src="lib\FeldSpar.ContinuousIntegration.runtimeconfig.json" target="lib\FeldSpar.ContinuousIntegration.runtimeconfig.json" />
+      <file src="lib\FeldSpar.ContinuousIntegration.deps.json" target="lib\NETCoreApp3.1\FeldSpar.ContinuousIntegration.deps.json" />
+      <file src="lib\FeldSpar.ContinuousIntegration.dll" target="lib\NETCoreApp3.1\FeldSpar.ContinuousIntegration.dll" />
+      <file src="lib\FeldSpar.ContinuousIntegration.exe" target="lib\NETCoreApp3.1\FeldSpar.ContinuousIntegration.exe" />
+      <file src="lib\FeldSpar.ContinuousIntegration.runtimeconfig.dev.json" target="lib\NETCoreApp3.1\FeldSpar.ContinuousIntegration.runtimeconfig.dev.json" />
+      <file src="lib\FeldSpar.ContinuousIntegration.runtimeconfig.json" target="lib\NETCoreApp3.1\FeldSpar.ContinuousIntegration.runtimeconfig.json" />
 	</files>
 </package>
