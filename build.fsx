@@ -208,21 +208,25 @@ Target.create "CreatePackage" (fun _ ->
 //)
 
 Target.create "Zip" (fun _ ->
-    let frameworkSource = sprintf "%s/FeldSpar.Framework" buildDir |> System.IO.DirectoryInfo |> fun di -> di.FullName
-    let ciSource = sprintf "%s/FeldSpar.ContinuousIntegration" buildDir |> System.IO.DirectoryInfo |> fun di -> di.FullName
+    Shell.pushd buildDir
+    let frameworkSource = "./FeldSpar.Framework" |> System.IO.DirectoryInfo |> fun di -> di.FullName
+    let ciSource = "./FeldSpar.ContinuousIntegration" |> System.IO.DirectoryInfo |> fun di -> di.FullName
     let version =
         if frameworkVer < ciVer then ciVer
         else frameworkVer
 
     [   !! (sprintf "%s/**/*" frameworkSource)
-            |> Zip.filesAsSpecs frameworkSource
+            |> fork (Seq.iter (printfn "\tZipping 1: %A"))
+            |> Zip.filesAsSpecsFlatten
             |> Zip.moveToFolder "FeldSpar.Framework"
         !! (sprintf "%s/**/*" ciSource)
-            |> Zip.filesAsSpecs ciSource
+            |> fork (Seq.iter (printfn "\tZipping 2: %A"))
+            |> Zip.filesAsSpecsFlatten
             |> Zip.moveToFolder "FeldSpar.ContinuousIntegration"
     ]
     |> Seq.concat
-    |> Zip.zipSpec (sprintf @"%s/FeldSpar.%s.zip" buildDir version.AsString)
+    |> Zip.zipSpec (sprintf @"./FeldSpar.%s.zip" version.AsString)
+    Shell.popd ()
 )
 
 Target.create "LocalDeploy" (fun _ ->
