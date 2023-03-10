@@ -23,7 +23,7 @@ module SetupAndTearDownTestingSupport =
         | _ -> failwith "Unexpected result from setup"
 
     let successfulSetup = beforeTest (fun context -> Success, 42, context)
-    let throwsSetup = beforeTest<string> (fun _env -> failwith "setup threw exception")
+    let throwsSetup = beforeTest (fun _env -> failwith "setup threw exception")
     let successfulTest = (fun _env _data -> Success)
 
     let buildSuccessfulSetup env = Success, successfulSetup, env

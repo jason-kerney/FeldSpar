@@ -4,6 +4,6 @@
   CanonicalizedName = "get_a_representitive_environment"
   GoldStandardPath = "...\FeldSpar.Tests\"
   Assembly =
-            FeldSpar.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+   FeldSpar.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   AssemblyPath = "...\FeldSpar.Tests\bin\..."
   Reporters = [] }"

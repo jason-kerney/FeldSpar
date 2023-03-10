@@ -29,7 +29,7 @@ module Program =
     let currentToken =
         let assembly = System.Reflection.Assembly.GetExecutingAssembly()
         let assemblyPath =
-            let codebase = assembly.CodeBase
+            let codebase = assembly.Location
             let uriBuilder = System.UriBuilder codebase
             let path = System.Uri.UnescapeDataString uriBuilder.Path
             System.IO.Path.GetDirectoryName path
